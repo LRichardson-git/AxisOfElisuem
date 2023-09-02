@@ -17,12 +17,12 @@ public class Unit_Movement : MonoBehaviour
     }
 
 
-    public void moveToTarget(int endX, int endY)
+    public void moveToTarget(int endX, int endY, int endZ)
     {
 
         //call this end of turn if set to auto go somewhere
         // Find the path using World_Pathfinding's findPath method
-        List<Vector3> path = World_Pathfinding.findPath(endX, endY, _unit.x, _unit.y, _unit.width, _unit.height);
+        List<Vector3> path = World_Pathfinding.findPath(endX, endY,endZ, _unit.x, _unit.y,_unit.z, _unit.width, _unit.height, 1);
         if (path != null)
         {
             //Debug.Log(path[0] + " " + path[1]);

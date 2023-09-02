@@ -9,7 +9,7 @@ public class Player : NetworkBehaviour
     // Start is called before the first frame update
 
     [SyncVar]
-    public bool turn = false;
+    public bool turn = true;
 
     [SyncVar]
     public bool testing = false;
@@ -85,7 +85,7 @@ public class Player : NetworkBehaviour
         
         if (!isOwned || turn == false) { return; }
         
-        CmdEndTurn();
+        //CmdEndTurn();
         
 
     }

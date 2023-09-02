@@ -5,13 +5,13 @@ using UnityEngine;
 public class Tile_Object :MonoBehaviour
 {
 
-    public int x, y;
+    public int x, y ,z;
 
-    public virtual void Setup(int x, int y, int width)
+    public virtual void Setup(int x, int y, int z,int width)
     {
         this.x = x;
         this.y = y;
-
+        this.z = z;
         init(width);
     }
 

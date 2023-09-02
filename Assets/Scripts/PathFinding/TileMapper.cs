@@ -10,7 +10,7 @@ public class TileMapper : MonoBehaviour
     public static TileMapper Instance { get; private set; }
     private void Awake()
     {
-        tilemap = GetComponent<Tilemap>();
+        //tilemap = GetComponent<Tilemap>();
         Instance = this;
     }
 }

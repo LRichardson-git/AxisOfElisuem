@@ -13,12 +13,13 @@ public class Unit : Tile_Object
 
     public int width = 1;
     public int height = 1;
+    
 
-    private void Awake()
+    private void Start()
     {
         _unit_Movement = GetComponent<Unit_Movement>();
         
-        Setup(x, y,width);
+        Setup(x, y,z,width);
     }
 
 

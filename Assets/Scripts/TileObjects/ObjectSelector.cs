@@ -18,7 +18,7 @@ public class ObjectSelector : MonoBehaviour
     private void Awake()
     {
         input = GetComponent<InputManager>();
-        Map_Generation.Instance.Generate_Map();
+        //Map_Generation.Instance.Generate_Map();
         visual = GetComponent<VisualPathfinding>();
         script = GetComponent<shaderscript>();
         CellLocation = new Vector3Int();
@@ -38,7 +38,7 @@ public class ObjectSelector : MonoBehaviour
         if (input.rightClick)
         {
             buttonDown = true;
-            script.HighlightTiles(World_Pathfinding.findAllPaths(selectedUnit.x, selectedUnit.y, selectedUnit.movementPoints, selectedUnit.width, selectedUnit.height));
+            //script.HighlightTiles(World_Pathfinding.findAllPaths(selectedUnit.x, selectedUnit.y, selectedUnit.movementPoints, selectedUnit.width, selectedUnit.height));
 
         }
         else if (input.rightLetGo){ buttonDown = false;  visual.notShowMovement();  moveUnit();  script.DeHighLight(); script.DeHightLightTile(); }
@@ -57,36 +57,38 @@ public class ObjectSelector : MonoBehaviour
     }
 
 
-    
+
 
 
     private void moveUnit()
     {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
-        RaycastHit2D hit = World_Pathfinding.getWorldMouse();
-
-        if (hit.collider != null)
+        if (Physics.Raycast(ray, out hit))
         {
-            
-            var tempor  = World_Pathfinding.worldToCoord(hit.point,selectedUnit.width);
-
-            selectedUnit.GetComponent<Unit_Movement>().moveToTarget((int)tempor.x, (int)tempor.y);
+            var tempor = World_Pathfinding.worldToCoord(hit.point, selectedUnit.width);
+            Debug.Log("moving to: " + tempor);
+            selectedUnit.GetComponent<Unit_Movement>().moveToTarget((int)tempor.x, (int)tempor.y, tempor.z);
         }
     }
 
 
     private void SelectUnit()
     {
-        Vector2 rayPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(rayPos, Vector2.zero);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
-        if (hit.collider != null)
+        if (Physics.Raycast(ray, out hit))
         {
+            Debug.Log("1");
             Unit unit = hit.collider.GetComponent<Unit>();
             if (unit != null)
             {
+                Debug.Log("2");
                 if (selectedUnit != null)
                 {
+                    Debug.Log("3");
                     // Deselect the previously selected unit
                     selectedUnit.Deselect();
                 }

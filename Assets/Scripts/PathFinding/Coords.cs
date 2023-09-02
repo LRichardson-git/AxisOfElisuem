@@ -9,6 +9,7 @@ public class Coords
     //Pos
     public int x;
     public int y;
+    public int z;
 
     public int m_gCost; //distance from start
     public int m_hCost; //distance if not account for  blockers
@@ -19,10 +20,11 @@ public class Coords
     public bool IsWalkable;
     public Tile_Type type;
 
-    public Coords(int x, int y)
+    public Coords(int x, int y, int z)
     {
         this.x = x;
         this.y = y;
+        this.z = z;
         IsWalkable = true;
         LastCoord = null;
     }
