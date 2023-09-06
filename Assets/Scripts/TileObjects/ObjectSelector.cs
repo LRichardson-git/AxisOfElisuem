@@ -41,7 +41,10 @@ public class ObjectSelector : MonoBehaviour
             //script.HighlightTiles(World_Pathfinding.findAllPaths(selectedUnit.x, selectedUnit.y, selectedUnit.movementPoints, selectedUnit.width, selectedUnit.height));
 
         }
-        else if (input.rightLetGo){ buttonDown = false;  visual.notShowMovement();  moveUnit();  script.DeHighLight(); script.DeHightLightTile(); }
+        else if (input.rightLetGo){ buttonDown = false;  visual.notShowMovement();  moveUnit();
+            //script.DeHighLight(); script.DeHightLightTile(); 
+        }
+        
         CellLocation = World_Pathfinding.worldToCoord(Camera.main.ScreenToWorldPoint(input.MousePos),selectedUnit.width);
 
         if (!CellLocation.Equals(previousCell) && buttonDown == true )
@@ -49,7 +52,7 @@ public class ObjectSelector : MonoBehaviour
             
             previousCell = CellLocation;
             
-            visual.showMovement(selectedUnit);
+            //visual.showMovement(selectedUnit);
             
             
         }
@@ -64,11 +67,11 @@ public class ObjectSelector : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-
+        //Debug.Log("moveunit");
         if (Physics.Raycast(ray, out hit))
         {
             var tempor = World_Pathfinding.worldToCoord(hit.point, selectedUnit.width);
-            Debug.Log("moving to: " + tempor);
+            //Debug.Log("moving to: " + tempor);
             selectedUnit.GetComponent<Unit_Movement>().moveToTarget((int)tempor.x, (int)tempor.y, tempor.z);
         }
     }
@@ -81,14 +84,14 @@ public class ObjectSelector : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            Debug.Log("1");
+
             Unit unit = hit.collider.GetComponent<Unit>();
             if (unit != null)
             {
-                Debug.Log("2");
+      
                 if (selectedUnit != null)
                 {
-                    Debug.Log("3");
+
                     // Deselect the previously selected unit
                     selectedUnit.Deselect();
                 }

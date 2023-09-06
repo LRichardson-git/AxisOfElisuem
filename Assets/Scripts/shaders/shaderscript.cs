@@ -19,21 +19,22 @@ public class shaderscript : MonoBehaviour
         Instance = this;
 
     }
-
+}
+    /*
 
     public void HighlightTiles(List<Vector3> tilePositions)
     {
         DeHighLight();
             foreach (Vector3 pos in tilePositions)
         {
-            tilemap.SetTile(tilemap.WorldToCell(pos), newTile);
+            //tilemap.SetTile(tilemap.WorldToCell(pos), newTile);
         }
         
     }
 
     public void HightLightTile(Vector3Int tilePosition, int width, int height) {
 
-        DeHightLightTile();
+        //DeHightLightTile();
 
 
         if (width < 2)
@@ -60,7 +61,7 @@ public class shaderscript : MonoBehaviour
 
         //if (tilePosition.x > tilePosition.x + movement || tilePosition.y > tilePosition.y + movement || tilePosition.x < tilePosition.x - movement || tilePosition.y < tilePosition.y - movement)
         //  return;
-        tilemap2.ClearAllTiles();
+       // tilemap2.ClearAllTiles();
         /*
         if (width < 2)
         {
@@ -78,15 +79,16 @@ public class shaderscript : MonoBehaviour
                 }
 
             }
-        */
+        
     }
 
 
     public void DeHighLight()
     {
         
-            tilemap.ClearAllTiles();
+            //tilemap.ClearAllTiles();
         //tilemap2.ClearAllTiles();
         
     }
 }
+    */

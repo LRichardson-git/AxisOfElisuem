@@ -33,8 +33,13 @@ public class Unit : Tile_Object
         selected = true;
     }
 
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(2))
+            Debug.Log(World_Pathfinding.calculateDistanceCost(new Coords(x, y, z), new Coords (5,2,5)));
+    }
 
-    
+
 
 
 

@@ -103,7 +103,7 @@ public  class VisualPathfinding : MonoBehaviour
                 }
 
             }
-            shaderscript.Instance.HightLightTile(endCoord, _unit.width,_unit.height);
+            //shaderscript.Instance.HightLightTile(endCoord, _unit.width,_unit.height);
         }
     }
 

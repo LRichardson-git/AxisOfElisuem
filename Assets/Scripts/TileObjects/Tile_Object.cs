@@ -17,7 +17,8 @@ public class Tile_Object :MonoBehaviour
 
     private void init(int width)
     {
-        transform.transform.position = World_Pathfinding.coordToWorld(x, y, width);
+        transform.transform.position = World_Pathfinding.coordToWorld(x, y, z, width);
+        World_Pathfinding.setNotwalkble(x, y, z);
     }
 
 

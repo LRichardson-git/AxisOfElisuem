@@ -5,7 +5,7 @@ using UnityEngine;
 public class Unit_Movement : MonoBehaviour
 {
     private Unit _unit;
-    public float speed = 5f;
+    public float speed = 20f;
     private float posOffset = 0f;
 
 
@@ -22,12 +22,11 @@ public class Unit_Movement : MonoBehaviour
 
         //call this end of turn if set to auto go somewhere
         // Find the path using World_Pathfinding's findPath method
+
         List<Vector3> path = World_Pathfinding.findPath(endX, endY,endZ, _unit.x, _unit.y,_unit.z, _unit.width, _unit.height, 1);
+        
         if (path != null)
         {
-            //Debug.Log(path[0] + " " + path[1]);
-            //need to +1 for some reason
-            //Debug.Log(endX + ", " + endY);
             int limitedPathLength = Mathf.Min(path.Count, _unit.movementPoints);
             List<Vector3> limitedPath = path.GetRange(0, limitedPathLength);
 
@@ -37,6 +36,8 @@ public class Unit_Movement : MonoBehaviour
             // Update the unit's movement path
             _unit.movementPoints -= limitedPathLength;
         }
+        else { Debug.Log("path is null"); }
+       
     }
 
     private IEnumerator moveAlongPath(List<Vector3> path)
@@ -53,6 +54,7 @@ public class Unit_Movement : MonoBehaviour
         Vector3Int temportayChangethisplease = World_Pathfinding.worldToCoord(transform.position, _unit.width);
         _unit.x = temportayChangethisplease.x;
         _unit.y = temportayChangethisplease.y;
+        _unit.z = temportayChangethisplease.z;
     }
 
 
