@@ -10,7 +10,7 @@ public static class World_Pathfinding
 
     private static Coords[,,] mapIndex;
 
-    public static int width = 30, height = 30, depth = 20;
+    public static int width = 30, height = 20, depth = 20;
 
     public static int CellSize = 10;
 
@@ -26,16 +26,60 @@ public static class World_Pathfinding
                 for (int z = 0; z < height; z++)
                 {
                     mapIndex[x, y, z] = new Coords(x, y, z);
+                    
+                        
                 }
             }
         }
 
+        for (int x = 0; x < 7; x++)
+        {
+            for (int z = 14; z < 20; z++)
+            {
+                Debug.Log(x);
+                Debug.Log(z);
+                mapIndex[x,3,z].settype(Tile_Type.floor);
+            }
+        }
 
+        
+            for (int y = 0; y < 5; y++)
+            {
+                mapIndex[2, y, 14].settype(Tile_Type.floor);
+            }
+        
     }
 
     public static void setNotwalkble (int x, int y, int z)
     {
-        mapIndex[x, y, z].IsWalkable = false;
+        mapIndex[x, y, z].settype(Tile_Type.Wall);
+    }
+    public static void setNotwalkble(Coords cord, int x, int y,int z) //fix this make it do all or not dosent mastter
+    {
+        for (int i = 0; i < x ; i++)
+        {
+            for (int j = 0; j < y ; j++)
+
+                for (int k = 0; k < z ; k++)
+                {
+                    mapIndex[cord.x + i, cord.y + j, cord.z + k].settype(Tile_Type.Wall);
+                }
+            
+        }
+
+    }
+
+    public static Coords[,,] getIndex()
+    {
+        return mapIndex;
+    }
+  
+
+ 
+    public static void setNotwalkble(Coords cord)
+    {
+
+        mapIndex[cord.x, cord.y, cord.z].settype(Tile_Type.Wall);
     }
     public static RaycastHit2D getWorldMouse()
     {
@@ -79,22 +123,22 @@ public static class World_Pathfinding
 
 
     //init  in units
-    public static Vector3 coordToWorld(int x, int y,int z, int width)
+    public static Vector3 coordToWorld(int x, int y,int z, int width, int Depth)
     {
         Vector3 newPos;
         newPos.x = x * 10 + 5;
-        newPos.y = y * 10 + 5;
+        newPos.y = y * 10 + (5 * Depth);
         newPos.z = z * 10 + 5;
         return newPos;
     }
 
-    public static List<Vector3> findPath(int xEnd, int yEnd, int zEnd, int xSt, int ySt, int zSt, int uWidth, int uHeight, int uDepth)
+    public static List<Vector3> findPath(int xEnd, int yEnd, int zEnd, int xSt, int ySt, int zSt, int uWidth, int uHeight, int uDepth, bool flight)
     {
         //Debug.Log("PATH");
         if (xEnd < 0 || xEnd > width || yEnd < 0 || yEnd > depth || zEnd <0 || zEnd > height) { Debug.Log("invalid point"); return null; }
 
 
-        if (!isAreaWalkable(xEnd, yEnd, zEnd, uWidth, uHeight, uDepth))
+        if (!isAreaWalkable(xEnd, yEnd, zEnd, uWidth, uHeight, uDepth,flight))
         {
             Debug.Log("not walkable");
             return null;
@@ -153,7 +197,7 @@ public static class World_Pathfinding
             }
 
             // Get the neighboring nodes of the current node
-            List<Coords> neighbors = getNeighbourList(currentNode, uWidth, uHeight, uDepth);
+            List<Coords> neighbors = getNeighbourList(currentNode, uWidth, uHeight, uDepth, flight);
 
             foreach (Coords neighbor in neighbors)
             {
@@ -235,13 +279,9 @@ public static class World_Pathfinding
         int yDistance = Mathf.Abs(a.y - b.y);
         int zDistance = Mathf.Abs(a.z - b.z);
 
-        //if on straight land
-
 
         int diagonalDistance = Mathf.Min(xDistance, zDistance);
-        //int straightDistance = Mathf.Max(xDistance, yDistance, zDistance) - diagonalDistance;
         int straightDistance = Mathf.Max(xDistance, zDistance) - diagonalDistance;
-        int remaining = Mathf.Max(xDistance, yDistance, zDistance) - straightDistance - diagonalDistance;
 
         int cost = MOVEMENT_DIAGONAL_COST * diagonalDistance + MOVEMENT_COST  * straightDistance + MOVEMENT_COST * yDistance;
 
@@ -250,7 +290,7 @@ public static class World_Pathfinding
 
 
 
-    private static List<Coords> getNeighbourList(Coords currentNode, int unitWidth, int unitHeight, int unitDepth)
+    private static List<Coords> getNeighbourList(Coords currentNode, int unitWidth, int unitHeight, int unitDepth, bool flight)
     {
         List<Coords> neighbourList = new List<Coords>();
 
@@ -273,7 +313,7 @@ public static class World_Pathfinding
                     if (newX >= 0 && newX < width && newY >= 0 && newY < depth && newZ >= 0 && newZ < height)
                     {
                         // Check if the new coordinates are within bounds
-                        if (isAreaWalkable(newX, newY, newZ, unitWidth, unitHeight, unitDepth))
+                        if (isAreaWalkable(newX, newY, newZ, unitWidth, unitHeight, unitDepth,flight))
                         {
                             neighbourList.Add(mapIndex[newX, newY, newZ]);
                         }
@@ -288,18 +328,24 @@ public static class World_Pathfinding
     }
 
 
-    private static bool isAreaWalkable(int x, int y, int z, int unitwidth, int unitheight, int unitDepth)
+    private static bool isAreaWalkable(int x, int y, int z, int unitwidth, int unitheight, int unitDepth, bool flying)
     {
+
+
+
         for (int i = x; i < x + unitwidth; i++)
         {
             for (int j = y; j < y + unitDepth; j++)
             {
                 for (int k = z; k < z + unitheight; k++)
                 {
-                    if (i < 0 || i >= width || j < 0 || j >= depth || k < 0 || k >= height || !mapIndex[i, j, k].IsWalkable)
+                    if (i < 0 || i >= width || j < 0 || j >= depth || k < 0 || k >= height || mapIndex[i, j, k].type == Tile_Type.Wall)
                     {
+
                         return false;
                     }
+                    else if (mapIndex[i, j, k].type == Tile_Type.air && flying == false)
+                        return false;
                 }
             }
         }

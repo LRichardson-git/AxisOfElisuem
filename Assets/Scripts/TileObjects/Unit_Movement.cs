@@ -23,7 +23,7 @@ public class Unit_Movement : MonoBehaviour
         //call this end of turn if set to auto go somewhere
         // Find the path using World_Pathfinding's findPath method
 
-        List<Vector3> path = World_Pathfinding.findPath(endX, endY,endZ, _unit.x, _unit.y,_unit.z, _unit.width, _unit.height, 1);
+        List<Vector3> path = World_Pathfinding.findPath(endX, endY,endZ, _unit.x, _unit.y,_unit.z, _unit.width, _unit.height, _unit.depth,_unit.flying);
         
         if (path != null)
         {

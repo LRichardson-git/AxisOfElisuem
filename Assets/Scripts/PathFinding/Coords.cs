@@ -27,8 +27,14 @@ public class Coords
         this.z = z;
         IsWalkable = true;
         LastCoord = null;
+        type = Tile_Type.air;
+        if (y < 1)
+            type = Tile_Type.floor;
     }
-
+    public void settype(Tile_Type type) { this.type = type; 
+        if (this.type == Tile_Type.floor)
+            IsWalkable=true;
+                    }
     public void CalculateFCost() //movement cost
     {
         m_fCost = m_gCost + m_hCost;

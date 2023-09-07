@@ -57,7 +57,7 @@ public  class VisualPathfinding : MonoBehaviour
          // assuming the current object's position is the starting point
 
         // Call the findPath function to get the path
-        var path = World_Pathfinding.findPath(endCoord.x, endCoord.y,endCoord.z, _unit.x, _unit.y,_unit.z, _unit.width, _unit.height,1);
+        var path = World_Pathfinding.findPath(endCoord.x, endCoord.y,endCoord.z, _unit.x, _unit.y,_unit.z, _unit.width, _unit.height,1,_unit.flying);
 
         if (path != null)
         {

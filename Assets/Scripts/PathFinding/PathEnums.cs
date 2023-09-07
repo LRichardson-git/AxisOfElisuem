@@ -1,6 +1,5 @@
 public enum Tile_Type
 {
-    ground,
-    water,
-    mountain
+    air,
+    floor,window,Wall
 }

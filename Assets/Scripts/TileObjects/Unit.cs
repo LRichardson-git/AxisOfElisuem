@@ -8,10 +8,11 @@ public class Unit : Tile_Object
     [SerializeField]
     bool selected = false;
     public int movementPoints = 2;
+    public bool flying = false;
 
     Unit_Movement _unit_Movement;
 
-    public int width = 1;
+    
     public int height = 1;
     
 
@@ -19,7 +20,7 @@ public class Unit : Tile_Object
     {
         _unit_Movement = GetComponent<Unit_Movement>();
         
-        Setup(x, y,z,width);
+        Setup(x, y,z,width,depth);
     }
 
 
