@@ -1,24 +1,57 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-public class testingmanger : MonoBehaviour
+using Mirror;
+public class testingmanger : NetworkBehaviour
 {
     public GameObject blocker;
+    public GameObject Solider;
+    // Update is called once per frame
 
-    public static testingmanger Instance { get; private set; }
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        Instance = this;
+        netIdentity.AssignClientAuthority(connectionToClient);
     }
 
-    // Update is called once per frame
     void Update()
     {
+        if (!isOwned)
+            return;
+
         if (Input.GetKeyUp(KeyCode.H))
         {
+            
+                //Debug.Log("spawning");
+                CmdServerSpawnSolider();
 
+            
+            
+                //Debug.Log("Units: " + UnitManager.Instance.GetUnitList().Count);
+            
+        }
+        
+    }
+
+    [Command]
+    void CmdServerSpawnSolider()
+    {
+        GameObject GameSolider = Instantiate(Solider);
+        NetworkServer.Spawn(GameSolider, connectionToClient);
+        UnitManager.Instance.AddUnit(GameSolider.GetComponent<Unit>());
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
             for (int x = 0; x < 30; x++)
             {
                 for (int y = 0; y < 20; y++)
@@ -29,7 +62,4 @@ public class testingmanger : MonoBehaviour
                             Instantiate(blocker,World_Pathfinding.coordToWorld(x,y,z,1,1),transform.rotation);
                     }
                 }
-            }
-        }
-    }
-}
+            }*/

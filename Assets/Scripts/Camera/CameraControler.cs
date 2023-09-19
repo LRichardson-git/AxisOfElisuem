@@ -21,8 +21,6 @@ public class CameraControler : MonoBehaviour
     }
 
 
-
-
     // Update is called once per frame
     void Update()
     {
@@ -108,19 +106,6 @@ public class CameraControler : MonoBehaviour
             rotationX = mouseX;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private Vector3 FindRotationPoint()
     {

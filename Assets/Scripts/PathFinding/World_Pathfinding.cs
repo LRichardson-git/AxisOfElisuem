@@ -16,7 +16,6 @@ public static class World_Pathfinding
 
     static World_Pathfinding()
     {
-
         mapIndex = new Coords[width, depth, height];
 
         for (int x = 0; x < width; x++)
@@ -26,34 +25,42 @@ public static class World_Pathfinding
                 for (int z = 0; z < height; z++)
                 {
                     mapIndex[x, y, z] = new Coords(x, y, z);
-                    
-                        
                 }
             }
         }
 
-        for (int x = 0; x < 7; x++)
-        {
-            for (int z = 14; z < 20; z++)
-            {
-                Debug.Log(x);
-                Debug.Log(z);
-                mapIndex[x,3,z].settype(Tile_Type.floor);
-            }
-        }
+        TestingSetup();
 
-        
-            for (int y = 0; y < 5; y++)
-            {
-                mapIndex[2, y, 14].settype(Tile_Type.floor);
-            }
-        
+        setNotwalkble(9, 1, 9);
     }
 
+
+    //Helper Functions
+
+    //getters
+    public static Coords[,,] getIndex()
+    {
+        return mapIndex;
+    }
+
+    //Setters
+
+    public static void setWidthHeight(int x, int y, int z)
+    {
+        width = x; depth = y; height = z;
+    }
+
+    //SetWalkables
+    //------------
     public static void setNotwalkble (int x, int y, int z)
     {
         mapIndex[x, y, z].settype(Tile_Type.Wall);
     }
+    public static void setNotwalkble(Coords coord)
+    {
+        mapIndex[coord.x, coord.y, coord.z].settype(Tile_Type.Wall);
+    }
+
     public static void setNotwalkble(Coords cord, int x, int y,int z) //fix this make it do all or not dosent mastter
     {
         for (int i = 0; i < x ; i++)
@@ -64,52 +71,27 @@ public static class World_Pathfinding
                 {
                     mapIndex[cord.x + i, cord.y + j, cord.z + k].settype(Tile_Type.Wall);
                 }
-            
         }
-
     }
 
-    public static Coords[,,] getIndex()
+    //Coords
+    
+    public static Vector3Int coordToWorld(Coords coord, int uWidth, int uDepth) //y is height
     {
-        return mapIndex;
-    }
-  
-
- 
-    public static void setNotwalkble(Coords cord)
-    {
-
-        mapIndex[cord.x, cord.y, cord.z].settype(Tile_Type.Wall);
-    }
-    public static RaycastHit2D getWorldMouse()
-    {
-        Vector2 rayPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(rayPos, Vector2.zero);
-        return hit;
-    }
-    public static void setWidthHeight(int x, int y, int z)
-    {
-        width = x;  depth = y; height = z;
-    }
-
-
-
-    public static Vector3 coordToWorld(Coords coord, int uWidth) //y is height
-    {
-        Vector3 newPos;
-        newPos.x = coord.x * 10 + 5;
-        newPos.y = coord.y * 10 + 5;
-        newPos.z = coord.z * 10 + 5;
+        Vector3Int newPos = new Vector3Int();
+        newPos.x = coord.x * 10 + (5 * uWidth);
+        newPos.y = coord.y * 10 + (5 * uDepth) ;
+        newPos.z = coord.z * 10 + (5 * uWidth);
         return newPos;
     }
 
-    public static Vector3Int worldToCoord(Vector3 Pos, int uWidth)
+    public static Vector3 coordToWorld(int x, int y, int z, int uWidth, int uDepth)
     {
-        Vector3Int Grid = new Vector3Int();
-        Grid.x = (int)Mathf.Floor((Pos.x) / CellSize);
-        Grid.y = (int)Mathf.Floor((Pos.y) / CellSize);
-        Grid.z = (int)Mathf.Floor((Pos.z) / CellSize);
-        return Grid;
+        Vector3Int newPos = new Vector3Int();
+        newPos.x = x * 10 + (5 * uWidth);
+        newPos.y = y * 10 + (5 * uDepth);
+        newPos.z = z * 10 + (5 * uWidth);
+        return newPos;
     }
 
     public static Coords worldToCoord(Vector3 Pos)
@@ -120,23 +102,30 @@ public static class World_Pathfinding
         return Grid;
     }
 
-
-
-    //init  in units
-    public static Vector3 coordToWorld(int x, int y,int z, int width, int Depth)
+    public static Vector3Int worldToCoord(Vector3 Pos, int uWidth, int uDepth)
     {
-        Vector3 newPos;
-        newPos.x = x * 10 + 5;
-        newPos.y = y * 10 + (5 * Depth);
-        newPos.z = z * 10 + 5;
-        return newPos;
+        Vector3Int Grid = new Vector3Int();
+        Grid.x = (int)Mathf.Floor((Pos.x) / CellSize);
+        Grid.y = (int)Mathf.Floor((Pos.y) / CellSize);
+        Grid.z = (int)Mathf.Floor((Pos.z) / CellSize);
+
+        if (uDepth > 1)
+            Grid.y -= (int)uDepth / 2;
+
+        if (uWidth > 1)
+        {
+            Grid.x -= uWidth;
+            Grid.z -= uWidth;
+        }
+
+        return Grid;
     }
+
+    //Find Path
 
     public static List<Vector3> findPath(int xEnd, int yEnd, int zEnd, int xSt, int ySt, int zSt, int uWidth, int uHeight, int uDepth, bool flight)
     {
-        //Debug.Log("PATH");
         if (xEnd < 0 || xEnd > width || yEnd < 0 || yEnd > depth || zEnd <0 || zEnd > height) { Debug.Log("invalid point"); return null; }
-
 
         if (!isAreaWalkable(xEnd, yEnd, zEnd, uWidth, uHeight, uDepth,flight))
         {
@@ -146,11 +135,8 @@ public static class World_Pathfinding
 
         Coords startCoord = mapIndex[xSt, ySt, zSt];
         Coords EndCoord = mapIndex[xEnd, yEnd, zEnd];
-        //  List<Coords> FinalPath;
-
 
         //depth for hegiht
-
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < depth; y++)
@@ -192,7 +178,7 @@ public static class World_Pathfinding
             if (currentNode == EndCoord)
             {
                 // Path found, construct the path
-                List<Vector3> path = calcuatePath(currentNode,uWidth);
+                List<Vector3> path = calcuatePath(currentNode,uWidth,uDepth);
                 return path;
             }
 
@@ -224,22 +210,7 @@ public static class World_Pathfinding
 
     }
 
-    private static Coords FindLowestFCostNode(List<Coords> nodeList)
-    {
-        Coords lowestFCostNode = nodeList[0];
-
-        for (int i = 1; i < nodeList.Count; i++)
-        {
-            if (nodeList[i].m_fCost < lowestFCostNode.m_fCost)
-            {
-                lowestFCostNode = nodeList[i];
-            }
-        }
-
-        return lowestFCostNode;
-    }
-
-    private static List<Vector3> calcuatePath(Coords EndNode, int uwidth)
+    private static List<Vector3> calcuatePath(Coords EndNode, int uwidth, int uDepth)
     {
         List<Coords> path = new List<Coords>();
         path.Add(EndNode);
@@ -251,9 +222,7 @@ public static class World_Pathfinding
             currentNode = currentNode.LastCoord;
 
         }
-
         path.Reverse();
-
 
         if (path == null)
         {
@@ -263,12 +232,12 @@ public static class World_Pathfinding
         else
         {
             List<Vector3> vectorPath = new List<Vector3>();
+            
             foreach (Coords coord in path)
             {
-                vectorPath.Add(coordToWorld(coord, uwidth));
+                vectorPath.Add(coordToWorld(coord, uwidth, uDepth));
             }
-            //for (int i = 0; i < vectorPath.Count; i++)
-               // Debug.Log(vectorPath[i]);
+
             return vectorPath;
         }
 
@@ -288,7 +257,20 @@ public static class World_Pathfinding
         return cost;
     }
 
+    private static Coords FindLowestFCostNode(List<Coords> nodeList)
+    {
+        Coords lowestFCostNode = nodeList[0];
 
+        for (int i = 1; i < nodeList.Count; i++)
+        {
+            if (nodeList[i].m_fCost < lowestFCostNode.m_fCost)
+            {
+                lowestFCostNode = nodeList[i];
+            }
+        }
+
+        return lowestFCostNode;
+    }
 
     private static List<Coords> getNeighbourList(Coords currentNode, int unitWidth, int unitHeight, int unitDepth, bool flight)
     {
@@ -331,6 +313,8 @@ public static class World_Pathfinding
     private static bool isAreaWalkable(int x, int y, int z, int unitwidth, int unitheight, int unitDepth, bool flying)
     {
 
+        if (mapIndex[x, y, z].type == Tile_Type.air && flying == false)
+            return false;
 
 
         for (int i = x; i < x + unitwidth; i++)
@@ -339,13 +323,12 @@ public static class World_Pathfinding
             {
                 for (int k = z; k < z + unitheight; k++)
                 {
+                    
                     if (i < 0 || i >= width || j < 0 || j >= depth || k < 0 || k >= height || mapIndex[i, j, k].type == Tile_Type.Wall)
                     {
-
                         return false;
                     }
-                    else if (mapIndex[i, j, k].type == Tile_Type.air && flying == false)
-                        return false;
+                    
                 }
             }
         }
@@ -390,6 +373,90 @@ public static class World_Pathfinding
         return allPaths;
     }
 */
+    }
+        private static void TestingSetup()
+        {
+            for (int x = 0; x < 7; x++)
+            {
+                for (int z = 14; z < 20; z++)
+                {
+                    mapIndex[x, 3, z].settype(Tile_Type.floor);
+                }
+            }
+
+
+            for (int y = 0; y < 5; y++)
+            {
+                mapIndex[2, y, 14].settype(Tile_Type.floor);
+            }
+
+        }
+
+
+
+    private static Vector3 calcDirection(int x, int y, int z, int i , int j, int k)
+    {
+        Vector3Int baseP = coordToWorld(mapIndex[x, y, z], 1, 2);
+        Vector3Int TargetP = coordToWorld(mapIndex[i, j, k], 1, 2);
+
+        Vector3 direction = TargetP - baseP;
+        direction.Normalize();
+
+        Debug.Log(direction);
+        return direction;
 
     }
+
+
+
+    public static List<Cover> CheckCover(int x, int y, int z)
+    {
+
+        List<Cover> covers = new List<Cover>();
+
+        foreach (Coords coords in mapIndex)
+        {
+            if (coords.type == Tile_Type.Wall)
+                Debug.Log(coords.x + " : " + coords.y + " : " + coords.z);
+        }
+
+
+        for (int i = x - 1; i <= x + 1; i++)
+        {
+            for (int j = y + 1; j > y; j--)
+            {
+                for (int k = z - 1; k <= z + 1; k++)
+                {
+                    
+                    if (mapIndex[x, y, z].getTypeof() == Tile_Type.Wall)
+                    {
+                        Vector3 direction = calcDirection(x, y, z, i, j, k);
+                        if (covers == null)
+                            covers.Add(new Cover(y, j, direction));
+
+                        else
+                        {
+
+                            foreach (Cover cover in covers)
+                            {
+
+                                if (cover.Direction != direction)
+                                    covers.Add(new Cover(y, j, direction));
+                            }
+                        }
+                    }
+                    
+
+
+                }
+            }
+        }
+
+        return covers;
+    }
+
+
+
+
+    
 }

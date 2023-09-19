@@ -34,7 +34,6 @@ public class Wall : MonoBehaviour
         else
             World_Pathfinding.setNotwalkble(World_Pathfinding.worldToCoord(transform.position));
 
-        //gameObject.SetActive(false);
 
     }
 

@@ -14,7 +14,6 @@ public  class VisualPathfinding : MonoBehaviour
 
     private void Start()
     {
-
         if (lineOne == null )
         {
             lineOne = new LineRenderer();
@@ -47,13 +46,13 @@ public  class VisualPathfinding : MonoBehaviour
 
     public void showMovement(Unit _unit)
     {
-
+        
         notShowMovement();
-        RaycastHit2D hit = World_Pathfinding.getWorldMouse();
+        RaycastHit2D hit = Helper_Functions.getWorldMouse();
 
         
 
-        var endCoord = World_Pathfinding.worldToCoord(hit.point,_unit.width);
+        var endCoord = World_Pathfinding.worldToCoord(hit.point,_unit.width,_unit.depth);
          // assuming the current object's position is the starting point
 
         // Call the findPath function to get the path
@@ -64,9 +63,6 @@ public  class VisualPathfinding : MonoBehaviour
             // Convert the Coords returned by the findPath function to Vector3 path
 
             // Use the path to visually display the path on your grid
-
-            
-
 
             int movePoints = _unit.movementPoints;
 
@@ -117,8 +113,6 @@ public  class VisualPathfinding : MonoBehaviour
 
     public void highlightTiles(int x, int y)
     {
-
-
 
     }
 }

@@ -5,7 +5,9 @@ using UnityEngine;
 public class Tile_Object :MonoBehaviour
 {
 
-    public int x, y ,z, width, depth;
+    public int x, y ,z, width = 1 , depth = 1;
+
+    
 
     public virtual void Setup(int x, int y, int z,int width, int depth)
     {

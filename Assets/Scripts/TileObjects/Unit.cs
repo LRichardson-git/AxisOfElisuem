@@ -2,27 +2,47 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
+
 
 public class Unit : Tile_Object
 {
     [SerializeField]
-    bool selected = false;
+
+    //only server needs to know
     public int movementPoints = 2;
-    public bool flying = false;
-
-    Unit_Movement _unit_Movement;
-
-    
     public int height = 1;
+    public bool flying = false;
+    public const int maxHP = 5;
+    public int Vision = 20;
+    public int range = 18;
+
+    //Networked so client can know
+    public int HP = 5;
+    List<Unit> InVision = new List<Unit>();
+    public GameObject targetPoint;
+    [SerializeField]
+    public List<Cover> covers;
+
+    //client
+    protected bool selected = false;
+    private UnitInformationUpdater Info;
     
+    public Unit(int x, int y, int z, int width, int depth)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.width = width;
+        this.depth = depth;
+    }
 
     private void Start()
     {
-        _unit_Movement = GetComponent<Unit_Movement>();
-        
         Setup(x, y,z,width,depth);
+        Info = GetComponent<UnitInformationUpdater>();
+        covers = new List<Cover>();
     }
-
 
     internal void Deselect()
     {
@@ -34,13 +54,16 @@ public class Unit : Tile_Object
         selected = true;
     }
 
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(2))
-            Debug.Log(World_Pathfinding.calculateDistanceCost(new Coords(x, y, z), new Coords (5,2,5)));
-    }
+    public bool getSelected() { return selected; }
+    public void addToList(Unit unit) { InVision.Add(unit); }
+    
+    public void setList(List<Unit> units) { InVision = units; }
 
+    public List<Unit> getList() { return InVision; }
 
+    public void CheckCover() { covers = Shooting.Instance.CalulateCover(this); }
+
+    public void DeleteCover() { covers.Clear(); }
 
 
 

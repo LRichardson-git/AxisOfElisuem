@@ -1,28 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Unit_Movement : MonoBehaviour
+using Mirror;
+public class Unit_Movement : NetworkBehaviour
 {
     private Unit _unit;
     public float speed = 20f;
-    private float posOffset = 0f;
-
-
+    private bool _isMoving = false;
     private void Awake()
     {
         _unit = GetComponent<Unit>();
-        //lineRenderer = InputManager.Instance.GetComponent<LineRenderer>();
-
     }
 
 
+    [Command]
     public void moveToTarget(int endX, int endY, int endZ)
     {
 
-        //call this end of turn if set to auto go somewhere
-        // Find the path using World_Pathfinding's findPath method
+        if (_isMoving == true || _unit.getSelected() == false)
+            return;
 
+        
+        //call this end of turn if set to auto go somewhere
         List<Vector3> path = World_Pathfinding.findPath(endX, endY,endZ, _unit.x, _unit.y,_unit.z, _unit.width, _unit.height, _unit.depth,_unit.flying);
         
         if (path != null)
@@ -42,20 +41,42 @@ public class Unit_Movement : MonoBehaviour
 
     private IEnumerator moveAlongPath(List<Vector3> path)
     {
+        _isMoving = true;
         for (int i = 0; i < path.Count; i++)
         {
             Vector3 targetPosition = path[i];
+            //targetPosition.y = 5 * _unit.depth;
             while (Vector3.Distance(transform.position, targetPosition) >= speed * Time.deltaTime)
             {
                 transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * speed);
                 yield return null;
             }
+            transform.position = targetPosition;
         }
-        Vector3Int temportayChangethisplease = World_Pathfinding.worldToCoord(transform.position, _unit.width);
+        Vector3Int temportayChangethisplease = World_Pathfinding.worldToCoord(transform.position, _unit.width,_unit.depth);
         _unit.x = temportayChangethisplease.x;
         _unit.y = temportayChangethisplease.y;
         _unit.z = temportayChangethisplease.z;
+
+        
+
+        
+
+
+        _unit.DeleteCover();
+        _unit.CheckCover();
+        _isMoving=false;
+
+        //debugging
+
+        if (_unit.covers != null)
+        {
+            foreach (Cover cover in _unit.covers)
+            {
+                Debug.Log("Cover dir: " + cover.Direction);
+                Debug.Log("Height: " + cover.height);
+            }
+        }
     }
-
-
+    
 }
