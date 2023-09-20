@@ -16,9 +16,11 @@ public class Unit : Tile_Object
     public const int maxHP = 5;
     public int Vision = 20;
     public int range = 18;
+    public int aim = 50;
 
     //Networked so client can know
     public int HP = 5;
+    //maybe dir makes more sense with hitchanges with it?
     List<Unit> InVision = new List<Unit>();
     public GameObject targetPoint;
     [SerializeField]

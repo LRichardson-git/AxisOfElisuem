@@ -30,12 +30,12 @@ public class testingmanger : NetworkBehaviour
         
     }
 
-    [Command]
+    [Server]
     void CmdServerSpawnSolider()
     {
         GameObject GameSolider = Instantiate(Solider);
         NetworkServer.Spawn(GameSolider, connectionToClient);
-        UnitManager.Instance.AddUnit(GameSolider.GetComponent<Unit>());
+        UnitManager.Instance.AddUnit(GameSolider.GetComponent<Solider>());;
     }
 
 }

@@ -59,7 +59,7 @@ public class ObjectSelector : MonoBehaviour
         {
             for (int i = 1; i < UnitManager.Instance.GetUnitList().Count; i++)
             {
-                Shooting.Instance.CalulateHitPercentage(selectedUnit, UnitManager.Instance.GetUnitList()[i]);
+                Shooting.Instance.CalulateHitPercentage(selectedUnit,selectedUnit.targetPoint, UnitManager.Instance.GetUnitList()[i]);
             }
         }
 
@@ -107,7 +107,7 @@ public class ObjectSelector : MonoBehaviour
                 selectedUnit = unit;
                 selectedUnit.Select();
                 shooting.CheckSight(selectedUnit);
-               // Debug.Log("Can see :" +  selectedUnit.getList().Count);
+                Debug.Log("Can see :" +  selectedUnit.getList().Count);
                 Debug.Log("covers : " + selectedUnit.covers.Count);
                // Debug.Log("pos : " + selectedUnit.transform.position);
                 // for (int i = 0; i < selectedUnit.getList().Count; i++)

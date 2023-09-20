@@ -31,52 +31,142 @@ public class Shooting : NetworkBehaviour
         // Iterate through all units in the scene
         foreach (Unit targetUnit in UnitManager.Instance.GetUnitList())
         {
-            // Check if the unit can see the target unit
-            Vector3 direction = targetUnit.targetPoint.transform.position - unit.targetPoint.transform.position;
+            if (targetUnit == unit)
+                continue;
 
-            if (Physics.Raycast(unit.targetPoint.transform.position, direction, out RaycastHit hitInfo, unit.Vision * 10))
+            //add condition for team
+
+
+            // Check if the unit can see the target unit
+            if (CanSeeUnit(unit, targetUnit))
             {
-                if (hitInfo.collider.gameObject.CompareTag("Unit"))
-                {
-                    result.Add(targetUnit);
-                }
+                result.Add(targetUnit);
             }
-            unit.setList(result);
-            //NetworkIdentity CalledIdentity = unit.GetComponent<NetworkIdentity>();
-            //TargetVisibleUnits(CalledIdentity.connectionToClient, unit, result);
-            
         }
-        
-        //CalulateHitPercentage(unit);
+        unit.setList(result);
     }
 
-    
-    public float CalulateHitPercentage(Unit Unit, Unit Target )
+    private bool CanSeeUnit(Unit unit, Unit target)
     {
-        //Vector3 targetPos = Target.transform.position;
+        Vector3 direction = target.targetPoint.transform.position - unit.targetPoint.transform.position;
+        float distance = Vector3.Distance(unit.transform.position, target.transform.position);
 
-        //transform.forward = west
+        if (distance > unit.Vision)
+        {
+            return false;
+        }
 
-        //south, west , north , east
+        //normal enemy in open
+        RaycastHit hitInfo;
+        bool hit = Physics.Raycast(unit.targetPoint.transform.position, direction, out hitInfo, distance);
+        if (hit && hitInfo.collider.gameObject.CompareTag("Unit"))
+        {
+            return true;
+        }
+
+        //unit in cover, covers all possibilities
+        if (unit.covers.Count > 0)
+        {
+            foreach (GameObject unitPoint in unit.GetComponent<Solider>().targetPoints)
+            {
+                RaycastHit hitInfo2;
+                if (Physics.Raycast(unitPoint.transform.position, direction, out hitInfo2, distance))
+                {
+                    if (hitInfo2.collider.gameObject.CompareTag("Unit"))
+                    {
+                        return true;
+                    }
+                    else if (target.covers.Count > 0)
+                    {
+                        foreach (GameObject targetPoint in target.GetComponent<Solider>().targetPoints)
+                        {
+                            if (!Physics.Raycast(targetPoint.transform.position, direction, out RaycastHit hitInfoC, distance))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //unit not in cover, enemy in cover
+        else 
+             {
+              foreach (GameObject targetPoint in target.GetComponent<Solider>().targetPoints)
+                    {
+                   if (!Physics.Raycast(targetPoint.transform.position, direction, out RaycastHit hitInfoC, distance))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            
         
-        Unit.transform.LookAt(Target.transform);
+        return false;
+    }
+
+
+
+
+
+
+    public float CalulateHitPercentage(Unit unit,GameObject Hitpoint ,Unit Target )
+    {
+        float Modifers = 0;
+
+        int result;
+
+        if (Target.covers.Count > 0)
+            Modifers += EnemyCover(Hitpoint, Target);
+
+        //add negative for gun range etc.. here
+
+        result = (int)unit.aim + (int)Modifers;
+
+        Debug.Log("Chance to hit: " + result);
+        return result;
+    }
+
+    private float EnemyCover(GameObject HitPoint, Unit Target)
+    {
+
+        HitPoint.transform.LookAt(Target.transform);
+        coverHeight coverType = coverHeight.none;
+        //1 == no cover
+        float closestCover = 1;
 
         foreach (Cover cover in Target.covers)
         {
+            float result = Vector3.Dot(cover.Direction, HitPoint.transform.forward);
             //make sure unit is looking at target before
-            if (Vector3.Dot(cover.Direction, Unit.transform.forward) > -0.1)
-                Debug.Log("Not Covered : " + Vector3.Dot(cover.Direction, Unit.transform.forward));
+            if (result > -0.1)
+            {
+                Debug.Log("Not Covered : " + result);
+                coverType = coverHeight.none;
+            }
             else
-                Debug.Log("covered: " + cover.height + " : "+ Vector3.Dot(cover.Direction, Unit.transform.forward));
-
+            {
+                Debug.Log("covered: " + cover.height + " : " + Vector3.Dot(cover.Direction, HitPoint.transform.forward));
+                if (result <= closestCover)
+                    coverType = cover.height;
+            }
         }
 
-       
+        if (coverType == coverHeight.Tall)
+            return -40;
 
+        else if (coverType == coverHeight.Short)
+            return -20;
 
+        else if (coverType == coverHeight.none)
+            return 30;
 
-        return 1;
+        return 0;
     }
+
+
+
 
     public List<Cover> CalulateCover(Unit unit)
     {
@@ -84,7 +174,7 @@ public class Shooting : NetworkBehaviour
         //cover only exist to normal units
         //depth 2 only for now
 
-        /*
+        
         coverList = new List<Cover>(); // Declare and initialize the coverList
         Visited = new List<Vector3>();
 
@@ -103,8 +193,8 @@ public class Shooting : NetworkBehaviour
                     CheckCoverSpot(dir, unit, coverHeight.Short);
             }
         }
-        */
-        return World_Pathfinding.CheckCover(unit.x,unit.y,unit.z);
+
+        return coverList;
     }
 
 

@@ -15,5 +15,6 @@ public enum Direction
 public enum coverHeight
 {
     Tall,
-    Short
+    Short,
+    none
 }
