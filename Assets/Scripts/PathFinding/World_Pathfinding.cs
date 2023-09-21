@@ -336,7 +336,7 @@ public static class World_Pathfinding
     }
 
 
-
+    /*
     public static List<Vector3> findAllPaths(int xSt, int ySt, int movement, int unitWidth, int unitHeight, int unitDepth)
     {
         List<Vector3> allPaths = new List<Vector3>();
@@ -346,7 +346,7 @@ public static class World_Pathfinding
         if (unitWidth < 2)
             temp = 1;
 
-        /*
+        
         Debug.Log(xSt + "." + ySt + "." + movement);
         // calculate paths to all walkable end points
         for (int i = xSt - (movement - temp); i < xSt + movement; i++)
@@ -372,9 +372,11 @@ public static class World_Pathfinding
 
         return allPaths;
     }
-*/
     }
-        private static void TestingSetup()
+
+*/
+
+private static void TestingSetup()
         {
             for (int x = 0; x < 7; x++)
             {

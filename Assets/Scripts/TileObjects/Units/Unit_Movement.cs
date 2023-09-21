@@ -65,6 +65,8 @@ public class Unit_Movement : NetworkBehaviour
 
         _unit.DeleteCover();
         _unit.CheckCover();
+        Shooting.Instance.CheckSight(_unit);
+        Shooting.Instance.SpawnButtons(_unit.getList());
         _isMoving=false;
 
         //debugging

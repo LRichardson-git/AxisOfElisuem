@@ -35,9 +35,17 @@ public class testingmanger : NetworkBehaviour
     {
         GameObject GameSolider = Instantiate(Solider);
         NetworkServer.Spawn(GameSolider, connectionToClient);
-        UnitManager.Instance.AddUnit(GameSolider.GetComponent<Solider>());;
+        CnrAddUnitToManager(GameSolider);
+        
     }
 
+    
+    [ClientRpc]
+    void CnrAddUnitToManager(GameObject unit)
+    {
+        UnitManager.Instance.AddUnit(unit.GetComponent<Solider>()); 
+    }
+    
 }
 
 

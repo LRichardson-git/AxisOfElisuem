@@ -106,9 +106,9 @@ public class ObjectSelector : MonoBehaviour
                 // Select the new unit
                 selectedUnit = unit;
                 selectedUnit.Select();
-                shooting.CheckSight(selectedUnit);
-                Debug.Log("Can see :" +  selectedUnit.getList().Count);
-                Debug.Log("covers : " + selectedUnit.covers.Count);
+                //shooting.CheckSight(selectedUnit);
+                //Debug.Log("Can see :" +  selectedUnit.getList().Count);
+               // Debug.Log("covers : " + selectedUnit.covers.Count);
                // Debug.Log("pos : " + selectedUnit.transform.position);
                 // for (int i = 0; i < selectedUnit.getList().Count; i++)
                 // {

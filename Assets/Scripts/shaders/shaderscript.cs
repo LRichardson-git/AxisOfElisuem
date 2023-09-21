@@ -11,7 +11,7 @@ public class shaderscript : MonoBehaviour
     public TileBase newTile;
     public TileBase newerTiler;
 
-    int movement = 0;
+    //int movement = 0;
     public static shaderscript Instance { get; private set; }
 
     private void Awake()

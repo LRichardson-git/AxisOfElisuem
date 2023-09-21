@@ -4,7 +4,8 @@ using UnityEngine;
 using Mirror;
 public class Shooting : NetworkBehaviour
 {
-    private ObjectSelector CurrentObj;
+    public GameObject buttonPrefab;
+    private List<GameObject> spawnedButtons = new List<GameObject>();
     public static Shooting Instance;
 
     Vector3 east = Vector3.back;// east
@@ -18,7 +19,7 @@ public class Shooting : NetworkBehaviour
     private void Awake()
     {
         Instance = this;
-        CurrentObj = GetComponent<ObjectSelector>();
+
         directions = new List<Vector3> { east, south, north, west };
         coverList = new List<Cover>();
         Visited = new List<Vector3>();
@@ -26,8 +27,7 @@ public class Shooting : NetworkBehaviour
 
     public void CheckSight(Unit unit)
     {
-        List<Unit> result = new List<Unit>();
-
+        unit.DeleteList();
         // Iterate through all units in the scene
         foreach (Unit targetUnit in UnitManager.Instance.GetUnitList())
         {
@@ -35,15 +35,10 @@ public class Shooting : NetworkBehaviour
                 continue;
 
             //add condition for team
-
-
             // Check if the unit can see the target unit
-            if (CanSeeUnit(unit, targetUnit))
-            {
-                result.Add(targetUnit);
-            }
+            CanSeeUnit(unit, targetUnit);
+            
         }
-        unit.setList(result);
     }
 
     private bool CanSeeUnit(Unit unit, Unit target)
@@ -61,6 +56,9 @@ public class Shooting : NetworkBehaviour
         bool hit = Physics.Raycast(unit.targetPoint.transform.position, direction, out hitInfo, distance);
         if (hit && hitInfo.collider.gameObject.CompareTag("Unit"))
         {
+            TargetData Data = new TargetData(target,CalulateHitPercentage(unit,unit.targetPoint,target),unit.crit,target.targetPoint);
+            unit.addToList(Data);
+            //Debug.Log("straight line");
             return true;
         }
 
@@ -74,6 +72,9 @@ public class Shooting : NetworkBehaviour
                 {
                     if (hitInfo2.collider.gameObject.CompareTag("Unit"))
                     {
+                        TargetData Data1 = new TargetData(target, CalulateHitPercentage(unit, unit.targetPoint, target), unit.crit, target.targetPoint);
+                        unit.addToList(Data1);
+                        //Debug.Log("in cover1");
                         return true;
                     }
                     else if (target.covers.Count > 0)
@@ -82,6 +83,9 @@ public class Shooting : NetworkBehaviour
                         {
                             if (!Physics.Raycast(targetPoint.transform.position, direction, out RaycastHit hitInfoC, distance))
                             {
+                                TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unitPoint, target), unit.crit, targetPoint);
+                                unit.addToList(Data);
+                                //Debug.Log("in cover2");
                                 return true;
                             }
                         }
@@ -91,13 +95,16 @@ public class Shooting : NetworkBehaviour
         }
 
         //unit not in cover, enemy in cover
-        else 
+        else if (target.covers.Count > 0)
              {
               foreach (GameObject targetPoint in target.GetComponent<Solider>().targetPoints)
                     {
                    if (!Physics.Raycast(targetPoint.transform.position, direction, out RaycastHit hitInfoC, distance))
                         {
-                            return true;
+                        TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unit.targetPoint, target), unit.crit, targetPoint);
+                        unit.addToList(Data);
+                    //Debug.Log("p[en enemy cover");
+                    return true;
                         }
                     }
                 }
@@ -111,18 +118,26 @@ public class Shooting : NetworkBehaviour
 
 
 
-    public float CalulateHitPercentage(Unit unit,GameObject Hitpoint ,Unit Target )
+    public int CalulateHitPercentage(Unit unit,GameObject Hitpoint ,Unit Target )
     {
         float Modifers = 0;
 
         int result;
 
         if (Target.covers.Count > 0)
+        {
             Modifers += EnemyCover(Hitpoint, Target);
 
-        //add negative for gun range etc.. here
+            if (Modifers > 0) 
+                { unit.crit = 30; }
+            else
+                unit.crit = 0;
+        }
 
-        result = (int)unit.aim + (int)Modifers;
+
+            //add negative for gun range etc.. here
+
+            result = (int)unit.aim + (int)Modifers;
 
         Debug.Log("Chance to hit: " + result);
         return result;
@@ -131,13 +146,14 @@ public class Shooting : NetworkBehaviour
     private float EnemyCover(GameObject HitPoint, Unit Target)
     {
 
-        HitPoint.transform.LookAt(Target.transform);
+        HitPoint.transform.LookAt(Target.transform.position);
         coverHeight coverType = coverHeight.none;
         //1 == no cover
         float closestCover = 1;
-
+        Debug.Log(HitPoint.name);
         foreach (Cover cover in Target.covers)
         {
+            Debug.Log(cover.Direction);
             float result = Vector3.Dot(cover.Direction, HitPoint.transform.forward);
             //make sure unit is looking at target before
             if (result > -0.1)
@@ -149,7 +165,10 @@ public class Shooting : NetworkBehaviour
             {
                 Debug.Log("covered: " + cover.height + " : " + Vector3.Dot(cover.Direction, HitPoint.transform.forward));
                 if (result <= closestCover)
+                {
+                    closestCover = result;
                     coverType = cover.height;
+                }
             }
         }
 
@@ -159,7 +178,7 @@ public class Shooting : NetworkBehaviour
         else if (coverType == coverHeight.Short)
             return -20;
 
-        else if (coverType == coverHeight.none)
+        else if (coverType == coverHeight.none && Target.covers.Count > 0)
             return 30;
 
         return 0;
@@ -221,19 +240,40 @@ public class Shooting : NetworkBehaviour
        
     }
 
-
-
-
-
-
-
-
-
-
-private void TargetVisibleUnits(NetworkConnectionToClient target, Unit unit, List<Unit> units)
+    public void SpawnButtons(List<TargetData> targets)
     {
-        unit.setList(units);
+
+        // Remove any previously spawned buttons
+        foreach (GameObject button in spawnedButtons)
+        {
+            Destroy(button);
+        }
+        spawnedButtons.Clear();
+
+        if (targets.Count <= 0) return;
+
+        // Calculate the position of the bottom right corner of the screen
+        Vector2 spawnPosition = new Vector2(Screen.width, 50);
+
+        // Get the width of the button prefab
+        float buttonWidth = buttonPrefab.GetComponent<RectTransform>().rect.width;
+
+        // Calculate the spacing between buttons
+        float buttonSpacing = buttonWidth * 0.1f; // Adjust this value as needed
+
+        // Spawn new buttons based on the number of objects
+        for (int i = 0; i < targets.Count; i++)
+        {
+            // Adjust the spawn position based on the button width and spacing
+            spawnPosition -= new Vector2(buttonWidth + buttonSpacing, 0);
+
+            GameObject button = Instantiate(buttonPrefab, spawnPosition, Quaternion.identity, transform);
+            spawnedButtons.Add(button);
+            button.GetComponent<ButtonScript>().init(targets[i]);
+        }
     }
+
+
 
 
 
