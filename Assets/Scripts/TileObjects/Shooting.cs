@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-public class Shooting : NetworkBehaviour
+using System;
+
+public class Shooting : MonoBehaviour
 {
     public GameObject buttonPrefab;
     private List<GameObject> spawnedButtons = new List<GameObject>();
@@ -13,9 +15,14 @@ public class Shooting : NetworkBehaviour
     Vector3 north = Vector3.right; //north
     Vector3 west = Vector3.forward; //west
 
+    private static Vector3 targetP = new Vector3();
+
     List<Vector3> directions;
     List<Cover> coverList;
     List<Vector3> Visited;
+    
+  
+    
     private void Awake()
     {
         Instance = this;
@@ -23,6 +30,7 @@ public class Shooting : NetworkBehaviour
         directions = new List<Vector3> { east, south, north, west };
         coverList = new List<Cover>();
         Visited = new List<Vector3>();
+        
     }
 
     public void CheckSight(Unit unit)
@@ -45,7 +53,7 @@ public class Shooting : NetworkBehaviour
     {
         Vector3 direction = target.targetPoint.transform.position - unit.targetPoint.transform.position;
         float distance = Vector3.Distance(unit.transform.position, target.transform.position);
-
+        targetP = target.transform.position;
         if (distance > unit.Vision)
         {
             return false;
@@ -62,17 +70,50 @@ public class Shooting : NetworkBehaviour
             return true;
         }
 
+        bool shouldbreak = false;
+
         //unit in cover, covers all possibilities
         if (unit.covers.Count > 0)
         {
-            foreach (GameObject unitPoint in unit.GetComponent<Solider>().targetPoints)
+            List<GameObject> byClosest = new List<GameObject>();
+
+
+            foreach (GameObject Upoint in unit.GetComponent<Solider>().targetPoints)
             {
+                byClosest.Add(Upoint);
+            }
+
+            byClosest.Sort(compareByDistance);
+
+
+            foreach (GameObject unitPoint in byClosest) { 
+                shouldbreak = false;
+                Vector3 coverDir = unitPoint.transform.position - unit.targetPoint.transform.position;
+                foreach (Cover cover in unit.covers)
+                {
+                    if (coverDir.normalized == cover.Direction)
+                    {
+                        shouldbreak = true;
+                        break;
+                    }
+                }
+
+                if (shouldbreak)
+                    continue;
+                
+
                 RaycastHit hitInfo2;
+                direction = target.targetPoint.transform.position - unitPoint.transform.position;
                 if (Physics.Raycast(unitPoint.transform.position, direction, out hitInfo2, distance))
                 {
                     if (hitInfo2.collider.gameObject.CompareTag("Unit"))
                     {
-                        TargetData Data1 = new TargetData(target, CalulateHitPercentage(unit, unit.targetPoint, target), unit.crit, target.targetPoint);
+                        
+
+
+                        Debug.Log(unitPoint.transform.position);
+                        Debug.DrawLine(unitPoint.transform.position, hitInfo2.transform.position, Color.green, 10f);
+                        TargetData Data1 = new TargetData(target, CalulateHitPercentage(unit, unitPoint, target), unit.crit, target.targetPoint);
                         unit.addToList(Data1);
                         //Debug.Log("in cover1");
                         return true;
@@ -81,8 +122,11 @@ public class Shooting : NetworkBehaviour
                     {
                         foreach (GameObject targetPoint in target.GetComponent<Solider>().targetPoints)
                         {
+                            direction = targetPoint.transform.position - unitPoint.transform.position;
                             if (!Physics.Raycast(targetPoint.transform.position, direction, out RaycastHit hitInfoC, distance))
                             {
+                                Debug.Log(unitPoint.transform.position);
+                                
                                 TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unitPoint, target), unit.crit, targetPoint);
                                 unit.addToList(Data);
                                 //Debug.Log("in cover2");
@@ -99,14 +143,28 @@ public class Shooting : NetworkBehaviour
              {
               foreach (GameObject targetPoint in target.GetComponent<Solider>().targetPoints)
                     {
-                   if (!Physics.Raycast(targetPoint.transform.position, direction, out RaycastHit hitInfoC, distance))
+                direction = targetPoint.transform.position -unit.targetPoint.transform.position; 
+                   if (Physics.Raycast(unit.targetPoint.transform.position, direction, out RaycastHit hitInfoC, distance))
                         {
-                        TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unit.targetPoint, target), unit.crit, targetPoint);
-                        unit.addToList(Data);
-                    //Debug.Log("p[en enemy cover");
-                    return true;
+
+                        if (hitInfoC.collider.gameObject.CompareTag("Unit"))
+                        {
+                            Debug.DrawLine(unit.targetPoint.transform.position, targetPoint.transform.position, Color.green, 10f);
+                            TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unit.targetPoint, target), unit.crit, targetPoint);
+                            unit.addToList(Data);
+                            return true;
                         }
-                    }
+
+                       
+                        }
+                else 
+                {
+                    Debug.DrawLine(unit.targetPoint.transform.position, targetPoint.transform.position, Color.green, 10f);
+                    TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unit.targetPoint, target), unit.crit, targetPoint);
+                    unit.addToList(Data);
+                    return true;
+                }
+            }
                 }
             
         
@@ -135,9 +193,12 @@ public class Shooting : NetworkBehaviour
         }
 
 
+        if (unit.y > Target.y + 1)
+            Modifers += 25;
+
             //add negative for gun range etc.. here
 
-            result = (int)unit.aim + (int)Modifers;
+        result = (int)unit.aim + (int)Modifers;
 
         Debug.Log("Chance to hit: " + result);
         return result;
@@ -150,6 +211,11 @@ public class Shooting : NetworkBehaviour
         coverHeight coverType = coverHeight.none;
         //1 == no cover
         float closestCover = 1;
+
+        if (Vector3.Distance(HitPoint.transform.position, Target.transform.position) <= 16)
+            return 30;
+
+
         Debug.Log(HitPoint.name);
         foreach (Cover cover in Target.covers)
         {
@@ -239,6 +305,24 @@ public class Shooting : NetworkBehaviour
         }
        
     }
+
+
+    
+
+   
+        public static float CalculateDistance(GameObject point1, Vector3 point2)
+        {
+            return Vector3.Distance(point1.transform.position, point2);
+        }
+
+        Comparison<GameObject> compareByDistance = (point1, point2) =>
+        {
+            float distance1 = Vector3.Distance(point1.transform.position, targetP);
+            float distance2 = Vector3.Distance(point2.transform.position, targetP);
+            return distance1.CompareTo(distance2);
+        };
+
+    
 
     public void SpawnButtons(List<TargetData> targets)
     {
