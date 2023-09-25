@@ -11,4 +11,6 @@ public class ButtonScript : MonoBehaviour
         this.data = data;
         hitChance.text = "" + data.getHit() + "%";
     }
+
+
 }

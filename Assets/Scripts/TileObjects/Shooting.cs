@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using System;
+using Random = UnityEngine.Random;
 
-public class Shooting : MonoBehaviour
+public class Shooting : NetworkBehaviour
 {
     public GameObject buttonPrefab;
     private List<GameObject> spawnedButtons = new List<GameObject>();
@@ -54,10 +55,12 @@ public class Shooting : MonoBehaviour
         Vector3 direction = target.targetPoint.transform.position - unit.targetPoint.transform.position;
         float distance = Vector3.Distance(unit.transform.position, target.transform.position);
         targetP = target.transform.position;
-        if (distance > unit.Vision)
-        {
-            return false;
-        }
+
+        //gonna remove this for now and change it it something else like visible units
+       // if (distance > unit.Vision)
+       // {
+          //  return false;
+     //   }
 
         //normal enemy in open
         RaycastHit hitInfo;
@@ -196,7 +199,20 @@ public class Shooting : MonoBehaviour
         if (unit.y > Target.y + 1)
             Modifers += 25;
 
-            //add negative for gun range etc.. here
+        //add negative for gun range etc.. here
+
+        float distance = Vector3.Distance(unit.transform.position, Target.transform.position);
+        //float distance = (unit.transform.position - Target.transform.position).sqrMagnitude;
+        distance = distance / 10;
+        if (distance >  unit.gun.maxRange)
+        {
+            Modifers -= (distance - unit.gun.maxRange) * 2;
+        }
+        else if (distance < unit.gun.minRange)
+        {
+            Modifers -= unit.gun.minRange - distance;
+        }
+
 
         result = (int)unit.aim + (int)Modifers;
 
@@ -357,9 +373,29 @@ public class Shooting : MonoBehaviour
         }
     }
 
+  
+    [Command(requiresAuthority = false)]
+    public void CmdHitUnit(int unitID, int HitChance, int Dmg, int Pen)
+    {
+        foreach (Unit unit in UnitManager.Instance.GetUnitList())
+        {
+            if (unit.getID() == unitID)
+            {
+                if (Random.Range(0, 100) <= HitChance)
+                {
+                    unit.ApplyDmg(Dmg, Pen);
+                    return;
+                }
 
+                else
+                    return;
+            }
+        }
 
+        return;
+    }
 
+    public List<GameObject> getButtons() { if (spawnedButtons != null) return spawnedButtons; else return null; }
 
 
 }

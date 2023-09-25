@@ -57,10 +57,9 @@ public class ObjectSelector : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.T))
         {
-            for (int i = 1; i < UnitManager.Instance.GetUnitList().Count; i++)
-            {
-                Shooting.Instance.CalulateHitPercentage(selectedUnit,selectedUnit.targetPoint, UnitManager.Instance.GetUnitList()[i]);
-            }
+
+            //Shooting.Instance.CmdHitUnit(1,50,2,2);
+            selectedUnit.HP -= 1;
         }
 
     }
@@ -92,7 +91,8 @@ public class ObjectSelector : MonoBehaviour
         {
 
             Unit unit = hit.collider.GetComponent<Unit>();
-            if (unit != null && hit.collider.GetComponent<UnitInformationUpdater>().isOwned)
+            
+            if (unit != null && unit.isOwned)
             {
       
                 if ( selectedUnit != null)

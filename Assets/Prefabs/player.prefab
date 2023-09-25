@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4849735376521271773}
   - component: {fileID: 6595671418215187979}
   - component: {fileID: 1992100778033524952}
-  - component: {fileID: 4833864739198629802}
+  - component: {fileID: 1673403905150421420}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -137,7 +137,7 @@ MonoBehaviour:
   positionPrecision: 0.01
   scalePrecision: 0.01
   timelineOffset: 0
---- !u!114 &4833864739198629802
+--- !u!114 &1673403905150421420
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -152,5 +152,5 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  blocker: {fileID: 0}
+  blocker: {fileID: 1230341451214287711, guid: 5666eb79483c64c4ebe4617aa36bf304, type: 3}
   Solider: {fileID: 3895528510378818019, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}

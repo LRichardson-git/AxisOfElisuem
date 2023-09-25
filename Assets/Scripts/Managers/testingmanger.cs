@@ -1,5 +1,6 @@
 using UnityEngine;
 using Mirror;
+
 public class testingmanger : NetworkBehaviour
 {
     public GameObject blocker;
@@ -8,19 +9,25 @@ public class testingmanger : NetworkBehaviour
 
     private void Start()
     {
-        netIdentity.AssignClientAuthority(connectionToClient);
+        //netIdentity.AssignClientAuthority(connectionToClient);
+        
     }
+
+   
 
     void Update()
     {
-        if (!isOwned)
-            return;
+       // if (!isOwned)
+          //  return;
+
+
 
         if (Input.GetKeyUp(KeyCode.H))
         {
-            
-                //Debug.Log("spawning");
-                CmdServerSpawnSolider();
+
+            //Debug.Log("spawning");
+           
+            CmdServerSpawnSolider();
 
             
             
@@ -30,16 +37,21 @@ public class testingmanger : NetworkBehaviour
         
     }
 
-    [Server]
+    
+
+    [Command(requiresAuthority = false)]
     void CmdServerSpawnSolider()
     {
-        GameObject GameSolider = Instantiate(Solider);
+
+        GameObject GameSolider = Instantiate(Solider, Vector3.zero, Quaternion.identity);
+        
         NetworkServer.Spawn(GameSolider, connectionToClient);
-        CnrAddUnitToManager(GameSolider);
+
+        //CnrAddUnitToManager(unit);
         
     }
-
     
+
     [ClientRpc]
     void CnrAddUnitToManager(GameObject unit)
     {
@@ -47,27 +59,3 @@ public class testingmanger : NetworkBehaviour
     }
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-            for (int x = 0; x < 30; x++)
-            {
-                for (int y = 0; y < 20; y++)
-                {
-                    for (int z = 0; z < 20; z++)
-                    {
-                        if (World_Pathfinding.getIndex()[x, y, z].type == Tile_Type.floor)
-                            Instantiate(blocker,World_Pathfinding.coordToWorld(x,y,z,1,1),transform.rotation);
-                    }
-                }
-            }*/

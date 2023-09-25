@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
@@ -7,7 +5,6 @@ using Mirror;
 
 public class Unit : Tile_Object
 {
-    [SerializeField]
 
     //only server needs to know
     public int movementPoints = 2;
@@ -19,39 +16,50 @@ public class Unit : Tile_Object
     public int aim = 50;
     public int crit = 0;
     public int aimModifer = 0;
+    public int amour = 0;
+    private UnitInformationUpdater UnitInfo;
 
+    [SerializeField]
+    private int ID;
 
+    public Gun gun;
 
     //Networked so client can know
+    [SyncVar(hook = nameof(OnHpChanged))]
     public int HP = 5;
+
+    void OnHpChanged(int _Old, int _New)
+    {
+        UnitInfo.OnInfoChanged(HP);
+
+        // -0 delete self
+    }
+
+
+
     //maybe dir makes more sense with hitchanges with it?
     List<TargetData> InVision = new List<TargetData>();
     public GameObject targetPoint;
     [SerializeField]
     public List<Cover> covers;
-    
+
 
     //client
     protected bool selected = false;
     private UnitInformationUpdater Info;
-    
 
 
-    public Unit(int x, int y, int z, int width, int depth)
-    {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.width = width;
-        this.depth = depth;
-    }
+
+   
 
     private void Start()
     {
-        Setup(x, y,z,width,depth);
-        Info = GetComponent<UnitInformationUpdater>();
-        covers = new List<Cover>();
-        InVision = new List<TargetData>();
+        Setup(x, y, z, width, depth);
+          Info = GetComponent<UnitInformationUpdater>();
+         covers = new List<Cover>();
+          InVision = new List<TargetData>();
+          UnitInfo = gameObject.GetComponent<UnitInformationUpdater>();
+          OnHpChanged(HP, HP);
     }
 
     internal void Deselect()
@@ -66,7 +74,7 @@ public class Unit : Tile_Object
 
     public bool getSelected() { return selected; }
     public void addToList(TargetData unit) { InVision.Add(unit); }
-    
+
     public void setList(List<TargetData> units) { InVision = units; }
 
     public void DeleteList() { InVision.Clear(); }
@@ -76,6 +84,16 @@ public class Unit : Tile_Object
     public void CheckCover() { covers = Shooting.Instance.CalulateCover(this); }
 
     public void DeleteCover() { covers.Clear(); }
+
+    public int getID() { return ID; }
+
+    public void ApplyDmg(int Dmg, int Pen)
+    {
+        if (Pen >= amour)
+            HP -= Dmg;
+        else
+            HP -= (Dmg - amour);
+    }
 
 
 

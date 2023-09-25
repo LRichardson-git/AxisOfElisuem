@@ -313,7 +313,6 @@ GameObject:
   - component: {fileID: 3895528510378818043}
   - component: {fileID: 3895528510378818040}
   - component: {fileID: 3895528510378818042}
-  - component: {fileID: -3824888748834285345}
   - component: {fileID: 6057711163131317855}
   m_Layer: 0
   m_Name: Solider
@@ -418,9 +417,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dfebf0c0a718774c910bc9ae42767cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   speed: 50
 --- !u!114 &3895528510378818043
 MonoBehaviour:
@@ -485,24 +481,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f83ba6d945ac04bbc15fb5cf76b427, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   UnitInfoText: {fileID: 3895528508570962189}
   FloatingPoint: {fileID: 3895528509831192527}
   UnitInfo: 
---- !u!114 &-3824888748834285345
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3895528510378818019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 743660bffbf139c45afccf3bcb18496c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &6057711163131317855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -515,6 +496,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf0b1bbc48f3cf342903f68f3de68211, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   x: 2
   y: 0
   z: 2
@@ -528,6 +512,9 @@ MonoBehaviour:
   aim: 50
   crit: 0
   aimModifer: 0
+  amour: 0
+  ID: 0
+  gun: {fileID: 2521997682572396046, guid: 78d36c30a71c8754d86292948fa93755, type: 3}
   HP: 5
   targetPoint: {fileID: 3733059511987968925}
   targetPoints:

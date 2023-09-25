@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Tile_Object :MonoBehaviour
+using Mirror;
+public class Tile_Object :NetworkBehaviour
 {
 
     public int x, y ,z, width = 1 , depth = 1;

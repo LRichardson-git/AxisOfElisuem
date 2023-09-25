@@ -7,7 +7,7 @@ public class Solider : Unit
     [SerializeField]
     public List<GameObject> targetPoints;
 
-
+    /*
     public Solider(int x, int y, int z, int width, int depth) : base(x, y, z, width, depth)
     {
         this.x = x;
@@ -16,6 +16,6 @@ public class Solider : Unit
         this.width = width;
         this.depth = depth;
     }
-
+    */
   
 }

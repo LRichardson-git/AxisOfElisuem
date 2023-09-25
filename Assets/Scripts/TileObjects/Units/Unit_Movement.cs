@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-public class Unit_Movement : NetworkBehaviour
+public class Unit_Movement : MonoBehaviour
 {
     private Unit _unit;
     public float speed = 20f;
@@ -13,7 +13,7 @@ public class Unit_Movement : NetworkBehaviour
     }
 
 
-    [Command]
+    
     public void moveToTarget(int endX, int endY, int endZ)
     {
 
