@@ -1,16 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 public class ButtonScript : MonoBehaviour
 {
-    public TargetData data;
-    public TextMeshProUGUI hitChance;
+    private TargetData data;
+    [SerializeField]
+    private TextMeshProUGUI ChanceToHit;
     public void init(TargetData data)
     {
         this.data = data;
-        hitChance.text = "" + data.getHit() + "%";
+        ChanceToHit.text = data.getHit() + "%";
     }
 
+    public void openShootScreen()
+    {
+        Shooting_View_Controller.Instance.UpdateInfo(data);
+        Shooting_View_Controller.Instance.Activate();
+
+    }
 
 }

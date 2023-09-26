@@ -513,7 +513,6 @@ MonoBehaviour:
   crit: 0
   aimModifer: 0
   amour: 0
-  ID: 0
   gun: {fileID: 2521997682572396046, guid: 78d36c30a71c8754d86292948fa93755, type: 3}
   HP: 5
   targetPoint: {fileID: 3733059511987968925}

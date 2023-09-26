@@ -124,12 +124,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6020908322493263608}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+        m_TargetAssemblyTypeName: ButtonScript, Assembly-CSharp
+        m_MethodName: openShootScreen
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e2edf55f18abdb4ea43e597bcdc115c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitChance: {fileID: 932988098714613395}
+  ChanceToHit: {fileID: 932988098714613395}
 --- !u!1 &7767532927994982773
 GameObject:
   m_ObjectHideFlags: 0

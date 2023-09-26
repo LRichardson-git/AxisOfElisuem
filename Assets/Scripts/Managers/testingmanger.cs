@@ -5,6 +5,7 @@ public class testingmanger : NetworkBehaviour
 {
     public GameObject blocker;
     public GameObject Solider;
+    public int id = 0;
     // Update is called once per frame
 
     private void Start()
@@ -17,8 +18,8 @@ public class testingmanger : NetworkBehaviour
 
     void Update()
     {
-       // if (!isOwned)
-          //  return;
+        if (!isOwned)
+            return;
 
 
 
@@ -46,8 +47,9 @@ public class testingmanger : NetworkBehaviour
         GameObject GameSolider = Instantiate(Solider, Vector3.zero, Quaternion.identity);
         
         NetworkServer.Spawn(GameSolider, connectionToClient);
-
-        //CnrAddUnitToManager(unit);
+        GameSolider.GetComponent<Unit>().SetID(id);
+        id++;
+        CnrAddUnitToManager(GameSolider);
         
     }
     

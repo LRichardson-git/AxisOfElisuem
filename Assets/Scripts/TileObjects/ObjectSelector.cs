@@ -36,17 +36,17 @@ public class ObjectSelector : MonoBehaviour
         //unity selected
         if (selectedUnit == null)
             return;
-
         if (input.rightClick)
         {
             buttonDown = true;
             //script.HighlightTiles(World_Pathfinding.findAllPaths(selectedUnit.x, selectedUnit.y, selectedUnit.movementPoints, selectedUnit.width, selectedUnit.height));
 
         }
-        else if (input.rightLetGo){ buttonDown = false;  visual.notShowMovement();  moveUnit();
-            //script.DeHighLight(); script.DeHightLightTile(); 
-        }
         
+        else if (input.rightLetGo){ buttonDown = false;    moveUnit();
+            //script.DeHighLight(); script.DeHightLightTile(); //visual.notShowMovement();
+        }
+
         CellLocation = World_Pathfinding.worldToCoord(Camera.main.ScreenToWorldPoint(input.MousePos),selectedUnit.width, selectedUnit.depth);
 
         if (!CellLocation.Equals(previousCell) && buttonDown == true )
@@ -76,8 +76,11 @@ public class ObjectSelector : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
+
             var tempor = World_Pathfinding.worldToCoord(hit.point, selectedUnit.width,1);
-            selectedUnit.GetComponent<Unit_Movement>().moveToTarget((int)tempor.x, (int)tempor.y, tempor.z);
+            selectedUnit.MoveUnit((int)tempor.x, (int)tempor.y, tempor.z);
+
+            //selectedUnit.GetComponent<Unit_Movement>().moveToTarget((int)tempor.x, (int)tempor.y, tempor.z);
         }
     }
 
@@ -115,6 +118,7 @@ public class ObjectSelector : MonoBehaviour
                 //selectedUnit.getList()[
                 // }
             }
+            //else { Debug.Log("not owned"); }
         }
     }
 }

@@ -165,6 +165,7 @@ GameObject:
   - component: {fileID: 40772388}
   - component: {fileID: 40772390}
   - component: {fileID: 40772389}
+  - component: {fileID: 40772391}
   m_Layer: 5
   m_Name: Info_box
   m_TagString: Untagged
@@ -208,7 +209,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.06274474, g: 0.09937429, b: 0.8867924, a: 0.043137256}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -233,6 +234,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 40772387}
   m_CullTransparentMesh: 1
+--- !u!114 &40772391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40772387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5571cc0916d18b94ab8c96f73a0f634b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ChanceToHit: {fileID: 421895131}
+  ChanceToCrit: {fileID: 1164172904}
+  ChanceToDmg: {fileID: 1285338652}
+  manager: {fileID: 1658362375}
 --- !u!1 &86658842
 GameObject:
   m_ObjectHideFlags: 0
@@ -3034,7 +3051,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1827401291}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 40772391}
+        m_TargetAssemblyTypeName: Shooting_View_Controller, Assembly-CSharp
+        m_MethodName: Fire
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1827401291
 MonoBehaviour:
   m_ObjectHideFlags: 0

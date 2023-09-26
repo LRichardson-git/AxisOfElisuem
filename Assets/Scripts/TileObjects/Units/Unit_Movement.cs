@@ -17,10 +17,10 @@ public class Unit_Movement : MonoBehaviour
     public void moveToTarget(int endX, int endY, int endZ)
     {
 
-        if (_isMoving == true || _unit.getSelected() == false)
+        if (_isMoving == true)
             return;
 
-        
+
         //call this end of turn if set to auto go somewhere
         List<Vector3> path = World_Pathfinding.findPath(endX, endY,endZ, _unit.x, _unit.y,_unit.z, _unit.width, _unit.height, _unit.depth,_unit.flying);
         
@@ -58,9 +58,9 @@ public class Unit_Movement : MonoBehaviour
         _unit.y = temportayChangethisplease.y;
         _unit.z = temportayChangethisplease.z;
 
-        
 
-        
+
+
 
 
         _unit.DeleteCover();

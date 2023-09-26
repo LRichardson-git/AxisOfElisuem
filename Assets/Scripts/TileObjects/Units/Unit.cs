@@ -18,8 +18,9 @@ public class Unit : Tile_Object
     public int aimModifer = 0;
     public int amour = 0;
     private UnitInformationUpdater UnitInfo;
+    private Unit_Movement _unit_Move;
 
-    [SerializeField]
+    [SyncVar]
     private int ID;
 
     public Gun gun;
@@ -32,6 +33,12 @@ public class Unit : Tile_Object
     {
         UnitInfo.OnInfoChanged(HP);
 
+        if (HP <= 0)
+        {
+            UnitManager.Instance.RemoveUnit(this);
+            NetworkServer.Destroy(this.gameObject);
+
+        }
         // -0 delete self
     }
 
@@ -60,6 +67,7 @@ public class Unit : Tile_Object
           InVision = new List<TargetData>();
           UnitInfo = gameObject.GetComponent<UnitInformationUpdater>();
           OnHpChanged(HP, HP);
+        _unit_Move = GetComponent<Unit_Movement>();
     }
 
     internal void Deselect()
@@ -95,6 +103,19 @@ public class Unit : Tile_Object
             HP -= (Dmg - amour);
     }
 
+    //maybe but maybe not thin about it
+    [Command(requiresAuthority =false)]
+    public void MoveUnit(int x, int y, int z)
+    {
+
+        _unit_Move.moveToTarget(x, y, z);
+    }
+
+    
+    public void SetID(int id)
+    {
+        ID = id;
+    }
 
 
 }

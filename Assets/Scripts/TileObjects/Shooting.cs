@@ -67,7 +67,8 @@ public class Shooting : NetworkBehaviour
         bool hit = Physics.Raycast(unit.targetPoint.transform.position, direction, out hitInfo, distance);
         if (hit && hitInfo.collider.gameObject.CompareTag("Unit"))
         {
-            TargetData Data = new TargetData(target,CalulateHitPercentage(unit,unit.targetPoint,target),unit.crit,target.targetPoint);
+            TargetData Data = new TargetData(target,CalulateHitPercentage(unit,unit.targetPoint,target),unit.crit + unit.gun.getCrit(), target.targetPoint);
+            Data.setDmg(unit.gun.getMin(), unit.gun.getMax());
             unit.addToList(Data);
             //Debug.Log("straight line");
             return true;
@@ -116,7 +117,8 @@ public class Shooting : NetworkBehaviour
 
                         Debug.Log(unitPoint.transform.position);
                         Debug.DrawLine(unitPoint.transform.position, hitInfo2.transform.position, Color.green, 10f);
-                        TargetData Data1 = new TargetData(target, CalulateHitPercentage(unit, unitPoint, target), unit.crit, target.targetPoint);
+                        TargetData Data1 = new TargetData(target, CalulateHitPercentage(unit, unitPoint, target), unit.crit + unit.gun.getCrit(), target.targetPoint);
+                        Data1.setDmg(unit.gun.getMin(), unit.gun.getMax());
                         unit.addToList(Data1);
                         //Debug.Log("in cover1");
                         return true;
@@ -130,7 +132,8 @@ public class Shooting : NetworkBehaviour
                             {
                                 Debug.Log(unitPoint.transform.position);
                                 
-                                TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unitPoint, target), unit.crit, targetPoint);
+                                TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unitPoint, target), unit.crit + unit.gun.getCrit(), targetPoint);
+                                Data.setDmg(unit.gun.getMin(), unit.gun.getMax());
                                 unit.addToList(Data);
                                 //Debug.Log("in cover2");
                                 return true;
@@ -153,7 +156,8 @@ public class Shooting : NetworkBehaviour
                         if (hitInfoC.collider.gameObject.CompareTag("Unit"))
                         {
                             Debug.DrawLine(unit.targetPoint.transform.position, targetPoint.transform.position, Color.green, 10f);
-                            TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unit.targetPoint, target), unit.crit, targetPoint);
+                            TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unit.targetPoint, target), unit.crit + unit.gun.getCrit(), targetPoint);
+                            Data.setDmg(unit.gun.getMin(), unit.gun.getMax());
                             unit.addToList(Data);
                             return true;
                         }
@@ -163,7 +167,8 @@ public class Shooting : NetworkBehaviour
                 else 
                 {
                     Debug.DrawLine(unit.targetPoint.transform.position, targetPoint.transform.position, Color.green, 10f);
-                    TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unit.targetPoint, target), unit.crit, targetPoint);
+                    TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unit.targetPoint, target), unit.crit + unit.gun.getCrit(), targetPoint);
+                    Data.setDmg(unit.gun.getMin(), unit.gun.getMax());
                     unit.addToList(Data);
                     return true;
                 }
@@ -342,7 +347,6 @@ public class Shooting : NetworkBehaviour
 
     public void SpawnButtons(List<TargetData> targets)
     {
-
         // Remove any previously spawned buttons
         foreach (GameObject button in spawnedButtons)
         {
@@ -351,7 +355,6 @@ public class Shooting : NetworkBehaviour
         spawnedButtons.Clear();
 
         if (targets.Count <= 0) return;
-
         // Calculate the position of the bottom right corner of the screen
         Vector2 spawnPosition = new Vector2(Screen.width, 50);
 
@@ -366,7 +369,7 @@ public class Shooting : NetworkBehaviour
         {
             // Adjust the spawn position based on the button width and spacing
             spawnPosition -= new Vector2(buttonWidth + buttonSpacing, 0);
-
+            
             GameObject button = Instantiate(buttonPrefab, spawnPosition, Quaternion.identity, transform);
             spawnedButtons.Add(button);
             button.GetComponent<ButtonScript>().init(targets[i]);
@@ -375,7 +378,7 @@ public class Shooting : NetworkBehaviour
 
   
     [Command(requiresAuthority = false)]
-    public void CmdHitUnit(int unitID, int HitChance, int Dmg, int Pen)
+    public void CmdHitUnit(int unitID, int HitChance, int Dmg, int Pen, int crit)
     {
         foreach (Unit unit in UnitManager.Instance.GetUnitList())
         {
@@ -383,6 +386,10 @@ public class Shooting : NetworkBehaviour
             {
                 if (Random.Range(0, 100) <= HitChance)
                 {
+                    if (Random.Range(0, 100) <= crit)
+                        Dmg = Dmg * 2;
+
+
                     unit.ApplyDmg(Dmg, Pen);
                     return;
                 }
