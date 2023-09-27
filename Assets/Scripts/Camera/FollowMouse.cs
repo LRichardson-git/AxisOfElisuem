@@ -5,11 +5,19 @@ using UnityEngine;
 public class FollowMouse : MonoBehaviour
 {
     Ray ray;
+    Camera cam;
+    RaycastHit hit;
+    private void Start()
+    {
+        cam = Camera.main; 
+    }
+
+
 
     void Update()
     {
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+        ray = cam.ScreenPointToRay(Input.mousePosition);
+        
 
         if (Physics.Raycast(ray, out hit))
         {

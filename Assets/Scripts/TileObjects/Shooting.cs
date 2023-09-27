@@ -221,7 +221,6 @@ public class Shooting : NetworkBehaviour
 
         result = (int)unit.aim + (int)Modifers;
 
-        Debug.Log("Chance to hit: " + result);
         return result;
     }
 
@@ -380,27 +379,49 @@ public class Shooting : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdHitUnit(int unitID, int HitChance, int Dmg, int Pen, int crit)
     {
-        foreach (Unit unit in UnitManager.Instance.GetUnitList())
+        int Damage = Dmg;
+        if (Random.Range(0, 100) <= HitChance)
         {
-            if (unit.getID() == unitID)
-            {
-                if (Random.Range(0, 100) <= HitChance)
-                {
-                    if (Random.Range(0, 100) <= crit)
-                        Dmg = Dmg * 2;
+            if (Random.Range(0, 100) <= crit)
+                Damage = Dmg * 2;
 
-
-                    unit.ApplyDmg(Dmg, Pen);
-                    return;
-                }
-
-                else
-                    return;
-            }
+            dmgUnit(unitID, Damage, Pen);
+            return;
         }
 
-        return;
     }
+
+
+
+    [Command(requiresAuthority = false)]
+    public void CmdDmgUnit(int unitID, int minDmg, int maxDmg, int pen)
+    {
+        int damage = Random.Range(minDmg, maxDmg);
+
+        dmgUnit(unitID, damage, pen);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdDmgUnit(int unitID, int Dmg)
+    {
+        //add ignoreing pen to unit method if we have an abiltiy like that
+        dmgUnit(unitID, Dmg, 10);
+
+    }
+
+
+    public void dmgUnit(int ID, int Dmg, int pen)
+    {
+        foreach (Unit unit in UnitManager.Instance.GetUnitList())
+        {
+            if (unit.getID() == ID)
+            {
+                unit.ApplyDmg(Dmg, pen);
+            }
+        }
+    }
+
+
 
     public List<GameObject> getButtons() { if (spawnedButtons != null) return spawnedButtons; else return null; }
 

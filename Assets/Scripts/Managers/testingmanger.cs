@@ -49,6 +49,7 @@ public class testingmanger : NetworkBehaviour
         NetworkServer.Spawn(GameSolider, connectionToClient);
         GameSolider.GetComponent<Unit>().SetID(id);
         id++;
+        
         CnrAddUnitToManager(GameSolider);
         
     }
@@ -57,7 +58,8 @@ public class testingmanger : NetworkBehaviour
     [ClientRpc]
     void CnrAddUnitToManager(GameObject unit)
     {
-        UnitManager.Instance.AddUnit(unit.GetComponent<Solider>()); 
+        UnitManager.Instance.AddUnit(unit.GetComponent<Solider>());
+        unit.GetComponent<Unit>().Abilities.Add(new GrenadeAbility(5, 2, 5));
     }
     
 }

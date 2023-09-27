@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class GrenadeAbility : Ability
 {
-    public int Damage { get; }
-    public int radius { get; }
+    public int maxDamage = 5;
+    public int minDamage = 2;
+    public int radius = 5;
 
-    public GrenadeAbility(int damage, int radius) : base("Grenade", "Throws a grenade that explodes on impact", 1, 10)
+    public int pen = 2;
+
+    Vector3 direction;
+    public GrenadeAbility(int maxdamage, int mindamage, int radius) : base("Grenade", "Throws a grenade that explodes on impact", 1, 10, null)
     {
-        Damage = damage;
+        maxDamage = maxdamage;
+        minDamage = mindamage;
         this.radius = radius;
+        direction = Vector3.zero;
     }
 
 
@@ -18,16 +24,79 @@ public class GrenadeAbility : Ability
     //after animation ends do exectue
 
 
-    public override void Target(Transform worldSpace)
+    public override void Target(Vector3 worldSpace)
     {
+        //maybe have sphere idk
+        foreach (Unit unit in UnitManager.Instance.GetUnitList())
+        {
+            if ((Vector3.Distance(worldSpace, unit.transform.position) / 10) < 1.4)
+            {
+                //unit.highlight
+                continue;
+            }
+
+
+            else if ((Vector3.Distance(worldSpace, unit.transform.position) / 10) < radius)
+            {
+                direction = unit.transform.position - worldSpace;
+                if (Physics.Raycast(worldSpace, direction, out RaycastHit hitInfoC, radius * 10))
+                {
+                    if (hitInfoC.collider.gameObject.CompareTag("Unit"))
+                    {
+                        //unit.highlight
+                        continue;
+                    }
+                }
+            }
+
+        }
+    }
+
+
+
+    
+
+    public override void Execute(Vector3 worldSpace)
+    {
+        List<Unit> list = new List<Unit>();
         //raycast from worldspace on units
-        //maybe update call??
+        float distance;
+        foreach (Unit unit in UnitManager.Instance.GetUnitList())
+        {
+            distance = Vector3.Distance(worldSpace, unit.transform.position) /10 ;
+            
+            if ( distance < 1.4)
+            {
 
+                list.Add(unit);
+                continue;
+            }
+
+
+            else if (distance < radius )
+            {
+                
+                direction = unit.transform.position - worldSpace;
+
+                if (Physics.Raycast(worldSpace, direction, out RaycastHit hitInfoC, radius * 10))
+                {
+                    if (hitInfoC.collider.gameObject.CompareTag("Unit"))
+                    {
+                        list.Add(unit);
+                        continue;
+                    }
+                }
+            }
+
+        }
+        
+        damageUnits(list);
     }
 
-
-    public override void Execute(Unit user, Unit target)
+    private void damageUnits(List<Unit> unitList)
     {
-        // Code to apply damage to target
+        foreach (Unit unit in unitList)
+            Shooting.Instance.CmdDmgUnit(unit.getID(), minDamage, maxDamage, pen);
     }
+
 }

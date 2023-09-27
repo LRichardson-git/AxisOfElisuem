@@ -6,7 +6,9 @@ using Mirror;
 public class GameManager : NetworkBehaviour
 {
     // Start is called before the first frame update
-    
+
+
+#pragma warning disable
     public SyncList<int> currentPlayers = new SyncList<int>();
 
     

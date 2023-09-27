@@ -9,7 +9,7 @@ public class ObjectSelector : MonoBehaviour
     VisualPathfinding visual;
     shaderscript script;
     Shooting shooting;
-
+    AbilityManager abilityManager;
     private Vector3Int previousCell = new Vector3Int();
     Vector3Int CellLocation;
     private bool buttonDown = false;
@@ -24,6 +24,7 @@ public class ObjectSelector : MonoBehaviour
         script = GetComponent<shaderscript>();
         CellLocation = new Vector3Int();
         shooting = GetComponent<Shooting>();
+        abilityManager = AbilityManager.Instance;
     }
 
     void Update()
@@ -109,16 +110,21 @@ public class ObjectSelector : MonoBehaviour
                 // Select the new unit
                 selectedUnit = unit;
                 selectedUnit.Select();
-                //shooting.CheckSight(selectedUnit);
-                //Debug.Log("Can see :" +  selectedUnit.getList().Count);
-               // Debug.Log("covers : " + selectedUnit.covers.Count);
-               // Debug.Log("pos : " + selectedUnit.transform.position);
-                // for (int i = 0; i < selectedUnit.getList().Count; i++)
-                // {
-                //selectedUnit.getList()[
-                // }
+            //    Debug.Log(abilityManager);
+                AbilityManager.Instance.createButtons(selectedUnit);
+
             }
-            //else { Debug.Log("not owned"); }
         }
     }
-}
+
+    }
+
+
+
+
+
+
+
+
+
+

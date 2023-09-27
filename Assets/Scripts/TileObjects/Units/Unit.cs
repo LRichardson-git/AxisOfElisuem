@@ -23,6 +23,7 @@ public class Unit : Tile_Object
     [SyncVar]
     private int ID;
 
+    public List<Ability> Abilities;
     public Gun gun;
 
     //Networked so client can know
@@ -36,12 +37,15 @@ public class Unit : Tile_Object
         if (HP <= 0)
         {
             UnitManager.Instance.RemoveUnit(this);
+
+
             NetworkServer.Destroy(this.gameObject);
 
         }
         // -0 delete self
     }
 
+   
 
 
     //maybe dir makes more sense with hitchanges with it?
@@ -62,12 +66,13 @@ public class Unit : Tile_Object
     private void Start()
     {
         Setup(x, y, z, width, depth);
-          Info = GetComponent<UnitInformationUpdater>();
-         covers = new List<Cover>();
-          InVision = new List<TargetData>();
-          UnitInfo = gameObject.GetComponent<UnitInformationUpdater>();
-          OnHpChanged(HP, HP);
+        Info = GetComponent<UnitInformationUpdater>();
+        covers = new List<Cover>();
+        InVision = new List<TargetData>();
+        UnitInfo = gameObject.GetComponent<UnitInformationUpdater>();
+        OnHpChanged(HP, HP);
         _unit_Move = GetComponent<Unit_Movement>();
+        Abilities = new List<Ability>();
     }
 
     internal void Deselect()
@@ -117,5 +122,10 @@ public class Unit : Tile_Object
         ID = id;
     }
 
+
+    public void highlight()
+    {
+        this.gameObject.GetComponent<Material>().color = Color.green;
+    }
 
 }

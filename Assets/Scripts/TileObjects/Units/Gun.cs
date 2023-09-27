@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
+#pragma warning disable 0414
     private int minDmg = 2;
     private int maxDmg = 5;
     public int penetration;
