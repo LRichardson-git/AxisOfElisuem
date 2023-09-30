@@ -60,6 +60,7 @@ public class testingmanger : NetworkBehaviour
     {
         UnitManager.Instance.AddUnit(unit.GetComponent<Solider>());
         unit.GetComponent<Unit>().Abilities.Add(new GrenadeAbility(5, 2, 5));
+        unit.GetComponent<Unit>().init();
     }
     
 }

@@ -13,11 +13,13 @@ public class ObjectSelector : MonoBehaviour
     private Vector3Int previousCell = new Vector3Int();
     Vector3Int CellLocation;
     private bool buttonDown = false;
+    public bool canmove = false;
     public static ObjectSelector Instance { get; private set; }
 
 
-    private void Awake()
+    private void Start()
     {
+        Instance = this;
         input = GetComponent<InputManager>();
         //Map_Generation.Instance.Generate_Map();
         visual = GetComponent<VisualPathfinding>();
@@ -44,7 +46,7 @@ public class ObjectSelector : MonoBehaviour
 
         }
         
-        else if (input.rightLetGo){ buttonDown = false;    moveUnit();
+        else if (input.rightLetGo && abilityManager.active == false){ buttonDown = false;    moveUnit();
             //script.DeHighLight(); script.DeHightLightTile(); //visual.notShowMovement();
         }
 

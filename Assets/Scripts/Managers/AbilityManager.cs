@@ -8,13 +8,18 @@ public class AbilityManager : MonoBehaviour
     Ray ray;
     Camera cam;
     RaycastHit hit;
-    bool active;
+    public bool active;
     Ability currentAbility;
     InputManager _input;
     public GameObject buttonPrefab;
     List<GameObject> spawnedButtons;
     public static AbilityManager Instance;
-    bool skip1frame;
+    Vector3 origin;
+
+
+
+
+
     private void Start()
     {
         cam = Camera.main;
@@ -26,14 +31,14 @@ public class AbilityManager : MonoBehaviour
     public void activate(Ability ability)
     {
         currentAbility = ability;
+        currentAbility.setup();
+        active = true;
 
-        //delayed cause wanna use left click but button insta registers
-        Invoke("activ", 0.5f);
-        
+        origin = ObjectSelector.Instance.getSelectedUnit().transform.position;   
     }
 
 
-    public void activ() { active = true; }
+
 
     void Update()
     {
@@ -43,12 +48,22 @@ public class AbilityManager : MonoBehaviour
             return;
 
 
-        ray = cam.ScreenPointToRay(Input.mousePosition);
+        if (_input.cancelAction)
+        {
+            currentAbility.deActivate();
+            deactivate();
 
-        if (Physics.Raycast(ray, out hit))
+            return;
+        }
+        
+
+
+        ray = cam.ScreenPointToRay(_input.MousePos);
+
+        if (Physics.Raycast(ray, out hit) && Vector3.Distance(origin, hit.point) <= currentAbility.Range * 10) 
         {
             currentAbility.Target(hit.point);
-            if (InputManager.Instance.leftClick)
+            if (_input.leftClick)
             {
                 currentAbility.Execute(hit.point);
                 deactivate();
@@ -61,6 +76,9 @@ public class AbilityManager : MonoBehaviour
         
 
     }
+
+
+    
 
     public void deactivate()
     {

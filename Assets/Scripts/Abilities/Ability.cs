@@ -20,6 +20,11 @@ public abstract class Ability
         this.icon = icon;
     }
 
+
+    public abstract void Init();
+
+    public abstract void setup();
+    public abstract void deActivate();
     public abstract void Execute(Vector3 worldSpace);
 
     public abstract void Target(Vector3 worldSpace);

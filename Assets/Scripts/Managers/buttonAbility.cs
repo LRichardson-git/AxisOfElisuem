@@ -15,7 +15,7 @@ public class buttonAbility : MonoBehaviour
     public void activate()
     {
         AbilityManager.Instance.activate(ability);
-        Debug.Log("Activing: " + ability.Name);
+      //  Debug.Log("Activing: " + ability.Name);
         
     }
 

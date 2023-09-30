@@ -25,7 +25,7 @@ public class Unit : Tile_Object
 
     public List<Ability> Abilities;
     public Gun gun;
-
+    private Renderer _material;
     //Networked so client can know
     [SyncVar(hook = nameof(OnHpChanged))]
     public int HP = 5;
@@ -73,6 +73,7 @@ public class Unit : Tile_Object
         OnHpChanged(HP, HP);
         _unit_Move = GetComponent<Unit_Movement>();
         Abilities = new List<Ability>();
+        _material = GetComponent<Renderer>();
     }
 
     internal void Deselect()
@@ -111,8 +112,8 @@ public class Unit : Tile_Object
     //maybe but maybe not thin about it
     [Command(requiresAuthority =false)]
     public void MoveUnit(int x, int y, int z)
-    {
-
+    { 
+        Debug.Log(x +""+ "" +y + "" + z);
         _unit_Move.moveToTarget(x, y, z);
     }
 
@@ -125,7 +126,20 @@ public class Unit : Tile_Object
 
     public void highlight()
     {
-        this.gameObject.GetComponent<Material>().color = Color.green;
+        _material.material.color = Color.green;
     }
 
+    public void DeHighlight() { _material.material.color = Color.red; }
+
+
+    public void init()
+    {
+        foreach (Ability ability in Abilities)
+        {
+            ability.Init();
+        }
+    }
+    
 }
+
+
