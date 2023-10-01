@@ -16,6 +16,8 @@ public class ObjectSelector : MonoBehaviour
     public bool canmove = false;
     public static ObjectSelector Instance { get; private set; }
 
+    [SerializeField]
+    Grenade grenade;
 
     private void Start()
     {
@@ -118,6 +120,50 @@ public class ObjectSelector : MonoBehaviour
             }
         }
     }
+
+
+    public void playAnimation(string anim, Vector3 direction) {
+
+        if (anim == null || anim == "")
+            return;
+
+        selectedUnit.playAnim(anim,direction);
+    }
+
+
+    public void AimGrenade() { grenade.gameObject.SetActive(true); grenade.Aim(selectedUnit.transform.position); }
+    public bool FireGrenade(Vector3 End, GrenadeAbility ability) {
+
+        Vector3 direction = (End - selectedUnit.transform.position);
+        float distance = Vector3.Distance(selectedUnit.transform.position, End) - 1;
+
+
+
+
+        
+        //nothing in way fire
+
+        if (grenade.CheckFire(selectedUnit.transform.position,End))
+        {
+            grenade.gameObject.SetActive(true); grenade.fireF(End, ability);
+            return true;
+        }
+        else
+            foreach (GameObject targetPoint in selectedUnit.GetComponent<Solider>().targetPoints)
+            {
+                if (grenade.CheckFire(targetPoint.transform.position, End))
+                {
+                    grenade.Aim(targetPoint.transform.position);
+                    grenade.gameObject.SetActive(true); grenade.fireF(End, ability);
+                    return true;
+                }
+            }
+        Debug.Log("false");
+        return false;
+    }
+
+
+
 
     }
 

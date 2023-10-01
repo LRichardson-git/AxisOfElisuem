@@ -9,5 +9,6 @@ public class GrenadeTarget_Instance : MonoBehaviour
     private void Start()
     {
         Instance = this;
+        this.gameObject.SetActive(false);
     }
 }

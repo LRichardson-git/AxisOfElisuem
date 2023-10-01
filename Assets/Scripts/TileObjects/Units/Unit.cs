@@ -19,13 +19,15 @@ public class Unit : Tile_Object
     public int amour = 0;
     private UnitInformationUpdater UnitInfo;
     private Unit_Movement _unit_Move;
-
+    private AudioManager audioManager;
     [SyncVar]
     private int ID;
 
     public List<Ability> Abilities;
     public Gun gun;
     private Renderer _material;
+    [SerializeField]
+    private Animator animator;
     //Networked so client can know
     [SyncVar(hook = nameof(OnHpChanged))]
     public int HP = 5;
@@ -72,8 +74,10 @@ public class Unit : Tile_Object
         UnitInfo = gameObject.GetComponent<UnitInformationUpdater>();
         OnHpChanged(HP, HP);
         _unit_Move = GetComponent<Unit_Movement>();
+        _unit_Move = GetComponent<Unit_Movement>();
         Abilities = new List<Ability>();
-        _material = GetComponent<Renderer>();
+        audioManager = AudioManager.instance;
+       // _material = GetComponent<Renderer>();
     }
 
     internal void Deselect()
@@ -113,7 +117,6 @@ public class Unit : Tile_Object
     [Command(requiresAuthority =false)]
     public void MoveUnit(int x, int y, int z)
     { 
-        Debug.Log(x +""+ "" +y + "" + z);
         _unit_Move.moveToTarget(x, y, z);
     }
 
@@ -126,10 +129,12 @@ public class Unit : Tile_Object
 
     public void highlight()
     {
-        _material.material.color = Color.green;
+       // _material.material.color = Color.green;
     }
 
-    public void DeHighlight() { _material.material.color = Color.red; }
+    public void DeHighlight() { 
+      //  _material.material.color = Color.red; 
+    }
 
 
     public void init()
@@ -139,6 +144,8 @@ public class Unit : Tile_Object
             ability.Init();
         }
     }
+
+    public void playAnim(string anim, Vector3 direction) { transform.LookAt(direction);  animator.Play(anim); audioManager.PlaySound(anim); }
     
 }
 

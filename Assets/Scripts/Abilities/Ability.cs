@@ -11,6 +11,8 @@ public abstract class Ability
 
     public Sprite icon { get; }
 
+    public string Animation;
+
     public Ability(string name, string description, int cost, int range, Sprite icon)
     {
         Name = name;
