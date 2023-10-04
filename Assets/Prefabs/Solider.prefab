@@ -312,6 +312,7 @@ GameObject:
   - component: {fileID: 3895528510378818040}
   - component: {fileID: 3895528510378818042}
   - component: {fileID: 6057711163131317855}
+  - component: {fileID: 4486293166148712534}
   m_Layer: 0
   m_Name: Solider
   m_TagString: Unit
@@ -472,6 +473,24 @@ MonoBehaviour:
   - {fileID: 7433303180046130866}
   - {fileID: 564535187365402545}
   - {fileID: 6895987142355713475}
+  gunModel: {fileID: 4957018710631939399}
+--- !u!114 &4486293166148712534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3895528510378818019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  clientAuthority: 0
+  animator: {fileID: 4957018710641338247}
 --- !u!1 &6895987142355713475
 GameObject:
   m_ObjectHideFlags: 0
@@ -541,6 +560,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3895528510378818041}
     m_Modifications:
+    - target: {fileID: 192788, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 193908, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
       propertyPath: m_Name
       value: Space_Soldier_A
@@ -610,6 +633,11 @@ PrefabInstance:
 --- !u!4 &4957018710631647421 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 427246, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
+  m_PrefabInstance: {fileID: 4957018710631812179}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4957018710631939399 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 192788, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
   m_PrefabInstance: {fileID: 4957018710631812179}
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &4957018710641338247 stripped

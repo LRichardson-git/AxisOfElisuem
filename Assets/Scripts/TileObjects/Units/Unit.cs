@@ -38,10 +38,10 @@ public class Unit : Tile_Object
 
         if (HP <= 0)
         {
-            UnitManager.Instance.RemoveUnit(this);
+           // UnitManager.Instance.RemoveUnit(this);
 
 
-            NetworkServer.Destroy(this.gameObject);
+            //NetworkServer.Destroy(this.gameObject);
 
         }
         // -0 delete self
@@ -145,7 +145,7 @@ public class Unit : Tile_Object
         }
     }
 
-    public void playAnim(string anim, Vector3 direction) { transform.LookAt(direction);  animator.Play(anim); audioManager.PlaySound(anim); }
+    public void playAnim(string anim, Vector3 direction) { transform.LookAt(direction);  animator.speed = 2;  animator.Play(anim); audioManager.cmDPlaySound(anim); }
     
 }
 

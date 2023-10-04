@@ -52,7 +52,6 @@ public class AbilityManager : MonoBehaviour
         {
             currentAbility.deActivate();
             deactivate();
-
             return;
         }
         

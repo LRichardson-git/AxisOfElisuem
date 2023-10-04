@@ -127,16 +127,18 @@ public class ObjectSelector : MonoBehaviour
         if (anim == null || anim == "")
             return;
 
+    
+
         selectedUnit.playAnim(anim,direction);
     }
 
-
+    public void returnGun() { selectedUnit.GetComponent<Solider>().gunModel.gameObject.SetActive(true); }
     public void AimGrenade() { grenade.gameObject.SetActive(true); grenade.Aim(selectedUnit.transform.position); }
     public bool FireGrenade(Vector3 End, GrenadeAbility ability) {
 
         Vector3 direction = (End - selectedUnit.transform.position);
         float distance = Vector3.Distance(selectedUnit.transform.position, End) - 1;
-
+        float animspeed = 1.6f;
 
 
 
@@ -145,7 +147,8 @@ public class ObjectSelector : MonoBehaviour
 
         if (grenade.CheckFire(selectedUnit.transform.position,End))
         {
-            grenade.gameObject.SetActive(true); grenade.fireF(End, ability);
+            grenade.gameObject.SetActive(true); grenade.fireF(End, ability, animspeed,ability.Explode);
+            selectedUnit.GetComponent<Solider>().gunModel.gameObject.SetActive(false);
             return true;
         }
         else
@@ -154,14 +157,21 @@ public class ObjectSelector : MonoBehaviour
                 if (grenade.CheckFire(targetPoint.transform.position, End))
                 {
                     grenade.Aim(targetPoint.transform.position);
-                    grenade.gameObject.SetActive(true); grenade.fireF(End, ability);
+                    grenade.gameObject.SetActive(true); grenade.fireF(End, ability, animspeed,ability.Explode);
+                    selectedUnit.GetComponent<Solider>().gunModel.gameObject.SetActive(false);
                     return true;
                 }
             }
         Debug.Log("false");
+        ability.deActivate();
+        
         return false;
     }
 
+    public void DeactiveGrenade()
+    {
+        grenade.stopAim();
+    }
 
 
 

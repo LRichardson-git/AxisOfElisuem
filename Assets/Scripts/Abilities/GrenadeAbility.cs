@@ -8,7 +8,7 @@ public class GrenadeAbility : Ability
     public int minDamage = 2;
     public int radius = 4;
     public int pen = 2;
-
+    public bool Explode = true;
     private GrenadeTarget_Instance target;
     private List<Unit> highLight;
     private Camera _cam;
@@ -28,7 +28,7 @@ public class GrenadeAbility : Ability
 
     public override void Init()
     {
-        Debug.Log("2");
+
         target = GrenadeTarget_Instance.Instance;
         highLight = new List<Unit>();
         _cam = Camera.main;
@@ -104,7 +104,7 @@ public class GrenadeAbility : Ability
     }
 
 
-    public override void deActivate() { target.gameObject.SetActive(false);  if(highLight.Count > 0) deHighLight(); }
+    public override void deActivate() { target.gameObject.SetActive(false);  if(highLight.Count > 0) deHighLight(); ObjectSelector.Instance.DeactiveGrenade(); }
 
 
     public void ExcuteAbility(Vector3 worldSpace) {
@@ -150,9 +150,12 @@ public class GrenadeAbility : Ability
 
     public override void Execute(Vector3 worldSpace)
     {
-        ObjectSelector.Instance.playAnimation(Animation, worldSpace);
-        
-        ObjectSelector.Instance.FireGrenade(worldSpace, this);
+
+        if (ObjectSelector.Instance.FireGrenade(worldSpace, this))
+            ObjectSelector.Instance.playAnimation(Animation, worldSpace);
+
+
+
     }
 
 

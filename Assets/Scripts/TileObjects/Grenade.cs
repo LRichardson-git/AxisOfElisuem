@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Grenade : MonoBehaviour
+using Mirror;
+using Mirror.Authenticators;
+public class Grenade : NetworkBehaviour
 {
     public Vector3 targetLocation;
     public float speed = 10.0f;
@@ -13,19 +14,28 @@ public class Grenade : MonoBehaviour
     InputManager inputManager;
     bool Aiming = false;
     bool fire = false;
-
+    [SerializeField]
+    GameObject explosion;
+    
 
     LineRenderer _Line;
-
+    public GameObject grenadeN;
+    public GameObject grenadeS;
 
     [SerializeField] float _initVelocity;
     [SerializeField] float _angle;
     [SerializeField ] float step;
     //float height;
-
+    [SerializeField]
+    AudioClip S_Explosion;
+    [SerializeField]
+    AudioClip S_Smoke;
 
 
     Vector3 firepoint;
+
+    [SyncVar]
+    bool type = true;
 
 
 
@@ -77,7 +87,7 @@ public class Grenade : MonoBehaviour
         return (-b + sign * Mathf.Sqrt(b * b - 4 * a * c)) / (2 * a);
     }
 
-    [System.Obsolete]
+    
     private void DrawPath(Vector3 direction, float v0, float angle, float time, float step) {
 
         step = Mathf.Max(0.01f, step);
@@ -90,20 +100,6 @@ public class Grenade : MonoBehaviour
             float y = v0 * i * Mathf.Sin(angle) - 0.5f * -Physics.gravity.y * Mathf.Pow(i, 2);
             _Line.SetPosition(count, firepoint + direction * x + Vector3.up * y);
             count++;
-
-            if (i > 1)
-            {
-                RaycastHit hit;
-
-
-                if (Physics.Raycast(_Line.GetPosition((int)i), _Line.GetPosition((int)i - 1) - _Line.GetPosition((int)i), out hit, step))
-                {
-                    if (hit.transform.CompareTag("wall"))
-                    {
-                        _Line.SetColors(Color.black, Color.black);
-                    }
-                }
-            }
 
             }
 
@@ -164,10 +160,24 @@ public class Grenade : MonoBehaviour
 
 
 
-    public void fireF(Vector3 target, GrenadeAbility ability)
+    public void fireF(Vector3 target, GrenadeAbility ability,float delay, bool type)
     {
+        _Line.positionCount = 0;
 
 
+        StartCoroutine(FireGWithDelay(target, ability, delay));
+
+        this.type = type;
+
+        cmdCallSetup();
+
+        
+            
+
+    }
+
+
+    public void fireG(Vector3 target, GrenadeAbility ability) {
         Vector3 direction = target - firepoint;
         Vector3 groundDirection = new Vector3(direction.x, 0, direction.z);
         Vector3 targetPos = new Vector3(groundDirection.magnitude, direction.y, 0);
@@ -181,8 +191,18 @@ public class Grenade : MonoBehaviour
         CalculatePathHeight(targetPos, height, out v0, out angle, out time);
 
         StopAllCoroutines();
-        StartCoroutine(Coroutine_Movement(groundDirection.normalized,v0, angle, time,ability, target));
+        StartCoroutine(Coroutine_Movement(groundDirection.normalized, v0, angle, time, ability, target));
     }
+
+
+
+    public IEnumerator FireGWithDelay(Vector3 target, GrenadeAbility ability, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        fireG(target, ability);
+    }
+
+
     IEnumerator Coroutine_Movement(Vector3 direction,float v0, float angle, float time, GrenadeAbility ability, Vector3 target)
     {
         float t = 0;
@@ -197,13 +217,52 @@ public class Grenade : MonoBehaviour
         }
 
         ability.ExcuteAbility(target);
+        ObjectSelector.Instance.returnGun(); //gun was disabled until animation complete
+        cmdCallExplosion();
+        ObjectSelector.Instance.playAnimation("Grounded", target);
     }
 
 
-    
+    [Command(requiresAuthority = false)]
+    void cmdCallSetup()
+    {
+        SetupE();
+    }
+    [ClientRpc]
+    void SetupE()
+    {
+        if (type == true)
+        {
+            grenadeN.SetActive(true);
+            grenadeS.SetActive(false);
+        }
+        else
+        {
+            grenadeN.SetActive(false);
+            grenadeS.SetActive(true);
+        }
+
+    }
 
 
 
+
+    [Command(requiresAuthority = false)]
+    void cmdCallExplosion()
+    {
+
+        explode();
+    }
+    [ClientRpc]
+    void explode()
+    {
+        audioSource.clip = S_Explosion;
+        audioSource.Play();
+        grenadeN.SetActive(false);
+        grenadeS.SetActive(false);
+        Instantiate(explosion, transform.position,Quaternion.identity);
+       // Instantiate(newObject, transform.position, Quaternion.identity);
+    }
     private void OnCollisionEnter(Collision collision)
     {
         // Play the bouncing sound effect
@@ -213,13 +272,9 @@ public class Grenade : MonoBehaviour
        // rb.AddForce(Vector3.up * bounceForce, ForceMode.Impulse);
     }
 
-    private void Explode()
+    public void stopAim()
     {
-        // Play the explosion sound effect
-       // audioSource.PlayOneShot(explosionSound);
-
-        // Destroy the grenade
-       // Destroy(gameObject);
+        _Line.positionCount = 0;
     }
 
 

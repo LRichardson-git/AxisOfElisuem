@@ -9,13 +9,17 @@ public class Unit_Movement : MonoBehaviour
     private bool _isMoving = false;
     public Animator animator;
     private int rotaionSpeed = 600;
+    private AudioManager _audio;
     private void Awake()
     {
         _unit = GetComponent<Unit>();
     }
 
+    private void Start()
+    {
+        _audio = AudioManager.instance;
+    }
 
-    
     public void moveToTarget(int endX, int endY, int endZ)
     {
 
@@ -59,6 +63,7 @@ public class Unit_Movement : MonoBehaviour
                 targetRotation = Quaternion.LookRotation(directionToTarget);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotaionSpeed * Time.deltaTime);
                 transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * speed);
+                _audio.cmDPlaySound("running");
                 yield return null;
             }
             transform.position = targetPosition;
@@ -71,7 +76,7 @@ public class Unit_Movement : MonoBehaviour
 
         animator.SetFloat("Speed", 0);
 
-
+        _audio.cmdStopSound();
 
 
         _unit.DeleteCover();

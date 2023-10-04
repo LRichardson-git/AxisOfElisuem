@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class AudioManager : MonoBehaviour
+using Mirror;
+public class AudioManager : NetworkBehaviour
 {
     public static AudioManager instance;
     public Dictionary<string, AudioClip> soundDictionary;
@@ -35,11 +35,30 @@ public class AudioManager : MonoBehaviour
         soundDictionary.Add(name, clip);
     }
 
-    public void PlaySound(string name)
+
+    [Command(requiresAuthority = false)]
+    public void cmDPlaySound(string name)
     {
         if (soundDictionary.ContainsKey(name))
-        {
-            audioSource.PlayOneShot(soundDictionary[name]);
-        }
+            PlaySound(name);
+    }
+
+    [ClientRpc]
+    void PlaySound(string name)
+    {
+        
+            audioSource.clip = soundDictionary[name];
+            audioSource.Play();
+        
+    }
+    [Command(requiresAuthority =false)]
+    public void cmdStopSound()
+    {
+        stopSound();
+    }
+    [ClientRpc]
+    void stopSound()
+    {
+        audioSource.Stop();
     }
 }
