@@ -48,7 +48,7 @@ public  class VisualPathfinding : MonoBehaviour
     {
         
         notShowMovement();
-        RaycastHit2D hit = Helper_Functions.getWorldMouse();
+        RaycastHit2D hit = Helper_Functions.getWorldMouseHit();
 
         
 
