@@ -53,7 +53,6 @@ public class AbilityManager : MonoBehaviour
     void Update()
     {
 
-        //Debug.Log(active);
         if (!active || currentAbility == null)
             return;
 
@@ -65,8 +64,6 @@ public class AbilityManager : MonoBehaviour
             return;
         }
         
-
-
         ray = cam.ScreenPointToRay(_input.MousePos);
 
         if (Physics.Raycast(ray, out hit) && Vector3.Distance(origin, hit.point) <= currentAbility.Range * 10) 
@@ -109,8 +106,6 @@ public class AbilityManager : MonoBehaviour
 
         if (unit.Abilities.Count <= 0) return;
 
-        Debug.Log("test");
-        // Calculate the position of the bottom right corner of the screen
         float buttonWidth = buttonPrefab.GetComponent<RectTransform>().rect.width;
         float buttonSpacing = buttonWidth * 0.15f;
 
@@ -118,16 +113,9 @@ public class AbilityManager : MonoBehaviour
         Vector2 spawnPosition = new Vector2((Screen.width / 2) - ((buttonWidth + buttonSpacing) * unit.Abilities.Count), 70);
 
 
-        // Get the width of the button prefab
-        
-
-        // Calculate the spacing between buttons
-        // Adjust this value as needed
-
-        // Spawn new buttons based on the number of objects
         for (int i = 0; i < unit.Abilities.Count; i++)
         {
-            // Adjust the spawn position based on the button width and spacing
+            // Adjust the spawn position based spacing
             spawnPosition += new Vector2(buttonWidth + buttonSpacing, 0);
 
             GameObject button = Instantiate(buttonPrefab, spawnPosition, Quaternion.identity, transform);
@@ -137,11 +125,6 @@ public class AbilityManager : MonoBehaviour
 
 
     }
-
-    
-   
-
-
 
 
 }

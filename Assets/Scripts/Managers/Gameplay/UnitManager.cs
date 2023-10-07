@@ -56,7 +56,7 @@ public class UnitManager : MonoBehaviour
                     if (World_Pathfinding.findPath(i, j, k, unit.x, unit.y, unit.z, unit.width, unit.height, unit.depth, unit.flying) != null)
                     {
                         _highlighters.Add(Instantiate(HighlightTile, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
-
+                        
                     }
 
                 }

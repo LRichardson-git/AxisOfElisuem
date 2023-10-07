@@ -56,11 +56,6 @@ public class Shooting : NetworkBehaviour
         float distance = Vector3.Distance(unit.transform.position, target.transform.position);
         targetP = target.transform.position;
 
-        //gonna remove this for now and change it it something else like visible units
-       // if (distance > unit.Vision)
-       // {
-          //  return false;
-     //   }
 
         //normal enemy in open
         RaycastHit hitInfo;
@@ -113,10 +108,6 @@ public class Shooting : NetworkBehaviour
                     if (hitInfo2.collider.gameObject.CompareTag("Unit"))
                     {
                         
-
-
-                      //  Debug.Log(unitPoint.transform.position);
-                       // Debug.DrawLine(unitPoint.transform.position, hitInfo2.transform.position, Color.green, 10f);
                         TargetData Data1 = new TargetData(target, CalulateHitPercentage(unit, unitPoint, target), unit.crit + unit.gun.getCrit(), target.targetPoint);
                         Data1.setDmg(unit.gun.getMin(), unit.gun.getMax());
                         unit.addToList(Data1);

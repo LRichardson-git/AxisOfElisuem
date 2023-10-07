@@ -4,42 +4,46 @@ using UnityEngine;
 
 public class ObjectSelector : MonoBehaviour
 {
-    private Unit selectedUnit;
-    InputManager input;
-    VisualPathfinding visual;
-    shaderscript script;
-    Shooting shooting;
-    AbilityManager abilityManager;
-    private Vector3Int previousCell = new Vector3Int();
-    Vector3Int CellLocation;
-    private bool buttonDown = false;
-    public bool canmove = false;
     public static ObjectSelector Instance { get; private set; }
-    public GameObject smoke;
+
+    //Managers
+    InputManager _input;
+    AbilityManager _abilityManager;
+    UnitManager _unitManager;
+
+    private Unit selectedUnit;
+    private Vector3Int previousCell = new Vector3Int();
+
     [SerializeField]
     Grenade grenade;
     Camera _cam;
+    Vector3Int CellLocation;
+
+    private bool buttonDown = false;
+    public bool canmove = false;
+
+
+
 
     private void Start()
     {
         Instance = this;
-        input = GetComponent<InputManager>();
-        //Map_Generation.Instance.Generate_Map();
-        visual = GetComponent<VisualPathfinding>();
-        script = GetComponent<shaderscript>();
+
+        _input = GetComponent<InputManager>();
+        _abilityManager = AbilityManager.Instance;
+        _unitManager = UnitManager.Instance;
+
         CellLocation = new Vector3Int();
-        shooting = GetComponent<Shooting>();
-        abilityManager = AbilityManager.Instance;
         _cam = Camera.main;
     }
 
     void Update()
     {
-        if (abilityManager.active == true)
+        if (_abilityManager.active == true)
             return;
 
 
-        if (input.leftClick)
+        if (_input.leftClick)
         {
             SelectUnit();
         }
@@ -47,32 +51,26 @@ public class ObjectSelector : MonoBehaviour
         //unity selected
         if (selectedUnit == null)
             return;
-        if (input.rightClick)
+
+        if (_input.rightClick)
         {
             buttonDown = true;
-            //script.HighlightTiles(World_Pathfinding.findAllPaths(selectedUnit.x, selectedUnit.y, selectedUnit.movementPoints, selectedUnit.width, selectedUnit.height));
+            //show path?
 
         }
 
-        else if (input.rightLetGo && abilityManager.active == false)
+        else if (_input.rightLetGo && _abilityManager.active == false)
         {
             buttonDown = false; moveUnit();
-            //script.DeHighLight(); script.DeHightLightTile(); //visual.notShowMovement();
+            
         }
 
-        CellLocation = World_Pathfinding.worldToCoord(Camera.main.ScreenToWorldPoint(input.MousePos), selectedUnit.width, selectedUnit.depth);
+        CellLocation = World_Pathfinding.worldToCoord(Camera.main.ScreenToWorldPoint(_input.MousePos), selectedUnit.width, selectedUnit.depth);
 
-        if (!CellLocation.Equals(previousCell) && buttonDown == true)
+        if (!CellLocation.Equals(previousCell))
         {
             previousCell = CellLocation;
-            //visual.showMovement(selectedUnit);
-        }
-
-        if (Input.GetKeyUp(KeyCode.T))
-        {
-
-            //Shooting.Instance.CmdHitUnit(1,50,2,2);
-            selectedUnit.HP -= 1;
+            //pre calculate cover and show
         }
 
     }
@@ -84,23 +82,20 @@ public class ObjectSelector : MonoBehaviour
 
     private void moveUnit()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(_input.MousePos);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit))
         {
-
             var tempor = World_Pathfinding.worldToCoord(hit.point, selectedUnit.width, 1);
             selectedUnit.MoveUnit((int)tempor.x, (int)tempor.y, tempor.z);
-
-            //selectedUnit.GetComponent<Unit_Movement>().moveToTarget((int)tempor.x, (int)tempor.y, tempor.z);
         }
     }
 
 
     private void SelectUnit()
     {
-        Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _cam.ScreenPointToRay(_input.MousePos);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit))
@@ -113,8 +108,6 @@ public class ObjectSelector : MonoBehaviour
 
                 if (selectedUnit != null)
                 {
-
-                    // Deselect the previously selected unit
                     selectedUnit.Deselect();
                     selectedUnit = null;
                 }
@@ -122,22 +115,25 @@ public class ObjectSelector : MonoBehaviour
                 // Select the new unit
                 selectedUnit = unit;
                 selectedUnit.Select();
-                UnitManager.Instance.ShowPaths(selectedUnit);
-                //    Debug.Log(abilityManager);
-                AbilityManager.Instance.createButtons(selectedUnit);
+
+                //call
+                _unitManager.ShowPaths(selectedUnit);
+                _abilityManager.createButtons(selectedUnit);
 
             }
         }
     }
 
 
+
+
+
+    //Grenade Related (move)
     public void playAnimation(string anim, Vector3 direction)
     {
 
         if (anim == null || anim == "")
             return;
-
-
 
         selectedUnit.playAnim(anim, direction);
     }
@@ -146,16 +142,9 @@ public class ObjectSelector : MonoBehaviour
     public void AimGrenade() { grenade.gameObject.SetActive(true); grenade.Aim(selectedUnit.transform.position); }
     public bool FireGrenade(Vector3 End, GrenadeAbility ability)
     {
-
-        Vector3 direction = (End - selectedUnit.transform.position);
-        float distance = Vector3.Distance(selectedUnit.transform.position, End) - 1;
         float animspeed = 1.6f;
 
-
-
-
         //nothing in way fire
-
         if (grenade.CheckFire(selectedUnit.transform.position, End))
         {
             grenade.gameObject.SetActive(true); grenade.fireF(End, ability, animspeed, ability.Explode);
@@ -173,7 +162,6 @@ public class ObjectSelector : MonoBehaviour
                     return true;
                 }
             }
-        Debug.Log("false");
         ability.deActivate();
 
         return false;
@@ -186,7 +174,7 @@ public class ObjectSelector : MonoBehaviour
 
     public Unit hoveredUnit()
     {
-        Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _cam.ScreenPointToRay(_input.MousePos);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit))
