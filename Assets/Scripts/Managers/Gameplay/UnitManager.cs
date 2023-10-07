@@ -7,15 +7,23 @@ public class UnitManager : MonoBehaviour
     public static UnitManager Instance;
 
     private List<Unit> _units;
-
     private List<GameObject> _highlighters;
     public GameObject HighlightTile;
+
+    public GameObject Floor;
+    Material floorMaterial;
     private void Awake()
     {
         Instance = this;
         _units = new List<Unit>();
         _highlighters = new List<GameObject>();
     }
+
+    private void Start()
+    {
+        floorMaterial = Floor.GetComponent<Renderer>().material;
+    }
+
     public void AddUnit(Unit unit)
     {
         _units.Add(unit);

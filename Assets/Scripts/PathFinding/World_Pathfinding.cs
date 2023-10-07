@@ -35,6 +35,12 @@ public static class World_Pathfinding
     }
 
 
+    public static void setType(int x, int y, int z, Tile_Type type)
+    {
+        mapIndex[x, y, z].settype(type);
+    }
+
+
     //Helper Functions
 
     //getters
