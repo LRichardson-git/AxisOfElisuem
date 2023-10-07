@@ -152,5 +152,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  blocker: {fileID: 1230341451214287711, guid: 5666eb79483c64c4ebe4617aa36bf304, type: 3}
+  blocker: {fileID: 2366918811469634576, guid: 4e8720b484a884d43b888d782200c1d6, type: 3}
   Solider: {fileID: 3895528510378818019, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
+  id: 0

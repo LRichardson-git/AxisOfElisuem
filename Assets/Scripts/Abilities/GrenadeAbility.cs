@@ -9,9 +9,9 @@ public class GrenadeAbility : Ability
     public int radius = 4;
     public int pen = 2;
     public bool Explode = true;
-    private GrenadeTarget_Instance target;
-    private List<Unit> highLight;
-    private Camera _cam;
+    public  GrenadeTarget_Instance target;
+    public List<Unit> highLight;
+    public Camera _cam;
     Vector3 direction;
     public GrenadeAbility(int maxdamage, int mindamage, int radius) : base("Grenade", "Throws a grenade that explodes on impact", 1, 15, null)
     {
@@ -32,6 +32,7 @@ public class GrenadeAbility : Ability
         target = GrenadeTarget_Instance.Instance;
         highLight = new List<Unit>();
         _cam = Camera.main;
+        Damage = minDamage + " - " + maxDamage + " Dmg";
     }
 
 
@@ -90,14 +91,14 @@ public class GrenadeAbility : Ability
 
     }
 
-    private void highLightunits()
+    public void highLightunits()
     {
         foreach (Unit unit in highLight)  
             unit.highlight();
     }
 
 
-    private void deHighLight()
+    public void deHighLight()
     {
         foreach (Unit unit in highLight)
             unit.DeHighlight();
@@ -107,7 +108,7 @@ public class GrenadeAbility : Ability
     public override void deActivate() { target.gameObject.SetActive(false);  if(highLight.Count > 0) deHighLight(); ObjectSelector.Instance.DeactiveGrenade(); }
 
 
-    public void ExcuteAbility(Vector3 worldSpace) {
+    public override void ExcuteAbility(Vector3 worldSpace) {
 
 
         List<Unit> list = new List<Unit>();
@@ -143,7 +144,7 @@ public class GrenadeAbility : Ability
 
         }
         //play animation
-        
+        Grenade.Instance.cmdCallExplosion();
         deActivate();
         damageUnits(list);
     }

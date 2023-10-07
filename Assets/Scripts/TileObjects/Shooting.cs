@@ -21,14 +21,14 @@ public class Shooting : NetworkBehaviour
     List<Vector3> directions;
     List<Cover> coverList;
     List<Vector3> Visited;
-    
+    public GameObject Smoke;
   
     
     private void Awake()
     {
         Instance = this;
-
-        directions = new List<Vector3> { east, south, north, west };
+        //left to right
+        directions = new List<Vector3> { west, north, east, south };
         coverList = new List<Cover>();
         Visited = new List<Vector3>();
         
@@ -115,8 +115,8 @@ public class Shooting : NetworkBehaviour
                         
 
 
-                        Debug.Log(unitPoint.transform.position);
-                        Debug.DrawLine(unitPoint.transform.position, hitInfo2.transform.position, Color.green, 10f);
+                      //  Debug.Log(unitPoint.transform.position);
+                       // Debug.DrawLine(unitPoint.transform.position, hitInfo2.transform.position, Color.green, 10f);
                         TargetData Data1 = new TargetData(target, CalulateHitPercentage(unit, unitPoint, target), unit.crit + unit.gun.getCrit(), target.targetPoint);
                         Data1.setDmg(unit.gun.getMin(), unit.gun.getMax());
                         unit.addToList(Data1);
@@ -130,7 +130,7 @@ public class Shooting : NetworkBehaviour
                             direction = targetPoint.transform.position - unitPoint.transform.position;
                             if (!Physics.Raycast(targetPoint.transform.position, direction, out RaycastHit hitInfoC, distance))
                             {
-                                Debug.Log(unitPoint.transform.position);
+                               // Debug.Log(unitPoint.transform.position);
                                 
                                 TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unitPoint, target), unit.crit + unit.gun.getCrit(), targetPoint);
                                 Data.setDmg(unit.gun.getMin(), unit.gun.getMax());
@@ -320,11 +320,17 @@ public class Shooting : NetworkBehaviour
                 Cover cover = new Cover(height, direction);
                 coverList.Add(cover);
                 Visited.Add(direction);
+                Vector3 lookpoint = hit.point;
+                lookpoint.y = 0;
+                unit.transform.LookAt(lookpoint);
+                unit.transform.Rotate(0, 45, 0);
                 
             }
         }
        
     }
+
+  
 
 
     
@@ -424,6 +430,8 @@ public class Shooting : NetworkBehaviour
 
 
     public List<GameObject> getButtons() { if (spawnedButtons != null) return spawnedButtons; else return null; }
+
+
 
 
 }

@@ -25,7 +25,6 @@ public class AudioManager : NetworkBehaviour
 
         foreach (AudioClip clip in soundList)
         {
-            Debug.Log(clip.name);
             AddSound(clip.name, clip);
         }
     }
@@ -35,8 +34,28 @@ public class AudioManager : NetworkBehaviour
         soundDictionary.Add(name, clip);
     }
 
-
     [Command(requiresAuthority = false)]
+    public void cmdLoopSound(string name)
+    {
+        if (soundDictionary.ContainsKey(name))
+            soundLoop(name);
+    }
+
+    [ClientRpc]
+    void soundLoop(string name)
+    {
+        audioSource.loop = true;
+        PlaySound(name);
+    }
+
+
+
+
+
+
+
+
+        [Command(requiresAuthority = false)]
     public void cmDPlaySound(string name)
     {
         if (soundDictionary.ContainsKey(name))
@@ -44,21 +63,23 @@ public class AudioManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    void PlaySound(string name)
+    public void PlaySound(string name)
     {
-        
-            audioSource.clip = soundDictionary[name];
-            audioSource.Play();
+        audioSource.loop = false;
+        audioSource.clip = soundDictionary[name];
+        audioSource.Play();
         
     }
     [Command(requiresAuthority =false)]
     public void cmdStopSound()
     {
+        
         stopSound();
     }
     [ClientRpc]
     void stopSound()
     {
+        audioSource.loop = false;
         audioSource.Stop();
     }
 }

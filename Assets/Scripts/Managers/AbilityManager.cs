@@ -15,7 +15,8 @@ public class AbilityManager : MonoBehaviour
     List<GameObject> spawnedButtons;
     public static AbilityManager Instance;
     Vector3 origin;
-
+    public List<GameObject> smokeCloud;
+    public GameObject Shooiting_View;
 
 
 
@@ -26,6 +27,7 @@ public class AbilityManager : MonoBehaviour
         _input = InputManager.Instance;
         spawnedButtons = new List<GameObject>();
         Instance = this;
+        smokeCloud = new List<GameObject>();
     }
 
     public void activate(Ability ability)
@@ -33,12 +35,20 @@ public class AbilityManager : MonoBehaviour
         currentAbility = ability;
         currentAbility.setup();
         active = true;
-
-        origin = ObjectSelector.Instance.getSelectedUnit().transform.position;   
+        Shooiting_View.gameObject.SetActive(true);
+        origin = ObjectSelector.Instance.getSelectedUnit().transform.position;
+        Shooting_View_Controller.Instance.UpdateInfo(ability);
     }
 
+    public void addsmoke(GameObject smoke)
+    {
+        smokeCloud.Add(smoke);
+    }
 
-
+    public void removeSmoke(GameObject smoke)
+    {
+        smokeCloud.Remove(smoke);
+    }
 
     void Update()
     {
@@ -83,6 +93,7 @@ public class AbilityManager : MonoBehaviour
     {
         currentAbility = null;
         active = false;
+        Shooiting_View.SetActive(false);
     }
 
 
@@ -124,8 +135,8 @@ public class AbilityManager : MonoBehaviour
 
     }
 
-
-
+    
+   
 
 
 

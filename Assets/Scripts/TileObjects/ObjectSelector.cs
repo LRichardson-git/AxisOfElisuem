@@ -15,9 +15,10 @@ public class ObjectSelector : MonoBehaviour
     private bool buttonDown = false;
     public bool canmove = false;
     public static ObjectSelector Instance { get; private set; }
-
+    public GameObject smoke;
     [SerializeField]
     Grenade grenade;
+    Camera _cam;
 
     private void Start()
     {
@@ -29,10 +30,15 @@ public class ObjectSelector : MonoBehaviour
         CellLocation = new Vector3Int();
         shooting = GetComponent<Shooting>();
         abilityManager = AbilityManager.Instance;
+        _cam = Camera.main;
     }
 
     void Update()
     {
+        if (abilityManager.active == true)
+            return;
+
+
         if (input.leftClick)
         {
             SelectUnit();
@@ -47,14 +53,16 @@ public class ObjectSelector : MonoBehaviour
             //script.HighlightTiles(World_Pathfinding.findAllPaths(selectedUnit.x, selectedUnit.y, selectedUnit.movementPoints, selectedUnit.width, selectedUnit.height));
 
         }
-        
-        else if (input.rightLetGo && abilityManager.active == false){ buttonDown = false;    moveUnit();
+
+        else if (input.rightLetGo && abilityManager.active == false)
+        {
+            buttonDown = false; moveUnit();
             //script.DeHighLight(); script.DeHightLightTile(); //visual.notShowMovement();
         }
 
-        CellLocation = World_Pathfinding.worldToCoord(Camera.main.ScreenToWorldPoint(input.MousePos),selectedUnit.width, selectedUnit.depth);
+        CellLocation = World_Pathfinding.worldToCoord(Camera.main.ScreenToWorldPoint(input.MousePos), selectedUnit.width, selectedUnit.depth);
 
-        if (!CellLocation.Equals(previousCell) && buttonDown == true )
+        if (!CellLocation.Equals(previousCell) && buttonDown == true)
         {
             previousCell = CellLocation;
             //visual.showMovement(selectedUnit);
@@ -82,7 +90,7 @@ public class ObjectSelector : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
 
-            var tempor = World_Pathfinding.worldToCoord(hit.point, selectedUnit.width,1);
+            var tempor = World_Pathfinding.worldToCoord(hit.point, selectedUnit.width, 1);
             selectedUnit.MoveUnit((int)tempor.x, (int)tempor.y, tempor.z);
 
             //selectedUnit.GetComponent<Unit_Movement>().moveToTarget((int)tempor.x, (int)tempor.y, tempor.z);
@@ -92,18 +100,18 @@ public class ObjectSelector : MonoBehaviour
 
     private void SelectUnit()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit))
         {
 
             Unit unit = hit.collider.GetComponent<Unit>();
-            
+
             if (unit != null && unit.isOwned)
             {
-      
-                if ( selectedUnit != null)
+
+                if (selectedUnit != null)
                 {
 
                     // Deselect the previously selected unit
@@ -114,7 +122,8 @@ public class ObjectSelector : MonoBehaviour
                 // Select the new unit
                 selectedUnit = unit;
                 selectedUnit.Select();
-            //    Debug.Log(abilityManager);
+                UnitManager.Instance.ShowPaths(selectedUnit);
+                //    Debug.Log(abilityManager);
                 AbilityManager.Instance.createButtons(selectedUnit);
 
             }
@@ -122,19 +131,21 @@ public class ObjectSelector : MonoBehaviour
     }
 
 
-    public void playAnimation(string anim, Vector3 direction) {
+    public void playAnimation(string anim, Vector3 direction)
+    {
 
         if (anim == null || anim == "")
             return;
 
-    
 
-        selectedUnit.playAnim(anim,direction);
+
+        selectedUnit.playAnim(anim, direction);
     }
 
     public void returnGun() { selectedUnit.GetComponent<Solider>().gunModel.gameObject.SetActive(true); }
     public void AimGrenade() { grenade.gameObject.SetActive(true); grenade.Aim(selectedUnit.transform.position); }
-    public bool FireGrenade(Vector3 End, GrenadeAbility ability) {
+    public bool FireGrenade(Vector3 End, GrenadeAbility ability)
+    {
 
         Vector3 direction = (End - selectedUnit.transform.position);
         float distance = Vector3.Distance(selectedUnit.transform.position, End) - 1;
@@ -142,12 +153,12 @@ public class ObjectSelector : MonoBehaviour
 
 
 
-        
+
         //nothing in way fire
 
-        if (grenade.CheckFire(selectedUnit.transform.position,End))
+        if (grenade.CheckFire(selectedUnit.transform.position, End))
         {
-            grenade.gameObject.SetActive(true); grenade.fireF(End, ability, animspeed,ability.Explode);
+            grenade.gameObject.SetActive(true); grenade.fireF(End, ability, animspeed, ability.Explode);
             selectedUnit.GetComponent<Solider>().gunModel.gameObject.SetActive(false);
             return true;
         }
@@ -157,14 +168,14 @@ public class ObjectSelector : MonoBehaviour
                 if (grenade.CheckFire(targetPoint.transform.position, End))
                 {
                     grenade.Aim(targetPoint.transform.position);
-                    grenade.gameObject.SetActive(true); grenade.fireF(End, ability, animspeed,ability.Explode);
+                    grenade.gameObject.SetActive(true); grenade.fireF(End, ability, animspeed, ability.Explode);
                     selectedUnit.GetComponent<Solider>().gunModel.gameObject.SetActive(false);
                     return true;
                 }
             }
         Debug.Log("false");
         ability.deActivate();
-        
+
         return false;
     }
 
@@ -173,9 +184,22 @@ public class ObjectSelector : MonoBehaviour
         grenade.stopAim();
     }
 
+    public Unit hoveredUnit()
+    {
+        Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
+        if (Physics.Raycast(ray, out hit))
+        {
+
+            Unit unit = hit.collider.GetComponent<Unit>();
+            return unit;
+        }
+
+        return null;
 
     }
+}
 
 
 

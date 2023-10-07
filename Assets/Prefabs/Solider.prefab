@@ -455,7 +455,7 @@ MonoBehaviour:
   z: 2
   width: 1
   depth: 2
-  movementPoints: 100
+  movementPoints: 20
   height: 1
   flying: 0
   Vision: 200
@@ -466,6 +466,8 @@ MonoBehaviour:
   amour: 0
   gun: {fileID: 2521997682572396046, guid: 78d36c30a71c8754d86292948fa93755, type: 3}
   animator: {fileID: 4957018710641338247}
+  DefaultColor: {r: 1, g: 1, b: 1, a: 0}
+  highlighted: 0
   HP: 5
   targetPoint: {fileID: 3733059511987968925}
   targetPoints:

@@ -91,6 +91,10 @@ public static class World_Pathfinding
         newPos.x = x * 10 + (5 * uWidth);
         newPos.y = y * 10 + (5 * uDepth);
         newPos.z = z * 10 + (5 * uWidth);
+
+        if (uDepth == 1)
+            newPos.y -=  5;
+
         return newPos;
     }
 
@@ -125,13 +129,17 @@ public static class World_Pathfinding
 
     public static List<Vector3> findPath(int xEnd, int yEnd, int zEnd, int xSt, int ySt, int zSt, int uWidth, int uHeight, int uDepth, bool flight)
     {
-        if (xEnd < 0 || xEnd > width || yEnd < 0 || yEnd > depth || zEnd <0 || zEnd > height) { Debug.Log("invalid point"); return null; }
 
-        if (!isAreaWalkable(xEnd, yEnd, zEnd, uWidth, uHeight, uDepth,flight))
+        if (xEnd < 0 || xEnd >= width || yEnd < 0 || yEnd >= depth || zEnd < 0 || zEnd >= height) {  return null; }
+
+        if (!isAreaWalkable(xEnd, yEnd, zEnd))
         {
-            Debug.Log("not walkable");
             return null;
         }
+
+        
+
+        
 
         Coords startCoord = mapIndex[xSt, ySt, zSt];
         Coords EndCoord = mapIndex[xEnd, yEnd, zEnd];
@@ -295,7 +303,7 @@ public static class World_Pathfinding
                     if (newX >= 0 && newX < width && newY >= 0 && newY < depth && newZ >= 0 && newZ < height)
                     {
                         // Check if the new coordinates are within bounds
-                        if (isAreaWalkable(newX, newY, newZ, unitWidth, unitHeight, unitDepth,flight))
+                        if (isAreaWalkable(newX, newY, newZ))
                         {
                             neighbourList.Add(mapIndex[newX, newY, newZ]);
                         }
@@ -310,13 +318,12 @@ public static class World_Pathfinding
     }
 
 
-    private static bool isAreaWalkable(int x, int y, int z, int unitwidth, int unitheight, int unitDepth, bool flying)
+    private static bool isAreaWalkable(int x, int y, int z)
     {
-
-        if (mapIndex[x, y, z].type == Tile_Type.air && flying == false)
+        if (!mapIndex[x, y, z].IsWalkable)
             return false;
 
-
+        /*
         for (int i = x; i < x + unitwidth; i++)
         {
             for (int j = y; j < y + unitDepth; j++)
@@ -332,49 +339,15 @@ public static class World_Pathfinding
                 }
             }
         }
+        */
         return true;
     }
 
 
-    /*
-    public static List<Vector3> findAllPaths(int xSt, int ySt, int movement, int unitWidth, int unitHeight, int unitDepth)
-    {
-        List<Vector3> allPaths = new List<Vector3>();
-        return null;
-        //tempoirary
-        int temp = 0;
-        if (unitWidth < 2)
-            temp = 1;
+    
+   
 
-        
-        Debug.Log(xSt + "." + ySt + "." + movement);
-        // calculate paths to all walkable end points
-        for (int i = xSt - (movement - temp); i < xSt + movement; i++)
-        {
-            for (int j = ySt - (movement - temp); j < ySt + movement; j++)
-            {
-                
-                if (i>-1 && j > -1 &&  mapIndex[i, j].IsWalkable)
-                {
-                    List<Vector3> path = findPath(i, j, xSt, ySt, unitWidth, unitHeight,unitDepth);
 
-                    if (path != null)
-                    {
-                        foreach (Vector3 coords in path)
-                        {
-                            allPaths.Add(coords);
-                        }
-
-                    }
-                }
-            }
-        }
-
-        return allPaths;
-    }
-    }
-
-*/
 
 private static void TestingSetup()
         {
@@ -396,66 +369,9 @@ private static void TestingSetup()
 
 
 
-    private static Vector3 calcDirection(int x, int y, int z, int i , int j, int k)
-    {
-        Vector3Int baseP = coordToWorld(mapIndex[x, y, z], 1, 2);
-        Vector3Int TargetP = coordToWorld(mapIndex[i, j, k], 1, 2);
-
-        Vector3 direction = TargetP - baseP;
-        direction.Normalize();
-
-        Debug.Log(direction);
-        return direction;
-
-    }
 
 
-
-    public static List<Cover> CheckCover(int x, int y, int z)
-    {
-
-        List<Cover> covers = new List<Cover>();
-
-        foreach (Coords coords in mapIndex)
-        {
-            if (coords.type == Tile_Type.Wall)
-                Debug.Log(coords.x + " : " + coords.y + " : " + coords.z);
-        }
-
-
-        for (int i = x - 1; i <= x + 1; i++)
-        {
-            for (int j = y + 1; j > y; j--)
-            {
-                for (int k = z - 1; k <= z + 1; k++)
-                {
-                    
-                    if (mapIndex[x, y, z].getTypeof() == Tile_Type.Wall)
-                    {
-                        Vector3 direction = calcDirection(x, y, z, i, j, k);
-                        if (covers == null)
-                            covers.Add(new Cover(y, j, direction));
-
-                        else
-                        {
-
-                            foreach (Cover cover in covers)
-                            {
-
-                                if (cover.Direction != direction)
-                                    covers.Add(new Cover(y, j, direction));
-                            }
-                        }
-                    }
-                    
-
-
-                }
-            }
-        }
-
-        return covers;
-    }
+   
 
 
 

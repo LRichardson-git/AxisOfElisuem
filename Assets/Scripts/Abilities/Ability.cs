@@ -4,22 +4,24 @@ using UnityEngine;
 
 public abstract class Ability 
 {
-    public string Name { get; }
-    public string Description { get; }
-    public int Cost { get; }
-    public int Range { get; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public int Cost { get; set; }
+    public float Range { get; set; }
 
-    public Sprite icon { get; }
+    public Sprite Icon { get; set; }
+
 
     public string Animation;
 
+    public string Damage;
     public Ability(string name, string description, int cost, int range, Sprite icon)
     {
         Name = name;
         Description = description;
         Cost = cost;
         Range = range;
-        this.icon = icon;
+        Icon = icon;
     }
 
 
@@ -30,4 +32,7 @@ public abstract class Ability
     public abstract void Execute(Vector3 worldSpace);
 
     public abstract void Target(Vector3 worldSpace);
+
+    public abstract void ExcuteAbility(Vector3 worldSpace);
+  
 }

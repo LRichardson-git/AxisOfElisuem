@@ -16,8 +16,10 @@ public class Grenade : NetworkBehaviour
     bool fire = false;
     [SerializeField]
     GameObject explosion;
-    
+    [SerializeField]
+    GameObject smoke;
 
+    public static Grenade Instance;
     LineRenderer _Line;
     public GameObject grenadeN;
     public GameObject grenadeS;
@@ -37,7 +39,10 @@ public class Grenade : NetworkBehaviour
     [SyncVar]
     bool type = true;
 
-
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -106,7 +111,6 @@ public class Grenade : NetworkBehaviour
         float xfinal = v0 * time * Mathf.Cos(angle);
         float yfinal = v0 * time * Mathf.Sin(angle) - 0.5f * -Physics.gravity.y * Mathf.Pow(time, 2);
         _Line.SetPosition(count, firepoint + direction * xfinal + Vector3.up * yfinal);
-        _Line.endColor = Color.yellow;
     }
 
     private void CalculatePathHeight(Vector3 targetPos, float h, out float v0, out float angle, out float time)
@@ -218,7 +222,6 @@ public class Grenade : NetworkBehaviour
 
         ability.ExcuteAbility(target);
         ObjectSelector.Instance.returnGun(); //gun was disabled until animation complete
-        cmdCallExplosion();
         ObjectSelector.Instance.playAnimation("Grounded", target);
     }
 
@@ -248,7 +251,7 @@ public class Grenade : NetworkBehaviour
 
 
     [Command(requiresAuthority = false)]
-    void cmdCallExplosion()
+    public void cmdCallExplosion()
     {
 
         explode();
@@ -263,6 +266,25 @@ public class Grenade : NetworkBehaviour
         Instantiate(explosion, transform.position,Quaternion.identity);
        // Instantiate(newObject, transform.position, Quaternion.identity);
     }
+    [Command(requiresAuthority = false)]
+    public void cmdSpawnSmoke()
+    {
+        smooke();
+    }
+
+    [ClientRpc]
+    void smooke()
+    {
+        audioSource.clip = S_Smoke;
+        audioSource.Play();
+        grenadeN.SetActive(false);
+        grenadeS.SetActive(false);
+        Instantiate(smoke, transform.position, Quaternion.identity);
+    }
+
+
+
+
     private void OnCollisionEnter(Collision collision)
     {
         // Play the bouncing sound effect

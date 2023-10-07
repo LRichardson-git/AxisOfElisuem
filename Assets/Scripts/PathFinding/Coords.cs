@@ -26,12 +26,15 @@ public class Coords
         this.y = y;
         this.z = z;
 
-        IsWalkable = true;
+        IsWalkable = false;
         LastCoord = null;
         type = Tile_Type.air;
 
         if (y < 1)
+        {
             type = Tile_Type.floor;
+            IsWalkable = true;
+        }
     }
     public void settype(Tile_Type type) { 
         this.type = type; 

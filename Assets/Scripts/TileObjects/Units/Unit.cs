@@ -22,19 +22,26 @@ public class Unit : Tile_Object
     private AudioManager audioManager;
     [SyncVar]
     private int ID;
-
+    Renderer[] renderers;
     public List<Ability> Abilities;
     public Gun gun;
     private Renderer _material;
     [SerializeField]
     private Animator animator;
+    public Color DefaultColor;
+    public bool highlighted = false;
     //Networked so client can know
     [SyncVar(hook = nameof(OnHpChanged))]
     public int HP = 5;
 
     void OnHpChanged(int _Old, int _New)
     {
+        if (HP > maxHP)
+            HP = maxHP;
+
         UnitInfo.OnInfoChanged(HP);
+
+
 
         if (HP <= 0)
         {
@@ -77,7 +84,8 @@ public class Unit : Tile_Object
         _unit_Move = GetComponent<Unit_Movement>();
         Abilities = new List<Ability>();
         audioManager = AudioManager.instance;
-       // _material = GetComponent<Renderer>();
+        // _material = GetComponent<Renderer>();
+        renderers = GetComponentsInChildren<Renderer>();
     }
 
     internal void Deselect()
@@ -129,11 +137,18 @@ public class Unit : Tile_Object
 
     public void highlight()
     {
-       // _material.material.color = Color.green;
-    }
+        foreach (Renderer renderer in renderers){
+            highlighted = true;
+            renderer.material.color = Color.green;
+        }
+        }
 
-    public void DeHighlight() { 
-      //  _material.material.color = Color.red; 
+    public void DeHighlight() {
+        foreach (Renderer renderer in renderers)
+        {
+            highlighted = false;
+            renderer.material.color = DefaultColor;
+        }
     }
 
 
@@ -145,7 +160,7 @@ public class Unit : Tile_Object
         }
     }
 
-    public void playAnim(string anim, Vector3 direction) { transform.LookAt(direction);  animator.speed = 2;  animator.Play(anim); audioManager.cmDPlaySound(anim); }
+    public void playAnim(string anim, Vector3 direction) { direction.y = transform.position.y;   transform.LookAt(direction);  animator.speed = 2;  animator.Play(anim); audioManager.cmDPlaySound(anim); }
     
 }
 

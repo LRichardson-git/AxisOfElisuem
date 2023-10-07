@@ -32,9 +32,11 @@ public class Unit_Movement : MonoBehaviour
         
         if (path != null)
         {
+            animator.speed = 1;
             int limitedPathLength = Mathf.Min(path.Count, _unit.movementPoints);
             List<Vector3> limitedPath = path.GetRange(0, limitedPathLength);
             // Move the Unit along the limited path
+            _audio.cmdLoopSound("running");
             StartCoroutine(moveAlongPath(limitedPath));
 
             // Update the unit's movement path
@@ -55,15 +57,16 @@ public class Unit_Movement : MonoBehaviour
         {
             Vector3 targetPosition = path[i];
             //targetPosition.y = 5 * _unit.depth;
+            
             while (Vector3.Distance(transform.position, targetPosition) >= speed * Time.deltaTime)
             {
                 //rotate towards location and set run animtion
-                animator.SetFloat("Speed", 5);
+                animator.SetFloat("Speed", 2);
                 directionToTarget = targetPosition - transform.position;
                 targetRotation = Quaternion.LookRotation(directionToTarget);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotaionSpeed * Time.deltaTime);
                 transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * speed);
-                _audio.cmDPlaySound("running");
+                
                 yield return null;
             }
             transform.position = targetPosition;
@@ -84,7 +87,7 @@ public class Unit_Movement : MonoBehaviour
         Shooting.Instance.CheckSight(_unit);
         Shooting.Instance.SpawnButtons(_unit.getList());
         _isMoving=false;
-
+        UnitManager.Instance.ShowPaths(_unit);
         //debugging
 
         if (_unit.covers != null)
