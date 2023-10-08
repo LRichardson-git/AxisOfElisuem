@@ -99,6 +99,7 @@ MonoBehaviour:
   minDmg: 2
   maxDmg: 5
   penetration: 0
-  minRange: 10
-  maxRange: 20
+  minRange: 1
+  maxRange: 18
   Critc: 10
+  punishment: 2

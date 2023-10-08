@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 public class buttonAbility : MonoBehaviour
 {
     Ability ability;
-
+    [SerializeField]
+    private TextMeshProUGUI Number;
     public void init(Ability ability)
     {
         this.ability = ability;
@@ -15,8 +17,8 @@ public class buttonAbility : MonoBehaviour
     public void activate()
     {
         AbilityManager.Instance.activate(ability);
-      //  Debug.Log("Activing: " + ability.Name);
-        
+        Debug.Log("Activing: " + ability.Name);
+
     }
 
     private void OnMouseUpAsButton()
@@ -24,5 +26,9 @@ public class buttonAbility : MonoBehaviour
         activate();
     }
 
+    public void setnum(int i)
+    {
+        Number.text = i.ToString();
+    }
 
 }

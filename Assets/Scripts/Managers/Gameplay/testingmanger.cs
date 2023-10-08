@@ -39,6 +39,9 @@ public class testingmanger : NetworkBehaviour
                 //Debug.Log("Units: " + UnitManager.Instance.GetUnitList().Count);
             
         }
+
+        if (Input.GetKeyUp(KeyCode.O))
+            UnitManager.Instance.newTurn();
         
     }
 

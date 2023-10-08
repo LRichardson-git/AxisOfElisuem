@@ -4745,6 +4745,7 @@ GameObject:
   - component: {fileID: 4000011112872720}
   - component: {fileID: 198000011441735220}
   - component: {fileID: 199000011017760676}
+  - component: {fileID: 1416918671627162159}
   m_Layer: 0
   m_Name: smoke_Explosion
   m_TagString: Untagged
@@ -9326,6 +9327,18 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &1416918671627162159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000012560919920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db16256803556ab49b3f4e4af21fb684, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1000014148598988
 GameObject:
   m_ObjectHideFlags: 0

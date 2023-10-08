@@ -73,6 +73,16 @@ public class ObjectSelector : MonoBehaviour
             //pre calculate cover and show
         }
 
+        //Debug.Log(_input.Hotbar);
+        //check abilities()
+        if (_input.Hotbar != 0)
+            _abilityManager.pressButton(_input.Hotbar);
+
+
+
+
+
+
     }
 
     public Unit getSelectedUnit()
@@ -163,7 +173,7 @@ public class ObjectSelector : MonoBehaviour
                 }
             }
         ability.deActivate();
-
+        AudioManager.instance.PlaySound("Error");
         return false;
     }
 

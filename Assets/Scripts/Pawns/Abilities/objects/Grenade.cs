@@ -267,19 +267,21 @@ public class Grenade : NetworkBehaviour
        // Instantiate(newObject, transform.position, Quaternion.identity);
     }
     [Command(requiresAuthority = false)]
-    public void cmdSpawnSmoke()
+    public void cmdSpawnSmoke(int radius)
     {
-        smooke();
+        smooke(radius);
     }
 
     [ClientRpc]
-    void smooke()
+    void smooke(int radius)
     {
         audioSource.clip = S_Smoke;
         audioSource.Play();
         grenadeN.SetActive(false);
         grenadeS.SetActive(false);
-        Instantiate(smoke, transform.position, Quaternion.identity);
+        smoke Smoke = Instantiate(smoke, transform.position, Quaternion.identity).GetComponent<smoke>();
+        Smoke.radius = radius;
+        UnitManager.Instance.addObject(Smoke);
     }
 
 
@@ -299,5 +301,25 @@ public class Grenade : NetworkBehaviour
         _Line.positionCount = 0;
     }
 
+
+
+
+
+
+
+    //NOT NEEDED LOL
+    //just here since networked
+    [Command (requiresAuthority =false)]
+    public void cmdDeleteObject(int objec) {
+
+        deleteObjec(objec);
+    
+    }
+    [ClientRpc]
+    void deleteObjec(int objec)
+    {
+        UnitManager.Instance.removeobject(objec);
+
+    }
 
 }

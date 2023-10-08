@@ -5,13 +5,14 @@ using UnityEngine;
 public class Gun : MonoBehaviour
 {
 #pragma warning disable 0414
-    private int minDmg = 2;
-    private int maxDmg = 5;
+    public int minDmg = 2;
+    public int maxDmg = 5;
     public int penetration;
     public int minRange = 10;
     public int maxRange = 20;
-    private int Critc = 10;
-    GunType type = GunType.rifle;
+    public int Critc = 10;
+    public float punishment = 2;
+    GunType type = GunType.sniper;
 
     public int getMin() { return minDmg; }
 

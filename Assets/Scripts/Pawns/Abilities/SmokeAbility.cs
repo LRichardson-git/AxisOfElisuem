@@ -17,7 +17,7 @@ public class SmokeAbility : GrenadeAbility
     {
         Name = "Smoke Grenade";
         Description = "throw a smoke greande to protect lower the chance to be hit";
-        Damage = "-25% to hit";
+        Damage = "25% protection";
         target = GrenadeTarget_Instance.Instance;
         highLight = new List<Unit>();
         _cam = Camera.main;
@@ -51,7 +51,7 @@ public class SmokeAbility : GrenadeAbility
 
         public override void ExcuteAbility(Vector3 worldSpace)
     {
-        Grenade.Instance.cmdSpawnSmoke();
+        Grenade.Instance.cmdSpawnSmoke(radius);
         deActivate();
     }
 }

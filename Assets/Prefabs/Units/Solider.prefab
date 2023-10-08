@@ -459,8 +459,8 @@ MonoBehaviour:
   height: 1
   flying: 0
   Vision: 200
-  range: 100
-  aim: 50
+  range: 30
+  aim: 60
   crit: 0
   aimModifer: 0
   amour: 0

@@ -10,6 +10,7 @@ public class Shooting : NetworkBehaviour
     public GameObject buttonPrefab;
     private List<GameObject> spawnedButtons = new List<GameObject>();
     public static Shooting Instance;
+    UnitManager _unitManager;
 
     Vector3 east = Vector3.back;// east
     Vector3 south = Vector3.left; //south
@@ -23,6 +24,7 @@ public class Shooting : NetworkBehaviour
     List<Vector3> Visited;
     public GameObject Smoke;
   
+
     
     private void Awake()
     {
@@ -32,6 +34,11 @@ public class Shooting : NetworkBehaviour
         coverList = new List<Cover>();
         Visited = new List<Vector3>();
         
+    }
+
+    private void Start()
+    {
+        _unitManager = UnitManager.Instance;
     }
 
     public void CheckSight(Unit unit)
@@ -193,7 +200,12 @@ public class Shooting : NetworkBehaviour
 
 
         if (unit.y > Target.y + 1)
-            Modifers += 25;
+            Modifers += 20;
+        else if (unit.y < Target.y - 1)
+            Modifers -= 20;
+
+        Modifers += _unitManager.GetModifers(Target);
+
 
         //add negative for gun range etc.. here
 
@@ -202,11 +214,11 @@ public class Shooting : NetworkBehaviour
         distance = distance / 10;
         if (distance >  unit.gun.maxRange)
         {
-            Modifers -= (distance - unit.gun.maxRange) * 2;
+            Modifers -= (unit.gun.punishment * (distance - unit.gun.maxRange));
         }
         else if (distance < unit.gun.minRange)
         {
-            Modifers -= unit.gun.minRange - distance;
+            Modifers -= (unit.gun.punishment * ( unit.gun.minRange - distance));
         }
 
 

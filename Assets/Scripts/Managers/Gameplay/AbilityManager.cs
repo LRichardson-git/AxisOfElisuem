@@ -12,7 +12,7 @@ public class AbilityManager : MonoBehaviour
     Ability currentAbility;
     InputManager _input;
     public GameObject buttonPrefab;
-    List<GameObject> spawnedButtons;
+    List<buttonAbility> spawnedButtons;
     public static AbilityManager Instance;
     Vector3 origin;
     public List<GameObject> smokeCloud;
@@ -25,13 +25,19 @@ public class AbilityManager : MonoBehaviour
     {
         cam = Camera.main;
         _input = InputManager.Instance;
-        spawnedButtons = new List<GameObject>();
+        spawnedButtons = new List<buttonAbility>();
         Instance = this;
         smokeCloud = new List<GameObject>();
     }
 
     public void activate(Ability ability)
     {
+
+        if (currentAbility != null)
+            currentAbility.deActivate();
+
+        deactivate();
+
         currentAbility = ability;
         currentAbility.setup();
         active = true;
@@ -84,7 +90,20 @@ public class AbilityManager : MonoBehaviour
     }
 
 
-    
+    public void pressButton(int i)
+    {
+
+        Debug.Log(i-1);
+        Debug.Log(spawnedButtons.Count);
+        Debug.Log(spawnedButtons[i - 1].name);
+
+        if (i !> spawnedButtons.Count -1)
+            spawnedButtons[i - 1].activate();
+
+
+    }
+
+
 
     public void deactivate()
     {
@@ -98,9 +117,9 @@ public class AbilityManager : MonoBehaviour
     {
         
         // Remove any previously spawned buttons
-        foreach (GameObject button in spawnedButtons)
+        foreach (buttonAbility button in spawnedButtons)
         {
-            Destroy(button);
+            Destroy(button.gameObject);
         }
         spawnedButtons.Clear();
 
@@ -118,9 +137,10 @@ public class AbilityManager : MonoBehaviour
             // Adjust the spawn position based spacing
             spawnPosition += new Vector2(buttonWidth + buttonSpacing, 0);
 
-            GameObject button = Instantiate(buttonPrefab, spawnPosition, Quaternion.identity, transform);
+            buttonAbility button = Instantiate(buttonPrefab, spawnPosition, Quaternion.identity, transform).GetComponent<buttonAbility>();
             spawnedButtons.Add(button);
-            button.GetComponent<buttonAbility>().init(unit.Abilities[i]);
+            button.init(unit.Abilities[i]);
+            button.setnum(i + 1);
         }
 
 

@@ -12,11 +12,13 @@ public class UnitManager : MonoBehaviour
 
     public GameObject Floor;
     Material floorMaterial;
+    private List<smoke> smokeList;
     private void Awake()
     {
         Instance = this;
         _units = new List<Unit>();
         _highlighters = new List<GameObject>();
+        smokeList = new List<smoke>();
     }
 
     private void Start()
@@ -24,11 +26,60 @@ public class UnitManager : MonoBehaviour
         floorMaterial = Floor.GetComponent<Renderer>().material;
     }
 
+
+    public void newTurn()
+    {
+
+        for (int i = 0; i < smokeList.Count; i++)
+            smokeList[i].updateLife(i);
+
+
+    }
+
+    //Change in future
+    public int GetModifers(Unit unit)
+    {
+        int modifers = 0;
+
+        foreach (smoke smoke in smokeList)
+            if (smoke.Affected(unit))
+            {
+                modifers += smoke.modifer;
+                return modifers;
+            }
+        return modifers;
+    }
+
+
     public void AddUnit(Unit unit)
     {
         _units.Add(unit);
     }
 
+
+
+    public int getObjectnum(smoke objec)
+    {
+        for (int i = 0; i < smokeList.Count; i++)
+        {
+            if (smokeList[i] = objec)
+                return i;
+        }
+     
+        return -1;
+    }
+
+    public void removeobject(int i)
+    {
+        smoke temp = smokeList[i];
+        smokeList.RemoveAt(i);
+        Destroy(temp.gameObject);
+    }
+
+    public void addObject(smoke Smoke)
+    {
+        smokeList.Add(Smoke);
+    }
 
 
 

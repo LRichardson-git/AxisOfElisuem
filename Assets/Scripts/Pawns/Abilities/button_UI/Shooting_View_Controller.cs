@@ -10,6 +10,10 @@ public class Shooting_View_Controller : MonoBehaviour
     private TextMeshProUGUI ChanceToCrit;
     [SerializeField]
     private TextMeshProUGUI ChanceToDmg;
+    [SerializeField]
+    private TextMeshProUGUI Name;
+    [SerializeField]
+    private TextMeshProUGUI Description;
 
     public  GameObject manager;
     public Button firebutton;
@@ -32,7 +36,9 @@ public class Shooting_View_Controller : MonoBehaviour
 
     public void UpdateInfo(TargetData Data)
     {
-        ChanceToHit.fontSize = 32;
+        ChanceToCrit.gameObject.SetActive(true);
+        Name.text = "fire";
+        Description.text = "Fire at the target unit and end this units turn";
         ChanceToHit.text = Data.getHit() + "% to hit";
         ChanceToCrit.text = Data.getCrit() + "% to crit";
         ChanceToDmg.text = Data.minDmg + "-" + Data.maxDmg + " Dmg";
@@ -41,10 +47,12 @@ public class Shooting_View_Controller : MonoBehaviour
     }
 
     public void UpdateInfo(Ability ability) {
-        ChanceToHit.fontSize = 16;
-        ChanceToHit.text = ability.Name + "/n" + ability.Description;
-        ChanceToCrit.text = "Range: " +ability.Range ;
-        ChanceToDmg.text = ability.Damage ;
+
+        ChanceToCrit.gameObject.SetActive(false);
+        Name.text = ability.Name;
+        Description.text = ability.Description;
+        ChanceToDmg.text = "Range: " + ability.Range ;
+        ChanceToHit.text = ability.Damage;
 
     }
 
