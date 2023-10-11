@@ -14,31 +14,34 @@ public class Player : NetworkBehaviour
     [SyncVar]
     public bool testing = false;
 
+   
+
     public static Player LocalInstance { get; private set; }
 
     //(hook = nameof(CmdendTurn))
-    void Start()
+    private void Start()
     {
+        
         if (!isOwned) { return; }
-        testingg();
-
+        Setup();
 
         LocalInstance = this;
         
         Ui_Manager.Instance.init();
-    }
 
-    
+      
+    }
 
 
     [Command]
-    void testingg()
+    void Setup()
     {
-        GameManager.Instance.newPlayer(this);
 
-        
-        
+        GameManager.Instance.newPlayer(this,this.connectionToClient);
     }
+
+
+
 
     // Update is called once per frame
     void Update()
@@ -46,36 +49,9 @@ public class Player : NetworkBehaviour
 
         if (!isOwned || turn == false) { return; }
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            CmdMove();
-        }
-
-        if (Input.GetMouseButtonDown(1))
-        {
-            endTurn();
-        }
-
-
     }
 
-    //tell server 
-    [Command]
-    private void CmdMove()
-    {
-        //validate logic
-
-        RpcMove();
-    }
-
-
-    //run on all clients (on server)
-    [ClientRpc]
-    private void RpcMove()
-    {
-
-        gameObject.transform.position = Camera.main.ScreenToViewportPoint(Input.mousePosition);
-    }
+  
 
  
 
@@ -86,7 +62,6 @@ public class Player : NetworkBehaviour
         if (!isOwned || turn == false) { return; }
         
         //CmdEndTurn();
-        
 
     }
 

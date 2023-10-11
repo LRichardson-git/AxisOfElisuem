@@ -27,8 +27,8 @@ public class GameManager : NetworkBehaviour
     private SyncList<Player> playerList = new SyncList<Player>();
 
     private bool simultaneous = false;
-    
-    
+
+    [SyncVar]
     public int players;
 
     private int turnsEnded;
@@ -50,23 +50,35 @@ public class GameManager : NetworkBehaviour
 
         
     }
-
-
     
-    public void newPlayer(Player player)
+    void CmdGetUnitAuthority(NetworkIdentity unit , NetworkConnectionToClient connection)
     {
-        
-        playerList.Add(player);
-        Debug.Log("new player");
-        players++;
+
+        unit.AssignClientAuthority(connection);
     }
 
 
-    void Start()
+    
+
+    public int newPlayer(Player player, NetworkConnectionToClient connection)
     {
+        
+        playerList.Add(player);
+        players++;
 
-       
 
+        foreach(Unit unit in UnitManager.Instance.GetUnitList())
+        {
+            if (unit.ownedBy == players)
+            {
+                CmdGetUnitAuthority(unit.netIdentity, connection);
+                unit.ApplyDmg(2, 2);
+            }
+        }
+
+
+
+        return players;
     }
 
 
@@ -74,8 +86,13 @@ public class GameManager : NetworkBehaviour
     {
         //start
         if (!isServer) { return; }
+        if (Input.GetKeyDown("d"))
+        {
+            Debug.Log(players);
+        }
 
-        if (Input.GetKeyDown("p"))
+
+            if (Input.GetKeyDown("p"))
         {
             for (int i = 0; i < players; i++)
             {

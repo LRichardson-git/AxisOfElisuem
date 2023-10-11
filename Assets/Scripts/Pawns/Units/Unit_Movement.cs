@@ -23,7 +23,7 @@ public class Unit_Movement : MonoBehaviour
     public void moveToTarget(int endX, int endY, int endZ)
     {
 
-        if (_isMoving == true)
+        if (_isMoving == true )
             return;
 
 
@@ -90,20 +90,15 @@ public class Unit_Movement : MonoBehaviour
 
         _unit.DeleteCover();
         _unit.CheckCover();
-        Shooting.Instance.CheckSight(_unit);
-        Shooting.Instance.SpawnButtons(_unit.getList());
-        _isMoving=false;
-        UnitManager.Instance.ShowPaths(_unit);
-        //debugging
+        _isMoving = false;
+        
 
-        if (_unit.covers != null)
-        {
-            foreach (Cover cover in _unit.covers)
-            {
-                Debug.Log("Cover dir: " + cover.Direction);
-                Debug.Log("Height: " + cover.height);
-            }
-        }
+            Shooting.Instance.CheckSight(_unit);
+            Shooting.Instance.SpawnButtons(_unit.getList());
+            
+            UnitManager.Instance.ShowPaths(_unit);
+        
+        
     }
     
 }

@@ -27,7 +27,7 @@ public class Wall : MonoBehaviour
             float yE = transform.position.y / 2 + y;
             Vector3 pos = new Vector3(xE,yE, transform.position.z);
             World_Pathfinding.setNotwalkble(World_Pathfinding.worldToCoord(pos),x,y,z);
-            Debug.Log(World_Pathfinding.worldToCoord(pos));
+
 
         }
             

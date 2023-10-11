@@ -108,6 +108,8 @@ public class ObjectSelector : MonoBehaviour
         {
             var tempor = World_Pathfinding.worldToCoord(hit.point, selectedUnit.width, 1);
             selectedUnit.MoveUnit((int)tempor.x, (int)tempor.y, tempor.z);
+
+            
         }
     }
 

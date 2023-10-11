@@ -30,7 +30,7 @@ public class Unit : Tile_Object
     private Animator animator;
     public Color DefaultColor;
     public bool highlighted = false;
-
+    public int ownedBy = -1;
     //Networked so client can know
     [SyncVar(hook = nameof(OnHpChanged))]
     public int HP = 5;
@@ -88,6 +88,17 @@ public class Unit : Tile_Object
         // _material = GetComponent<Renderer>();
         renderers = GetComponentsInChildren<Renderer>();
 
+        if (ownedBy != -1)
+        {
+            foreach (NetworkConnection conn in NetworkServer.connections.Values)
+            {
+                
+                   // NetworkIdentity.AssignClientAuthority(conn);
+                    break;
+                
+            }
+        }
+
     }
 
     internal void Deselect()
@@ -124,13 +135,14 @@ public class Unit : Tile_Object
     }
 
     //maybe but maybe not thin about it
-    [Command(requiresAuthority =false)]
+
+    //[Command(requiresAuthority =false)]
     public void MoveUnit(int x, int y, int z)
-    { 
+    {
         _unit_Move.moveToTarget(x, y, z);
     }
 
-    
+
     public void SetID(int id)
     {
         ID = id;

@@ -5,7 +5,7 @@ using UnityEngine;
 public class UnitManager : MonoBehaviour
 {
     public static UnitManager Instance;
-
+    [SerializeField]
     private List<Unit> _units;
     private List<GameObject> _highlighters;
     public GameObject HighlightTile;
@@ -17,7 +17,7 @@ public class UnitManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        _units = new List<Unit>();
+        //_units = new List<Unit>();
         _highlighters = new List<GameObject>();
         smokeList = new List<smoke>();
     }
@@ -113,12 +113,12 @@ public class UnitManager : MonoBehaviour
 
                 for (int k = unit.z - (movement); k < unit.z + movement; k++)
                 {
-
+                    //not working change
                     if (World_Pathfinding.findPath(i, j, k, unit.x, unit.y, unit.z, unit.width, unit.height, unit.depth, unit.flying) != null)
                     {
-                        if (i >notDash + unit.x || j >notDash +unit.y|| k > notDash +unit.z)
-                            _highlighters.Add(Instantiate(HighlightDash, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
-                        else
+                       // if (i >notDash + unit.x || j >notDash +unit.y|| k > notDash +unit.z)
+                            //_highlighters.Add(Instantiate(HighlightDash, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+                       // else
                             _highlighters.Add(Instantiate(HighlightTile, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
 
 

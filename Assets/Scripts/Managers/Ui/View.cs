@@ -7,7 +7,6 @@ public abstract class View : MonoBehaviour
     public virtual void init()
     {
         initialized = true;
-        Debug.Log("TA");
     }
 
 }

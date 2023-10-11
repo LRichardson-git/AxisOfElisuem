@@ -398,7 +398,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
+  syncDirection: 1
   syncMode: 0
   syncInterval: 0
   target: {fileID: 3895528510378818041}
@@ -468,7 +468,7 @@ MonoBehaviour:
   animator: {fileID: 4957018710641338247}
   DefaultColor: {r: 1, g: 1, b: 1, a: 0}
   highlighted: 0
-  gunObject: {fileID: 4957018710631917639}
+  ownedBy: -1
   HP: 5
   targetPoint: {fileID: 3733059511987968925}
   targetPoints:
@@ -672,11 +672,6 @@ PrefabInstance:
 --- !u!4 &4957018710631647421 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 427246, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
-  m_PrefabInstance: {fileID: 4957018710631812179}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4957018710631917639 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 173076, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
   m_PrefabInstance: {fileID: 4957018710631812179}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &4957018710631939399 stripped
