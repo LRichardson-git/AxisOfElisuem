@@ -324,9 +324,13 @@ public class Shooting : NetworkBehaviour
                 coverList.Add(cover);
                 Visited.Add(direction);
                 Vector3 lookpoint = hit.point;
-                lookpoint.y = 0;
+                lookpoint.y = unit.transform.position.y;
                 unit.transform.LookAt(lookpoint);
-                unit.transform.Rotate(0, 45, 0);
+                unit.transform.Rotate(0,45,0);
+              //  Quaternion temp = unit.transform.rotation;
+             //   temp.rot = 0;
+              //  unit.transform.rotation = temp;
+               // Debug.Log(temp);
                 
             }
         }

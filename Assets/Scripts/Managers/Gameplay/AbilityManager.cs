@@ -33,8 +33,6 @@ public class AbilityManager : MonoBehaviour
     public void activate(Ability ability)
     {
 
-        if (currentAbility != null)
-            currentAbility.deActivate();
 
         deactivate();
 
@@ -67,6 +65,7 @@ public class AbilityManager : MonoBehaviour
         {
             currentAbility.deActivate();
             deactivate();
+            Shooiting_View.SetActive(false);
             return;
         }
         
@@ -77,8 +76,10 @@ public class AbilityManager : MonoBehaviour
             currentAbility.Target(hit.point);
             if (_input.leftClick)
             {
+                Shooiting_View.SetActive(false);
                 currentAbility.Execute(hit.point);
                 deactivate();
+                
             }
 
 
@@ -109,7 +110,7 @@ public class AbilityManager : MonoBehaviour
     {
         currentAbility = null;
         active = false;
-        Shooiting_View.SetActive(false);
+        
     }
 
 

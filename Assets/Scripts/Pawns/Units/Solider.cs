@@ -8,6 +8,8 @@ public class Solider : Unit
     public List<GameObject> targetPoints;
 
     public GameObject gunModel;
+
+
     /*
     public Solider(int x, int y, int z, int width, int depth) : base(x, y, z, width, depth)
     {

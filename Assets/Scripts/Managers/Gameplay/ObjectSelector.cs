@@ -22,8 +22,8 @@ public class ObjectSelector : MonoBehaviour
     private bool buttonDown = false;
     public bool canmove = false;
 
-
-
+    public bool canAction = true;
+    Shooting _shooting;
 
     private void Start()
     {
@@ -32,14 +32,14 @@ public class ObjectSelector : MonoBehaviour
         _input = GetComponent<InputManager>();
         _abilityManager = AbilityManager.Instance;
         _unitManager = UnitManager.Instance;
-
+        _shooting = Shooting.Instance;
         CellLocation = new Vector3Int();
         _cam = Camera.main;
     }
 
     void Update()
     {
-        if (_abilityManager.active == true)
+        if (_abilityManager.active == true || !canAction)
             return;
 
 
@@ -85,6 +85,15 @@ public class ObjectSelector : MonoBehaviour
 
     }
 
+    public void resetUnit()
+    {
+        selectedUnit.crit = 10;
+        
+        //done to make sure anything effecting shooting is reset
+        _shooting.CheckSight(selectedUnit);
+        _shooting.SpawnButtons(selectedUnit.getList());
+    }
+
     public Unit getSelectedUnit()
     {
         return selectedUnit;
@@ -125,7 +134,8 @@ public class ObjectSelector : MonoBehaviour
                 // Select the new unit
                 selectedUnit = unit;
                 selectedUnit.Select();
-
+                _shooting.CheckSight(selectedUnit);
+                _shooting.SpawnButtons(selectedUnit.getList());
                 //call
                 _unitManager.ShowPaths(selectedUnit);
                 _abilityManager.createButtons(selectedUnit);

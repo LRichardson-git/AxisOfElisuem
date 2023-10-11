@@ -40,6 +40,10 @@ public class testingmanger : NetworkBehaviour
             
         }
 
+       
+
+
+
         if (Input.GetKeyUp(KeyCode.O))
             UnitManager.Instance.newTurn();
         
@@ -107,9 +111,11 @@ public class testingmanger : NetworkBehaviour
     void CnrAddUnitToManager(GameObject unit)
     {
         UnitManager.Instance.AddUnit(unit.GetComponent<Solider>());
+        unit.GetComponent<Unit>().Abilities.Add(new Fire());
         unit.GetComponent<Unit>().Abilities.Add(new GrenadeAbility(5, 2, 3));
         unit.GetComponent<Unit>().Abilities.Add(new SmokeAbility(5, 2, 5));
         unit.GetComponent<Unit>().Abilities.Add(new MedPack());
+        unit.GetComponent<Unit>().Abilities.Add(new HeadshotAbility());
         unit.GetComponent<Unit>().init();
     }
     

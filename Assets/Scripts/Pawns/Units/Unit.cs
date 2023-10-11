@@ -30,6 +30,7 @@ public class Unit : Tile_Object
     private Animator animator;
     public Color DefaultColor;
     public bool highlighted = false;
+
     //Networked so client can know
     [SyncVar(hook = nameof(OnHpChanged))]
     public int HP = 5;
@@ -86,6 +87,7 @@ public class Unit : Tile_Object
         audioManager = AudioManager.instance;
         // _material = GetComponent<Renderer>();
         renderers = GetComponentsInChildren<Renderer>();
+
     }
 
     internal void Deselect()

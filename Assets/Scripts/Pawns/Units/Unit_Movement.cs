@@ -29,7 +29,13 @@ public class Unit_Movement : MonoBehaviour
 
         //call this end of turn if set to auto go somewhere
         List<Vector3> path = World_Pathfinding.findPath(endX, endY,endZ, _unit.x, _unit.y,_unit.z, _unit.width, _unit.height, _unit.depth,_unit.flying);
-        
+
+        if (path.Count > _unit.movementPoints)
+        {
+            _audio.PlaySound("Error");
+            return;
+
+        }
         if (path != null)
         {
             animator.speed = 1;

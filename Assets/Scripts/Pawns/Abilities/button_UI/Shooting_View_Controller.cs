@@ -15,6 +15,8 @@ public class Shooting_View_Controller : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI Description;
 
+    ObjectSelector _selector;
+
     public  GameObject manager;
     public Button firebutton;
     //dont see why not
@@ -26,12 +28,14 @@ public class Shooting_View_Controller : MonoBehaviour
     {
         Instance = this;
         manager.SetActive(false);
+        _selector = ObjectSelector.Instance;
     }
 
     public void Activate()
     {
         manager.SetActive(true);
         firebutton.gameObject.SetActive(true);
+        _selector.canAction = false;
     }
 
     public void UpdateInfo(TargetData Data)
@@ -44,6 +48,7 @@ public class Shooting_View_Controller : MonoBehaviour
         ChanceToDmg.text = Data.minDmg + "-" + Data.maxDmg + " Dmg";
         unitID = Data.getUnit().getID();
         Tdata = Data;
+        Debug.Log("XD");
     }
 
     public void UpdateInfo(Ability ability) {
@@ -60,6 +65,14 @@ public class Shooting_View_Controller : MonoBehaviour
     {
         int Dmg = Random.Range(Tdata.minDmg, Tdata.maxDmg);
         Shooting.Instance.CmdHitUnit(unitID,Tdata.getHit(), Dmg, Tdata.getUnit().gun.penetration,Tdata.getCrit());
+        
+        Deactivate();
+    }
+
+    public void Deactivate()
+    {
         manager.SetActive(false);
+        _selector.canAction = true;
+        _selector.resetUnit();
     }
 }

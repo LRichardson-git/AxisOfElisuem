@@ -12,7 +12,7 @@ public class Gun : MonoBehaviour
     public int maxRange = 20;
     public int Critc = 10;
     public float punishment = 2;
-    GunType type = GunType.sniper;
+    public string sound = "Fire";
 
     public int getMin() { return minDmg; }
 

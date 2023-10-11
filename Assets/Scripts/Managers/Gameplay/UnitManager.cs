@@ -9,6 +9,7 @@ public class UnitManager : MonoBehaviour
     private List<Unit> _units;
     private List<GameObject> _highlighters;
     public GameObject HighlightTile;
+    public GameObject HighlightDash;
 
     public GameObject Floor;
     Material floorMaterial;
@@ -101,6 +102,7 @@ public class UnitManager : MonoBehaviour
 
 
         int movement = unit.movementPoints;
+        int notDash = movement / 2;
         // calculate paths to all walkable end points
         for (int i = unit.x - (movement); i < unit.x + movement; i++)
         {
@@ -114,8 +116,12 @@ public class UnitManager : MonoBehaviour
 
                     if (World_Pathfinding.findPath(i, j, k, unit.x, unit.y, unit.z, unit.width, unit.height, unit.depth, unit.flying) != null)
                     {
-                        _highlighters.Add(Instantiate(HighlightTile, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
-                        
+                        if (i >notDash + unit.x || j >notDash +unit.y|| k > notDash +unit.z)
+                            _highlighters.Add(Instantiate(HighlightDash, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+                        else
+                            _highlighters.Add(Instantiate(HighlightTile, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+
+
                     }
 
                 }
