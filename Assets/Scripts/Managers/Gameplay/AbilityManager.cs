@@ -113,16 +113,20 @@ public class AbilityManager : MonoBehaviour
         
     }
 
-
-    public void createButtons(Unit unit)
+    public void RemoveButtons()
     {
-        
-        // Remove any previously spawned buttons
         foreach (buttonAbility button in spawnedButtons)
         {
             Destroy(button.gameObject);
         }
         spawnedButtons.Clear();
+    }
+
+    public void createButtons(Unit unit)
+    {
+
+        // Remove any previously spawned buttons
+        RemoveButtons();
 
         if (unit.Abilities.Count <= 0) return;
 

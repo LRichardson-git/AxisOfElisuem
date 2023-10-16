@@ -48,7 +48,6 @@ public class Shooting_View_Controller : MonoBehaviour
         ChanceToDmg.text = Data.minDmg + "-" + Data.maxDmg + " Dmg";
         unitID = Data.getUnit().getID();
         Tdata = Data;
-        Debug.Log("XD");
     }
 
     public void UpdateInfo(Ability ability) {
@@ -61,6 +60,7 @@ public class Shooting_View_Controller : MonoBehaviour
 
     }
 
+    //REMEMBER TO KEEP UNIT IDS UNIQUE SO THAT THE CORRECT UNIT IS HIT
     public void Fire()
     {
         int Dmg = Random.Range(Tdata.minDmg, Tdata.maxDmg);

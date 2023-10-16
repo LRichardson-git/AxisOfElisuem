@@ -136,7 +136,7 @@ public static class World_Pathfinding
     public static List<Vector3> findPath(int xEnd, int yEnd, int zEnd, int xSt, int ySt, int zSt, int uWidth, int uHeight, int uDepth, bool flight)
     {
 
-        if (xEnd < 0 || xEnd >= width || yEnd < 0 || yEnd >= depth || zEnd < 0 || zEnd >= height) {  return null; }
+        if (xEnd < 0 || xEnd >= width || yEnd < 0 || yEnd >= depth || zEnd < 0 || zEnd >= height || mapIndex[xEnd,yEnd,zEnd].type == Tile_Type.Ladder) {  return null; }
 
         if (!isAreaWalkable(xEnd, yEnd, zEnd))
         {
@@ -368,7 +368,7 @@ private static void TestingSetup()
 
             for (int y = 0; y < 5; y++)
             {
-                mapIndex[2, y, 14].settype(Tile_Type.floor);
+                mapIndex[2, y, 14].settype(Tile_Type.Ladder);
             }
 
         }

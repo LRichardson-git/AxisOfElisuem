@@ -1,7 +1,7 @@
 public enum Tile_Type
 {
     air,
-    floor,window,Wall
+    floor,Ladder,Wall
 }
 
 public enum Direction

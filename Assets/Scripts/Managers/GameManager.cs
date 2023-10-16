@@ -16,8 +16,8 @@ public class GameManager : NetworkBehaviour
 
     
     [SerializeField]
-    private int turn;
-
+    private int Playerturn = 0;
+    private List<NetworkConnectionToClient> connections;
     
     public SyncList<int> humanPlayers = new SyncList<int>();
     public static GameManager Instance { get; private set; }
@@ -45,7 +45,7 @@ public class GameManager : NetworkBehaviour
 
         
         Instance = this;
-        
+        connections = new List<NetworkConnectionToClient>();
         
 
         
@@ -53,130 +53,76 @@ public class GameManager : NetworkBehaviour
     
     void CmdGetUnitAuthority(NetworkIdentity unit , NetworkConnectionToClient connection)
     {
-
         unit.AssignClientAuthority(connection);
+        
     }
-
-
-    
 
     public int newPlayer(Player player, NetworkConnectionToClient connection)
     {
         
         playerList.Add(player);
         players++;
-
-
+        
+        connections.Add(connection);
+   
         foreach(Unit unit in UnitManager.Instance.GetUnitList())
         {
             if (unit.ownedBy == players)
             {
                 CmdGetUnitAuthority(unit.netIdentity, connection);
-                unit.ApplyDmg(2, 2);
             }
         }
 
-
+        setPlayerID();
 
         return players;
     }
+
+    [ClientRpc]
+    void setPlayerID() {
+
+        UnitManager.Instance.setPlayerID();
+    }
+
+
 
 
     private void Update()
     {
         //start
         if (!isServer) { return; }
-        if (Input.GetKeyDown("d"))
-        {
-            Debug.Log(players);
-        }
 
 
-            if (Input.GetKeyDown("p"))
-        {
-            for (int i = 0; i < players; i++)
-            {
-                playerScores.Add(0);
-            }
-
-            if (simultaneous)
-            {
-                //need changing
-                currentPlayers = humanPlayers;
-                playersTurns = humanPlayers.Count;
-                
-                return;
-            }
-            
-            playersTurns = 1;
-            currentPlayers.Add(0);
-            playerList[0].turn = true;
-            
-            //currentPlayers[0] = 0;
-            Debug.Log("started");
-        }
+        
 
     }
 
 
-  
+
 
 
 
     //Player tells server they have ended turn
-    
-    public void EndTurn()
+    [Command]
+    public void EndTurn(int player)
     {
         turnsEnded++;
         Debug.Log("Ended player turn");
-        if (turnsEnded >= playersTurns)
-        {
-            foreach (int playerCurrent in currentPlayers)
-            {
-                //if all players done new turn
-                if (playerCurrent >= players -1)
-                {
-                    
-                    
-                    newTurn();
-                    turn++;
-                }
+        
 
-                //go to next player (takes into account simltinous first :D)
-                else if (playerCurrent >= currentPlayers.Count -1) {
-                    nextPlayer = playerCurrent + 1;
-                    
-                    playerChange();
-
-
-                }
-            }
-
-            turnsEnded = 0;
-
-        }
-            
+        
 
 
     }
 
-    
-    void playerChange()
+    [ClientRpc]
+    void playerChange(int player)
     {
 
 
         Debug.Log("playerChange");
 
-        //current palyers == false
-
-       // foreach (int ints in currentPlayers)
-          //  playerList[ints].turn = false;
-
-
-        currentPlayers = new SyncList<int> { nextPlayer };
-        Debug.Log(currentPlayers[0]);
-        Debug.Log(nextPlayer);
-        playerList[nextPlayer].turn = true;
+       
 
 
 

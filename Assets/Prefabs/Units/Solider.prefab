@@ -470,6 +470,7 @@ MonoBehaviour:
   highlighted: 0
   ownedBy: -1
   HP: 5
+  Model: {fileID: 4957018710631938343}
   targetPoint: {fileID: 3733059511987968925}
   targetPoints:
   - {fileID: 1328850105500021425}
@@ -672,6 +673,11 @@ PrefabInstance:
 --- !u!4 &4957018710631647421 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 427246, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
+  m_PrefabInstance: {fileID: 4957018710631812179}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4957018710631938343 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 193908, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
   m_PrefabInstance: {fileID: 4957018710631812179}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &4957018710631939399 stripped

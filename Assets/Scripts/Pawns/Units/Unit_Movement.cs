@@ -8,8 +8,9 @@ public class Unit_Movement : MonoBehaviour
     public float speed = 20f;
     private bool _isMoving = false;
     public Animator animator;
-    private int rotaionSpeed = 600;
+    private int rotaionSpeed = 1000;
     private AudioManager _audio;
+    bool dash = false;
     private void Awake()
     {
         _unit = GetComponent<Unit>();
@@ -36,6 +37,11 @@ public class Unit_Movement : MonoBehaviour
             return;
 
         }
+        dash = false;
+
+        if (path.Count > _unit.movementPoints / 2)
+            dash = true;
+
         if (path != null)
         {
             animator.speed = 1;
@@ -57,7 +63,7 @@ public class Unit_Movement : MonoBehaviour
 
         Vector3 directionToTarget;
         Quaternion targetRotation;
-
+        _unit.Model.transform.rotation = Quaternion.identity;
         _isMoving = true;
         for (int i = 0; i < path.Count; i++)
         {
@@ -71,8 +77,8 @@ public class Unit_Movement : MonoBehaviour
                 directionToTarget = targetPosition - transform.position;
                 targetRotation = Quaternion.LookRotation(directionToTarget);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotaionSpeed * Time.deltaTime);
-                transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * speed);
-                
+                transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * speed );
+
                 yield return null;
             }
             transform.position = targetPosition;
@@ -82,23 +88,28 @@ public class Unit_Movement : MonoBehaviour
         _unit.y = temportayChangethisplease.y;
         _unit.z = temportayChangethisplease.z;
 
-
         animator.SetFloat("Speed", 0);
-
         _audio.cmdStopSound();
 
+        Quaternion oldRotation = _unit.Model.transform.rotation;
+        transform.rotation = Quaternion.identity;
+
+        int AC = 1;
+
+        if (dash)
+            AC = 2;
 
         _unit.DeleteCover();
-        _unit.CheckCover();
+        _unit.cmdCheckCover(oldRotation, AC);
         _isMoving = false;
+
         
 
-            Shooting.Instance.CheckSight(_unit);
-            Shooting.Instance.SpawnButtons(_unit.getList());
-            
-            UnitManager.Instance.ShowPaths(_unit);
         
         
+
+       
+
     }
     
 }

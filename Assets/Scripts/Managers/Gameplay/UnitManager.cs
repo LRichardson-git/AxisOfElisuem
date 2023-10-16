@@ -25,8 +25,23 @@ public class UnitManager : MonoBehaviour
     private void Start()
     {
         floorMaterial = Floor.GetComponent<Renderer>().material;
+
+        int tempId = 0;
+
+        foreach (Unit unit in _units) {
+            unit.SetID(tempId);
+            tempId++;
+                }
     }
 
+    public void setPlayerID()
+    {
+        //dumb way of doing this
+        foreach (Unit unit in _units)
+        {
+            unit.setPlayerID();
+        }
+        }
 
     public void newTurn()
     {
@@ -100,6 +115,8 @@ public class UnitManager : MonoBehaviour
         if (_highlighters.Count > 0)
             removePaths();
 
+        if (unit.movementPoints < 2)
+            return;
 
         int movement = unit.movementPoints;
         int notDash = movement / 2;
@@ -113,22 +130,52 @@ public class UnitManager : MonoBehaviour
 
                 for (int k = unit.z - (movement); k < unit.z + movement; k++)
                 {
-                    //not working change
-                    if (World_Pathfinding.findPath(i, j, k, unit.x, unit.y, unit.z, unit.width, unit.height, unit.depth, unit.flying) != null)
-                    {
-                       // if (i >notDash + unit.x || j >notDash +unit.y|| k > notDash +unit.z)
-                            //_highlighters.Add(Instantiate(HighlightDash, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
-                       // else
-                            _highlighters.Add(Instantiate(HighlightTile, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+                    // calculate distance from center
+                    float distance = Mathf.Sqrt(Mathf.Pow(i - unit.x, 2) + Mathf.Pow(j - unit.y, 2) + Mathf.Pow(k - unit.z, 2));
 
 
-                    }
 
+
+                    if (unit.ActionPoints < 2)
+                        spawnHighlighter(true, i, j, k, unit);
+                    else if (unit.ActionPoints > 2)
+                        spawnHighlighter(false, i, j, k, unit) ;
+
+                    else 
+                        spawnHighlighter(i, j, k, unit);
                 }
-
             }
         }
 
 
     }
+
+    void spawnHighlighter( int i, int j , int k, Unit unit)
+    {
+        List<Vector3> path = World_Pathfinding.findPath(i, j, k, unit.x, unit.y, unit.z, unit.width, unit.height, unit.depth, unit.flying);
+
+        if (path != null && path.Count <= unit.movementPoints)
+        {
+            if (path.Count > unit.movementPoints / 2)
+                _highlighters.Add(Instantiate(HighlightDash, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+            else
+                _highlighters.Add(Instantiate(HighlightTile, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+        }
+    }
+
+    void spawnHighlighter(bool dash,int i, int j, int k, Unit unit)
+    {
+        List<Vector3> path = World_Pathfinding.findPath(i, j, k, unit.x, unit.y, unit.z, unit.width, unit.height, unit.depth, unit.flying);
+
+        if (path != null && path.Count <= unit.movementPoints)
+        {
+            if (!dash)
+                _highlighters.Add(Instantiate(HighlightTile, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+            else
+                _highlighters.Add(Instantiate(HighlightDash, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+        }
+    }
+
+
+
 }

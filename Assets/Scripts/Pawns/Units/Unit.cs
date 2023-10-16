@@ -34,6 +34,11 @@ public class Unit : Tile_Object
     //Networked so client can know
     [SyncVar(hook = nameof(OnHpChanged))]
     public int HP = 5;
+    
+    public int ActionPoints = 2;
+    public bool turn = true;
+
+    public GameObject Model;
 
     void OnHpChanged(int _Old, int _New)
     {
@@ -101,6 +106,17 @@ public class Unit : Tile_Object
 
     }
 
+    public void doAction(int ACost)
+    {
+        ActionPoints -= ACost;
+
+        if (ActionPoints < 1)
+        {
+            turn = false;
+            ObjectSelector.Instance.Deselect();
+        }
+    }
+
     internal void Deselect()
     {
         selected = false;
@@ -118,9 +134,27 @@ public class Unit : Tile_Object
 
     public void DeleteList() { InVision.Clear(); }
 
+    public void setPlayerID() { if (isOwned) { Player.LocalInstance.SetIDSetup(ownedBy); } }
     public List<TargetData> getList() { return InVision; }
 
-    public void CheckCover() { covers = Shooting.Instance.CalulateCover(this); }
+    [Command]
+    public void cmdCheckCover(Quaternion rot, int AC) { checkCover(rot,AC); }
+
+    [ClientRpc]
+    void checkCover(Quaternion rot, int AC)
+    {
+        Model.transform.rotation = rot;
+        covers = Shooting.Instance.CalulateCover(this);
+
+        if (isOwned)
+        {
+
+            Shooting.Instance.CheckSight(this);
+            Shooting.Instance.SpawnButtons(getList());
+            doAction(AC);
+            if (turn) { UnitManager.Instance.ShowPaths(this); }
+        }
+    }
 
     public void DeleteCover() { covers.Clear(); }
 

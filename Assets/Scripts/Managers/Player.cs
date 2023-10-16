@@ -4,33 +4,52 @@ using UnityEngine;
 using Mirror;
 using UnityEditor;
 using UnityEngine.UI;
+using System;
+
 public class Player : NetworkBehaviour
 {
     // Start is called before the first frame update
-
     [SyncVar]
     public bool turn = true;
 
-    [SyncVar]
-    public bool testing = false;
+    
 
-   
+    public int playerID = 0;
 
     public static Player LocalInstance { get; private set; }
+    ObjectSelector _selector;
+    public void SetIDSetup(int ID)
+    {
+        playerID = ID;
+
+        if (ID != 1)
+        {
+            turn = false;
+            _selector.canAction = false;
+        }
+    }
+
+
+
+
+  
+
 
     //(hook = nameof(CmdendTurn))
     private void Start()
     {
         
         if (!isOwned) { return; }
-        Setup();
+        
 
         LocalInstance = this;
-        
+        Setup();
         Ui_Manager.Instance.init();
-
+        _selector = ObjectSelector.Instance;
       
     }
+
+    
 
 
     [Command]
@@ -47,8 +66,13 @@ public class Player : NetworkBehaviour
     void Update()
     {
 
-        if (!isOwned || turn == false) { return; }
+        if (!isOwned) { return; }
 
+        if (Input.GetKeyUp(KeyCode.P))
+            Debug.Log(playerID);
+
+        if (Input.GetKeyUp(KeyCode.Delete))
+            CmdEndTurn(playerID);
     }
 
   
@@ -56,24 +80,46 @@ public class Player : NetworkBehaviour
  
 
     
-    void endTurn()
+    public void endTurn()
     {
         
         if (!isOwned || turn == false) { return; }
-        
-        //CmdEndTurn();
 
+        CmdEndTurn(playerID);
     }
 
     [Command]
-    void CmdEndTurn()
+    void CmdEndTurn(int ID)
     {
-        turn = false;
-
-        GameManager.Instance.EndTurn();
+        checkTurn(ID);
 
     }
+    [ClientRpc]
+    void checkTurn(int ID)
+    {
+        //so that it happens on the local player not the whichever one called it
+        Player.LocalInstance.checkTurnLocal(ID);
 
+        
+        
+    }
+
+    //make it so u can do stuff on your turn
+    void checkTurnLocal(int ID)
+    {
+        if (!isOwned) { return; }
+
+        if (ID != playerID)
+        {
+            turn = true;
+            _selector.canAction = true;
+        }
+        else
+        {
+            turn = false;
+            _selector.canAction = false;
+        }
+    }
 
 
 }

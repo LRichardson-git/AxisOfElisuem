@@ -13,11 +13,14 @@ public class CameraControler : MonoBehaviour
     private bool isRotating;
     private float rotationX;
     private Vector3 rotationPoint;
+    private Quaternion defaultRotation;
+    public float Speed = 10;
     public static CameraControler LocalInstance { get; private set; }
     void Awake()
     {
         cam = Camera.main;
         LocalInstance = this;
+        defaultRotation = transform.rotation;
     }
 
 
@@ -50,7 +53,7 @@ public class CameraControler : MonoBehaviour
         return motion;
     }
 
-    private void MoveCamera(Vector3 motion)
+    public void MoveCamera(Vector3 motion)
     {
         transform.Translate(motion * speed * Time.deltaTime, Space.World);
         cam.transform.position = transform.position;
@@ -70,6 +73,31 @@ public class CameraControler : MonoBehaviour
         cam.transform.position = transform.position;
         cam.transform.rotation = rotation;
     }
+
+    public void SetCamera (Vector3 position)
+    {
+
+        StartCoroutine(CameraMoveSmooth(position));
+    }
+
+    IEnumerator CameraMoveSmooth(Vector3 target)
+    {
+       
+        while (Vector3.Distance(transform.position, target) > 10)
+        {
+            Vector3 smoothedPosition = Vector3.Lerp(transform.position, target, Time.deltaTime * Speed);
+            transform.position = smoothedPosition;
+            yield return null;
+        }
+    }
+
+
+
+
+
+
+
+
 
     private void HandleRotation()
     {

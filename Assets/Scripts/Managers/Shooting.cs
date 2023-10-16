@@ -47,12 +47,13 @@ public class Shooting : NetworkBehaviour
         // Iterate through all units in the scene
         foreach (Unit targetUnit in UnitManager.Instance.GetUnitList())
         {
-            if (targetUnit == unit)
+            if (targetUnit == unit || targetUnit.ownedBy == Player.LocalInstance.playerID)
                 continue;
 
             //add condition for team
             // Check if the unit can see the target unit
             CanSeeUnit(unit, targetUnit);
+                
             
         }
     }
@@ -83,6 +84,7 @@ public class Shooting : NetworkBehaviour
         {
             List<GameObject> byClosest = new List<GameObject>();
 
+            
 
             foreach (GameObject Upoint in unit.GetComponent<Solider>().targetPoints)
             {
@@ -94,6 +96,7 @@ public class Shooting : NetworkBehaviour
 
             foreach (GameObject unitPoint in byClosest) { 
                 shouldbreak = false;
+
                 Vector3 coverDir = unitPoint.transform.position - unit.targetPoint.transform.position;
                 foreach (Cover cover in unit.covers)
                 {
@@ -239,20 +242,20 @@ public class Shooting : NetworkBehaviour
             return 30;
 
 
-        Debug.Log(HitPoint.name);
+
         foreach (Cover cover in Target.covers)
         {
-            Debug.Log(cover.Direction);
+
             float result = Vector3.Dot(cover.Direction, HitPoint.transform.forward);
             //make sure unit is looking at target before
             if (result > -0.1)
             {
-                Debug.Log("Not Covered : " + result);
+                //Debug.Log("Not Covered : " + result);
                 coverType = coverHeight.none;
             }
             else
             {
-                Debug.Log("covered: " + cover.height + " : " + Vector3.Dot(cover.Direction, HitPoint.transform.forward));
+                //Debug.Log("covered: " + cover.height + " : " + Vector3.Dot(cover.Direction, HitPoint.transform.forward));
                 if (result <= closestCover)
                 {
                     closestCover = result;
@@ -324,9 +327,9 @@ public class Shooting : NetworkBehaviour
                 coverList.Add(cover);
                 Visited.Add(direction);
                 Vector3 lookpoint = hit.point;
-                lookpoint.y = unit.transform.position.y;
-                unit.transform.LookAt(lookpoint);
-                unit.transform.Rotate(0,45,0);
+                lookpoint.y = unit.Model.transform.position.y;
+                unit.Model.transform.LookAt(lookpoint);
+                unit.Model.transform.Rotate(0,45,0);
               //  Quaternion temp = unit.transform.rotation;
              //   temp.rot = 0;
               //  unit.transform.rotation = temp;
@@ -357,14 +360,21 @@ public class Shooting : NetworkBehaviour
 
     
 
-    public void SpawnButtons(List<TargetData> targets)
+    public void RemoveButtons()
     {
-        // Remove any previously spawned buttons
+ 
         foreach (GameObject button in spawnedButtons)
         {
+
             Destroy(button);
         }
         spawnedButtons.Clear();
+    }
+
+    public void SpawnButtons(List<TargetData> targets)
+    {
+        // Remove any previously spawned buttons
+        RemoveButtons();
 
         if (targets.Count <= 0) return;
         // Calculate the position of the bottom right corner of the screen

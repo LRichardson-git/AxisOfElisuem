@@ -114,6 +114,56 @@ public class ObjectSelector : MonoBehaviour
     }
 
 
+    public void Deselect()
+    {
+        selectedUnit.Deselect();
+        selectedUnit = null;
+
+        //Select next avaiable unity
+        foreach (Unit unit in _unitManager.GetUnitList())
+            if (unit.turn == true && unit.isOwned == true)
+                SelectUnit(unit);
+
+        if (selectedUnit == null) {
+
+            _unitManager.removePaths();
+            _shooting.RemoveButtons();
+            Player.LocalInstance.endTurn();
+        }
+        
+        //select next avaiable unit
+
+    }
+
+    private void SelectUnit(Unit unit)
+    {
+        if (selectedUnit != null)
+        {
+            selectedUnit.Deselect();
+            selectedUnit = null;
+        }
+
+        selectedUnit = unit;
+        initiation();
+    }
+
+    private void initiation()
+    {
+        
+        Vector3 unitTransform = selectedUnit.transform.position;
+        unitTransform.y = _cam.transform.position.y;
+        unitTransform.x -= 60;
+        unitTransform.z -= 60;
+        CameraControler.LocalInstance.SetCamera(unitTransform);
+        // Select the new unit
+        selectedUnit.Select();
+        _shooting.CheckSight(selectedUnit);
+        _shooting.SpawnButtons(selectedUnit.getList());
+        //call
+        _unitManager.ShowPaths(selectedUnit);
+        _abilityManager.createButtons(selectedUnit);
+    }
+
     private void SelectUnit()
     {
         Ray ray = _cam.ScreenPointToRay(_input.MousePos);
@@ -124,23 +174,9 @@ public class ObjectSelector : MonoBehaviour
 
             Unit unit = hit.collider.GetComponent<Unit>();
 
-            if (unit != null && unit.isOwned)
+            if (unit != null && unit.isOwned && unit.turn)
             {
-
-                if (selectedUnit != null)
-                {
-                    selectedUnit.Deselect();
-                    selectedUnit = null;
-                }
-
-                // Select the new unit
-                selectedUnit = unit;
-                selectedUnit.Select();
-                _shooting.CheckSight(selectedUnit);
-                _shooting.SpawnButtons(selectedUnit.getList());
-                //call
-                _unitManager.ShowPaths(selectedUnit);
-                _abilityManager.createButtons(selectedUnit);
+                SelectUnit(unit);
 
             }
         }
