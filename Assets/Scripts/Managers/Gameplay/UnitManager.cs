@@ -40,6 +40,13 @@ public class UnitManager : MonoBehaviour
         foreach (Unit unit in _units)
         {
             unit.setPlayerID();
+            unit.addAbility(new Fire());
+            unit.addAbility(new GrenadeAbility(5, 2, 4));
+            unit.addAbility(new SmokeAbility(2,2,5));
+            unit.addAbility(new RunAndGunAbility());
+            unit.addAbility(new MedPack());
+            unit.addAbility(new HeadshotAbility());
+            unit.init();
         }
         }
 
@@ -50,6 +57,11 @@ public class UnitManager : MonoBehaviour
             smokeList[i].updateLife(i);
 
 
+        foreach (Unit unit in _units)
+            if (Player.LocalInstance.turn == true)
+                unit.ActionPoints = 2;
+
+        ObjectSelector.Instance.Deselect();
     }
 
     //Change in future

@@ -10,6 +10,7 @@ public class SmokeAbility : GrenadeAbility
         radius = radius * 20;
         //setanimationname
         Animation = "Throw_Grenade";
+        Icon = "SmokeG";
     }
 
 

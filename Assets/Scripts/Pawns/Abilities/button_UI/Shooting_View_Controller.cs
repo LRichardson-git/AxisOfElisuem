@@ -23,7 +23,8 @@ public class Shooting_View_Controller : MonoBehaviour
     public static Shooting_View_Controller Instance;
     private int unitID;
     private TargetData Tdata;
-
+    Ability CurrentAbility;
+    bool AbilityA = false;
     private void Start()
     {
         Instance = this;
@@ -33,6 +34,7 @@ public class Shooting_View_Controller : MonoBehaviour
 
     public void Activate()
     {
+        AbilityA = false;
         manager.SetActive(true);
         firebutton.gameObject.SetActive(true);
         _selector.canAction = false;
@@ -40,6 +42,7 @@ public class Shooting_View_Controller : MonoBehaviour
 
     public void UpdateInfo(TargetData Data)
     {
+        
         ChanceToCrit.gameObject.SetActive(true);
         Name.text = "fire";
         Description.text = "Fire at the target unit and end this units turn";
@@ -51,21 +54,43 @@ public class Shooting_View_Controller : MonoBehaviour
     }
 
     public void UpdateInfo(Ability ability) {
-
+        firebutton.gameObject.SetActive(false);
+        AbilityA = false;
         ChanceToCrit.gameObject.SetActive(false);
         Name.text = ability.Name;
         Description.text = ability.Description;
         ChanceToDmg.text = "Range: " + ability.Range ;
         ChanceToHit.text = ability.Damage;
+        
+    }
 
+
+    public void UpdateInfo(Ability ability, bool trueing)
+    {
+
+        ChanceToCrit.gameObject.SetActive(false);
+        Name.text = ability.Name;
+        Description.text = ability.Description;
+        ChanceToDmg.text = "";
+        ChanceToHit.text = ability.Damage;
+        CurrentAbility = ability;
+        AbilityA = true;
     }
 
     //REMEMBER TO KEEP UNIT IDS UNIQUE SO THAT THE CORRECT UNIT IS HIT
     public void Fire()
     {
-        int Dmg = Random.Range(Tdata.minDmg, Tdata.maxDmg);
-        Shooting.Instance.CmdHitUnit(unitID,Tdata.getHit(), Dmg, Tdata.getUnit().gun.penetration,Tdata.getCrit());
-        
+        if (!AbilityA)
+        {
+            int Dmg = Random.Range(Tdata.minDmg, Tdata.maxDmg);
+            Shooting.Instance.CmdHitUnit(unitID, Tdata.getHit(), Dmg, Tdata.getUnit().gun.penetration, Tdata.getCrit());
+            _selector.getSelectedUnit().doAction(2);
+            
+        }
+        else if (CurrentAbility != null)
+        {
+            CurrentAbility.Execute(transform.position);
+        }
         Deactivate();
     }
 

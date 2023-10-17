@@ -17,9 +17,9 @@ public class AbilityManager : MonoBehaviour
     Vector3 origin;
     public List<GameObject> smokeCloud;
     public GameObject Shooiting_View;
-
-
-
+    public bool disable = false;
+    private IconManager _icon;
+    public GameObject Background;
 
     private void Start()
     {
@@ -28,6 +28,7 @@ public class AbilityManager : MonoBehaviour
         spawnedButtons = new List<buttonAbility>();
         Instance = this;
         smokeCloud = new List<GameObject>();
+        _icon = IconManager.instance;
     }
 
     public void activate(Ability ability)
@@ -74,10 +75,19 @@ public class AbilityManager : MonoBehaviour
         if (Physics.Raycast(ray, out hit) && Vector3.Distance(origin, hit.point) <= currentAbility.Range * 10) 
         {
             currentAbility.Target(hit.point);
-            if (_input.leftClick)
+            if (_input.leftClick && disable == false)
             {
                 Shooiting_View.SetActive(false);
-                currentAbility.Execute(hit.point);
+                //if ability is exectued succesfully
+                if (currentAbility.Execute(hit.point))
+                {
+                    currentAbility.Final();
+
+                }
+                
+                
+                
+                
                 deactivate();
                 
             }
@@ -94,13 +104,11 @@ public class AbilityManager : MonoBehaviour
     public void pressButton(int i)
     {
 
-        Debug.Log(i-1);
-        Debug.Log(spawnedButtons.Count);
-        Debug.Log(spawnedButtons[i - 1].name);
-
-        if (i !> spawnedButtons.Count -1)
+        if (i - 1 < spawnedButtons.Count)
+        {
             spawnedButtons[i - 1].activate();
 
+        }
 
     }
 
@@ -110,6 +118,7 @@ public class AbilityManager : MonoBehaviour
     {
         currentAbility = null;
         active = false;
+        disable = false;
         
     }
 
@@ -131,10 +140,11 @@ public class AbilityManager : MonoBehaviour
         if (unit.Abilities.Count <= 0) return;
 
         float buttonWidth = buttonPrefab.GetComponent<RectTransform>().rect.width;
-        float buttonSpacing = buttonWidth * 0.15f;
+        float buttonSpacing = buttonWidth * 0.4f;
+        float totalWidth = (buttonWidth + buttonSpacing) * unit.Abilities.Count;
 
         //spawn based on centre
-        Vector2 spawnPosition = new Vector2((Screen.width / 2) - ((buttonWidth + buttonSpacing) * unit.Abilities.Count), 70);
+        Vector2 spawnPosition = new Vector2((Screen.width / 2) - (totalWidth / 2), 70);
 
 
         for (int i = 0; i < unit.Abilities.Count; i++)
@@ -146,6 +156,11 @@ public class AbilityManager : MonoBehaviour
             spawnedButtons.Add(button);
             button.init(unit.Abilities[i]);
             button.setnum(i + 1);
+            Debug.Log(_icon);
+            button.SetIcon(_icon.getIcon(unit.Abilities[i].Icon));
+           // Vector3 back = spawnPosition;
+           // back.z -= 2;
+            //Instantiate(Background, spawnPosition, Quaternion.identity, transform);
         }
 
 

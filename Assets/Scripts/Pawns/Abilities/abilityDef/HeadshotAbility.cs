@@ -10,13 +10,14 @@ public class HeadshotAbility : Ability
     ObjectSelector _objectSelector;
     
 
-    public HeadshotAbility() : base("Headshot", "Fire your gun with Increased Crit Chance at an opposing unit and end this Units turn", 20, 20, null,2)
+    public HeadshotAbility() : base("Headshot", "Fire your gun with Increased Crit Chance at an opposing unit and end this Units turn", 0, 20, "HeadShot")
     {
         _shooting = Shooting.Instance;
         _input = InputManager.Instance;
         _audio = AudioManager.instance;
         _objectSelector = ObjectSelector.Instance;
         old = new List<TargetData>();
+        uses = 2;
     }
 
     //setup
@@ -32,7 +33,7 @@ public class HeadshotAbility : Ability
 
     }
 
-    public override void Execute(Vector3 worldSpace)
+    public override bool Execute(Vector3 worldSpace)
     {
 
         List<GameObject> list = _shooting.getButtons();
@@ -46,9 +47,11 @@ public class HeadshotAbility : Ability
             _shooting.CheckSight(Current);
             _shooting.SpawnButtons(Current.getList());
             _shooting.getButtons()[0].GetComponent<ButtonScript>().openShootScreen();
+            return true;
         }
         else
             _audio.PlaySound("Error");
+        return false;
     }
 
     public override void Init()

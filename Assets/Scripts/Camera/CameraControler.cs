@@ -74,10 +74,20 @@ public class CameraControler : MonoBehaviour
         cam.transform.rotation = rotation;
     }
 
-    public void SetCamera (Vector3 position)
+    //change to take rotation into account in future
+    public void SetCameraUnit (Vector3 position)
     {
+        
+        position.x -= 85;
+        position.y += 80;
+        position.z -= 80;
+        //55
+        //10
+        //55
 
+        //-29.27 90 - 25.5
         StartCoroutine(CameraMoveSmooth(position));
+        transform.rotation = defaultRotation;
     }
 
     IEnumerator CameraMoveSmooth(Vector3 target)
@@ -85,8 +95,8 @@ public class CameraControler : MonoBehaviour
        
         while (Vector3.Distance(transform.position, target) > 10)
         {
-            Vector3 smoothedPosition = Vector3.Lerp(transform.position, target, Time.deltaTime * Speed);
-            transform.position = smoothedPosition;
+            
+            transform.position = Vector3.MoveTowards(transform.position,target, (speed * 3) * Time.deltaTime);
             yield return null;
         }
     }

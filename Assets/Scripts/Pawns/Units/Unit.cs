@@ -23,6 +23,7 @@ public class Unit : Tile_Object
     [SyncVar]
     private int ID;
     Renderer[] renderers;
+    
     public List<Ability> Abilities;
     public Gun gun;
     private Renderer _material;
@@ -106,6 +107,9 @@ public class Unit : Tile_Object
 
     }
 
+
+    public void addAbility(Ability ability) { Abilities.Add(ability); }
+
     public void doAction(int ACost)
     {
         ActionPoints -= ACost;
@@ -115,6 +119,8 @@ public class Unit : Tile_Object
             turn = false;
             ObjectSelector.Instance.Deselect();
         }
+        else
+            ObjectSelector.Instance.refreshUnit();
     }
 
     internal void Deselect()
@@ -145,7 +151,7 @@ public class Unit : Tile_Object
     {
         Model.transform.rotation = rot;
         covers = Shooting.Instance.CalulateCover(this);
-
+        //all toghther since checksight needs to know if its in cover
         if (isOwned)
         {
 
@@ -206,6 +212,11 @@ public class Unit : Tile_Object
         {
             ability.Init();
         }
+    }
+
+    public void DeleteAbility(Ability ability)
+    {
+        Abilities.Remove(ability);
     }
 
     public void playAnim(string anim, Vector3 direction) { direction.y = transform.position.y;   transform.LookAt(direction);  animator.speed = 2;  animator.Play(anim); audioManager.cmDPlaySound(anim); }

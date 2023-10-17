@@ -39,6 +39,13 @@ public class ObjectSelector : MonoBehaviour
 
     void Update()
     {
+
+        if (_input.Hotbar != 0 && selectedUnit != null)
+            _abilityManager.pressButton(_input.Hotbar);
+
+
+
+
         if (_abilityManager.active == true || !canAction)
             return;
 
@@ -75,8 +82,9 @@ public class ObjectSelector : MonoBehaviour
 
         //Debug.Log(_input.Hotbar);
         //check abilities()
-        if (_input.Hotbar != 0)
-            _abilityManager.pressButton(_input.Hotbar);
+
+        
+       
 
 
 
@@ -88,10 +96,10 @@ public class ObjectSelector : MonoBehaviour
     public void resetUnit()
     {
         selectedUnit.crit = 10;
-        
         //done to make sure anything effecting shooting is reset
         _shooting.CheckSight(selectedUnit);
         _shooting.SpawnButtons(selectedUnit.getList());
+
     }
 
     public Unit getSelectedUnit()
@@ -128,13 +136,17 @@ public class ObjectSelector : MonoBehaviour
 
             _unitManager.removePaths();
             _shooting.RemoveButtons();
+            _abilityManager.RemoveButtons();
             Player.LocalInstance.endTurn();
         }
         
         //select next avaiable unit
 
     }
-
+    public void refreshUnit()
+    {
+        initiation();
+    }
     private void SelectUnit(Unit unit)
     {
         if (selectedUnit != null)
@@ -151,10 +163,8 @@ public class ObjectSelector : MonoBehaviour
     {
         
         Vector3 unitTransform = selectedUnit.transform.position;
-        unitTransform.y = _cam.transform.position.y;
-        unitTransform.x -= 60;
-        unitTransform.z -= 60;
-        CameraControler.LocalInstance.SetCamera(unitTransform);
+        
+        CameraControler.LocalInstance.SetCameraUnit(unitTransform);
         // Select the new unit
         selectedUnit.Select();
         _shooting.CheckSight(selectedUnit);

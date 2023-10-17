@@ -15,24 +15,22 @@ public class InputManager : MonoBehaviour
     public bool cancelAction;
     public bool SwitchTarget;
     public int Hotbar;
-    private KeyCode[] keyCodes;
+    Dictionary<KeyCode, int> keyCodeToInt = new Dictionary<KeyCode, int>();
     public static InputManager Instance;
-
+    private KeyCode[] keyCodes = new KeyCode[] { KeyCode.Alpha0, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9 };
     void Awake()
     {
         Instance = this;
         Hotbar = 0;
 
-        KeyCode[] keyCodes = {
-            KeyCode.Alpha1,
-		KeyCode.Alpha2,
-		KeyCode.Alpha3,
-		KeyCode.Alpha4,
-		KeyCode.Alpha5
+        
 
-	};
+  
     }
-
+    private void Start()
+    {
+       
+    }
     private void Update()
     {
 
@@ -51,20 +49,21 @@ public class InputManager : MonoBehaviour
         else
             cancelAction = false;
 
+
+
+        Hotbar = 0;
         //get number down
-        for (int i = 49; i < 54; i++)
+        for (int i = (int)KeyCode.Alpha0; i < (int)KeyCode.Alpha9; ++i)
         {
-           // Debug.Log(i);
-            if (Input.GetKeyUp((KeyCode)i))
+            if (Input.GetKeyDown((KeyCode)i))
             {
-                Hotbar = i;
+                Hotbar = (i - ((int)KeyCode.Alpha0));
             }
-            else
-                Hotbar = 0;
+            
         }
 
-
-       MousePos = Input.mousePosition;
+       
+        MousePos = Input.mousePosition;
 
     }
 }

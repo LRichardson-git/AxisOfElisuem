@@ -13,7 +13,7 @@ public class GrenadeAbility : Ability
     public List<Unit> highLight;
     public Camera _cam;
     Vector3 direction;
-    public GrenadeAbility(int maxdamage, int mindamage, int radius) : base("Grenade", "Throws a grenade that explodes on impact", 1, 15, null,0)
+    public GrenadeAbility(int maxdamage, int mindamage, int radius) : base("Grenade", "Throws a grenade that explodes on impact", 2, 15, "Grenade")
     {
         maxDamage = maxdamage;
         minDamage = mindamage;
@@ -149,13 +149,16 @@ public class GrenadeAbility : Ability
         damageUnits(list);
     }
 
-    public override void Execute(Vector3 worldSpace)
+    public override bool Execute(Vector3 worldSpace)
     {
 
         if (ObjectSelector.Instance.FireGrenade(worldSpace, this))
+        {
             ObjectSelector.Instance.playAnimation(Animation, worldSpace);
+            return true;
+        }
 
-
+        return false;
 
     }
 

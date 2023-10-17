@@ -263,10 +263,10 @@ RectTransform:
   m_Father: {fileID: 1658362376}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -80}
-  m_SizeDelta: {x: 180, y: 300}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -53}
+  m_SizeDelta: {x: 250, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &40772389
 MonoBehaviour:
@@ -1867,7 +1867,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000091552734, y: 272.87}
+  m_AnchoredPosition: {x: -0, y: 245.3}
   m_SizeDelta: {x: 400, y: 7.07}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &758410875
@@ -2166,7 +2166,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.1
+  m_fontSize: 12.15
   m_fontSizeBase: 16
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3687,6 +3687,7 @@ GameObject:
   - component: {fileID: 1368894036}
   - component: {fileID: 1368894035}
   - component: {fileID: 1368894037}
+  - component: {fileID: 1368894038}
   m_Layer: 0
   m_Name: UI_Managers
   m_TagString: Untagged
@@ -3726,6 +3727,8 @@ MonoBehaviour:
   buttonPrefab: {fileID: 5881779610453912303, guid: 7a83ba291f5408f458d20e9403c50e61, type: 3}
   smokeCloud: []
   Shooiting_View: {fileID: 1658362375}
+  disable: 0
+  Background: {fileID: 5881779610453912303, guid: d0059bf3c9ee9444ebe893b8b165eb78, type: 3}
 --- !u!114 &1368894035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3774,6 +3777,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   views:
   - {fileID: 1346906424}
+--- !u!114 &1368894038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1368894032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d30c2901555773c44bd5cdabee8d73d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconList:
+  - {fileID: 21300000, guid: c1abe7c29bee6ca45b40a2570740d853, type: 3}
+  - {fileID: 21300000, guid: a37e593fb6f58c5499fe0a5d93d90aeb, type: 3}
+  - {fileID: 21300000, guid: 2aff1db06c221fb4785e6a221b6fdba6, type: 3}
+  - {fileID: 21300000, guid: 0e1d1e8963a28284491bb770af9e68c1, type: 3}
+  - {fileID: 21300000, guid: de5389b0d9851e64bbbde1860de6f16e, type: 3}
+  - {fileID: 21300000, guid: f3d392797707b4b438ec2e7ddba037ef, type: 3}
 --- !u!1 &1415663824
 GameObject:
   m_ObjectHideFlags: 0
@@ -3810,7 +3832,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 136.4, y: -0.000013351}
+  m_AnchoredPosition: {x: 122, y: -0.000013351}
   m_SizeDelta: {x: 400, y: 7.07}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1415663826
@@ -4684,7 +4706,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1599065361}
   m_LocalRotation: {x: 0.23911765, y: 0.3696438, z: -0.09904577, w: 0.89239913}
-  m_LocalPosition: {x: -16.9, y: 70, z: -24.4}
+  m_LocalPosition: {x: -16.9, y: 90, z: -24.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4798,7 +4820,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 90, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1675181444
 GameObject:
@@ -5224,7 +5246,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -4.4, y: -185.6}
+  m_AnchoredPosition: {x: -4.4, y: -164}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1827401290
@@ -5997,7 +6019,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: ActionPoints
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: movementPoints

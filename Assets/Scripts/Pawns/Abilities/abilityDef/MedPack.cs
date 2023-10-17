@@ -8,7 +8,7 @@ public class MedPack : Ability
     public Unit target;
     ObjectSelector _selector;
     AudioManager _audio;
-    public MedPack() : base("Medpack", "Heal an allied unit", 2, 2, null, 0)
+    public MedPack() : base("Medpack", "Heal an allied unit", 2, 2, "MedPack")
     {
         Damage = "Heal: " + damage;
         _audio = AudioManager.instance;
@@ -25,12 +25,12 @@ public class MedPack : Ability
        
     }
     //execture 3
-    public override void Execute(Vector3 worldSpace)
+    public override bool Execute(Vector3 worldSpace)
     {
         if (target == null)
         {
             _audio.PlaySound("Error");
-            return;
+            return false;
 
         }
 
@@ -39,12 +39,13 @@ public class MedPack : Ability
             {
                 target.ApplyDmg(-damage, 10);
                 _audio.cmDPlaySound("heal");
+            return true;
         }
         else
             _audio.PlaySound("Error");
 
         dehighlight();
-
+        return false;
     }
     //init 0
     public override void Init()

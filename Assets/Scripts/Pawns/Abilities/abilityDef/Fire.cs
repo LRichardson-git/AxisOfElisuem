@@ -8,12 +8,13 @@ public class Fire : Ability
     InputManager _input;
     AudioManager _audio;
     ObjectSelector _selector;
-    public Fire() : base("Fire", "Fire your gun at an opposing unit and end this Units turn", 20, 20, null,0)
+    public Fire() : base("Fire", "Fire your gun at an opposing unit and end this Units turn", 2, 20, "Fire")
     {
         _shooting = Shooting.Instance;
         _input = InputManager.Instance;
         _audio = AudioManager.instance;
         _selector = ObjectSelector.Instance;
+        uses = 10000;
     }
 
     //setup
@@ -29,19 +30,21 @@ public class Fire : Ability
         
     }
 
-    public override void Execute(Vector3 worldSpace)
+    public override bool Execute(Vector3 worldSpace)
     {
 
-        Debug.Log(_shooting.getButtons().Count);
+        
         if (_shooting.getButtons().Count > 0)
         {
             _shooting.CheckSight(_selector.getSelectedUnit());
             _shooting.SpawnButtons(_selector.getSelectedUnit().getList());
             _shooting.getButtons()[0].GetComponent<ButtonScript>().openShootScreen();
-
+            return true;
         }
         else
             _audio.PlaySound("Error");
+
+        return false;
     }
 
     public override void Init()
@@ -54,9 +57,10 @@ public class Fire : Ability
 
     }
 
+    
+
     public override void Target(Vector3 worldSpace)
     {
-        Debug.Log("lol");
        _input.leftClick = true;
     }
 }
