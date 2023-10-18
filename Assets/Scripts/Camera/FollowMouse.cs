@@ -7,9 +7,11 @@ public class FollowMouse : MonoBehaviour
     Ray ray;
     Camera cam;
     RaycastHit hit;
+    World_Pathfinding path;
     private void Start()
     {
-        cam = Camera.main; 
+        cam = Camera.main;
+        path = World_Pathfinding.Instance;
     }
 
 
@@ -21,7 +23,7 @@ public class FollowMouse : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            transform.position = World_Pathfinding.coordToWorld(World_Pathfinding.worldToCoord(hit.point),1,1);
+            transform.position = path.coordToWorld(path.worldToCoord(hit.point),1);
         }
     }
 }

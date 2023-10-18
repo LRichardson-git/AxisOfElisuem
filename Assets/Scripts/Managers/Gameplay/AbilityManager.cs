@@ -156,7 +156,6 @@ public class AbilityManager : MonoBehaviour
             spawnedButtons.Add(button);
             button.init(unit.Abilities[i]);
             button.setnum(i + 1);
-            Debug.Log(_icon);
             button.SetIcon(_icon.getIcon(unit.Abilities[i].Icon));
            // Vector3 back = spawnPosition;
            // back.z -= 2;

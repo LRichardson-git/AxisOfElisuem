@@ -96,7 +96,7 @@ public class CameraControler : MonoBehaviour
         while (Vector3.Distance(transform.position, target) > 10)
         {
             
-            transform.position = Vector3.MoveTowards(transform.position,target, (speed * 3) * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position,target, (speed * 2) * Time.deltaTime);
             yield return null;
         }
     }

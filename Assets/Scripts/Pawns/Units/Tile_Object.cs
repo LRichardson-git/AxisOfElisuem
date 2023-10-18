@@ -16,8 +16,8 @@ public class Tile_Object :NetworkBehaviour
 
     private void init()
     {
-        transform.transform.position = World_Pathfinding.coordToWorld(x, y, z, width, depth);
-        World_Pathfinding.setNotwalkble(x, y, z);
+        transform.transform.position = World_Pathfinding.Instance.coordToWorld(x, y, z, width, depth);
+        World_Pathfinding.Instance.setNotwalkble(x, y, z);
     }
 
 

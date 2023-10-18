@@ -25,6 +25,7 @@ public class ObjectSelector : MonoBehaviour
     public bool canAction = true;
     Shooting _shooting;
 
+    World_Pathfinding path;
     private void Start()
     {
         Instance = this;
@@ -35,6 +36,7 @@ public class ObjectSelector : MonoBehaviour
         _shooting = Shooting.Instance;
         CellLocation = new Vector3Int();
         _cam = Camera.main;
+        path = World_Pathfinding.Instance;
     }
 
     void Update()
@@ -72,7 +74,7 @@ public class ObjectSelector : MonoBehaviour
             
         }
 
-        CellLocation = World_Pathfinding.worldToCoord(Camera.main.ScreenToWorldPoint(_input.MousePos), selectedUnit.width, selectedUnit.depth);
+        CellLocation = path.worldToCoord(Camera.main.ScreenToWorldPoint(_input.MousePos), selectedUnit.width, selectedUnit.depth);
 
         if (!CellLocation.Equals(previousCell))
         {
@@ -114,7 +116,7 @@ public class ObjectSelector : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            var tempor = World_Pathfinding.worldToCoord(hit.point, selectedUnit.width, 1);
+            var tempor = path.worldToCoord(hit.point, selectedUnit.width, 1);
             selectedUnit.MoveUnit((int)tempor.x, (int)tempor.y, tempor.z);
 
             
@@ -170,7 +172,9 @@ public class ObjectSelector : MonoBehaviour
         _shooting.CheckSight(selectedUnit);
         _shooting.SpawnButtons(selectedUnit.getList());
         //call
+        //_unitManager.ShowPaths(selectedUnit);
         _unitManager.ShowPaths(selectedUnit);
+        //_unitManager.test(selectedUnit);
         _abilityManager.createButtons(selectedUnit);
     }
 

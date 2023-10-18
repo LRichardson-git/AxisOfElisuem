@@ -45,7 +45,6 @@ public class IconManager : MonoBehaviour
 
     public Sprite getIcon(string name)
     {
-        Debug.Log(name);
         if (IconDicontioanry.ContainsKey(name))
             return IconDicontioanry[name];
         else

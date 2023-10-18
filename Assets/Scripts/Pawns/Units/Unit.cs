@@ -26,7 +26,8 @@ public class Unit : Tile_Object
     
     public List<Ability> Abilities;
     public Gun gun;
-    private Renderer _material;
+    public Renderer _material;
+
     [SerializeField]
     private Animator animator;
     public Color DefaultColor;
@@ -38,6 +39,11 @@ public class Unit : Tile_Object
     
     public int ActionPoints = 2;
     public bool turn = true;
+
+    public List<moveable> moveables;
+    public World_Pathfinding path;
+
+    public UnitManager manager;
 
     public GameObject Model;
 
@@ -93,6 +99,9 @@ public class Unit : Tile_Object
         audioManager = AudioManager.instance;
         // _material = GetComponent<Renderer>();
         renderers = GetComponentsInChildren<Renderer>();
+        moveables = new List<moveable>();
+        path = World_Pathfinding.Instance;
+        manager = UnitManager.Instance;
 
         if (ownedBy != -1)
         {
@@ -110,6 +119,12 @@ public class Unit : Tile_Object
 
     public void addAbility(Ability ability) { Abilities.Add(ability); }
 
+    public void addmove(int x, int y, int z)
+    {
+        moveables.Add(new moveable(x, y, z)); 
+    }
+
+    public void clearMove() { moveables.Clear(); }
     public void doAction(int ACost)
     {
         ActionPoints -= ACost;
@@ -141,6 +156,14 @@ public class Unit : Tile_Object
     public void DeleteList() { InVision.Clear(); }
 
     public void setPlayerID() { if (isOwned) { Player.LocalInstance.SetIDSetup(ownedBy); } }
+
+    public void canSee() {
+        Model.SetActive(true);
+    }
+
+    public void cantSee( ) {
+        Model.SetActive(false);
+    }
     public List<TargetData> getList() { return InVision; }
 
     [Command]
@@ -157,6 +180,7 @@ public class Unit : Tile_Object
 
             Shooting.Instance.CheckSight(this);
             Shooting.Instance.SpawnButtons(getList());
+            
             doAction(AC);
             if (turn) { UnitManager.Instance.ShowPaths(this); }
         }

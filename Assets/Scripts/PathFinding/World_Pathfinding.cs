@@ -1,21 +1,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class World_Pathfinding
+public class World_Pathfinding :MonoBehaviour
 {
     //Z is up y IS DEPTH
 
     private static int MOVEMENT_COST = 10;
     private static int MOVEMENT_DIAGONAL_COST = 14;
 
-    private static Coords[,,] mapIndex;
+    private  Coords[,,] mapIndex;
 
-    public static int width = 30, height = 20, depth = 20;
+    int width = 40, height = 40, depth = 15;
 
-    public static int CellSize = 10;
+    public int CellSize = 10;
 
-    static World_Pathfinding()
+    public  Dictionary<Coords, Neighbors> NeighbourList;
+
+    public static World_Pathfinding Instance;
+
+    
+
+
+    private void Awake()
     {
+        Instance = this;
+
         mapIndex = new Coords[width, depth, height];
 
         for (int x = 0; x < width; x++)
@@ -31,43 +40,44 @@ public static class World_Pathfinding
 
         TestingSetup();
 
-        setNotwalkble(9, 1, 9);
+        
+
+        NeighbourList = preCalculateNeighbors();
     }
 
 
-    public static void setType(int x, int y, int z, Tile_Type type)
+    public  void setType(int x, int y, int z, Tile_Type type)
     {
         mapIndex[x, y, z].settype(type);
     }
 
 
-    //Helper Functions
-
+  
     //getters
-    public static Coords[,,] getIndex()
+    public  Coords[,,] getIndex()
     {
         return mapIndex;
     }
 
     //Setters
 
-    public static void setWidthHeight(int x, int y, int z)
+    public  void setWidthHeight(int x, int y, int z)
     {
         width = x; depth = y; height = z;
     }
 
     //SetWalkables
     //------------
-    public static void setNotwalkble (int x, int y, int z)
+    public  void setNotwalkble (int x, int y, int z)
     {
         mapIndex[x, y, z].settype(Tile_Type.Wall);
     }
-    public static void setNotwalkble(Coords coord)
+    public  void setNotwalkble(Coords coord)
     {
         mapIndex[coord.x, coord.y, coord.z].settype(Tile_Type.Wall);
     }
 
-    public static void setNotwalkble(Coords cord, int x, int y,int z) //fix this make it do all or not dosent mastter
+    public  void setNotwalkble(Coords cord, int x, int y,int z) //fix this make it do all or not dosent mastter
     {
         for (int i = 0; i < x ; i++)
         {
@@ -82,16 +92,25 @@ public static class World_Pathfinding
 
     //Coords
     
-    public static Vector3Int coordToWorld(Coords coord, int uWidth, int uDepth) //y is height
+    public  Vector3Int coordToWorld(Coords coord) //y is height
     {
         Vector3Int newPos = new Vector3Int();
-        newPos.x = coord.x * 10 + (5 * uWidth);
-        newPos.y = coord.y * 10 + (5 * uDepth) ;
-        newPos.z = coord.z * 10 + (5 * uWidth);
+        newPos.x = coord.x * 10 + 5;
+        newPos.y = coord.y * 10 + (5 * 2) ;
+        newPos.z = coord.z * 10 + 5;
         return newPos;
     }
 
-    public static Vector3 coordToWorld(int x, int y, int z, int uWidth, int uDepth)
+    public Vector3Int coordToWorld(Coords coord, int udepth) //y is height
+    {
+        Vector3Int newPos = new Vector3Int();
+        newPos.x = coord.x * 10 + 5;
+        newPos.y = coord.y * 10 + (5 * udepth);
+        newPos.z = coord.z * 10 + 5;
+        return newPos;
+    }
+
+    public  Vector3 coordToWorld(int x, int y, int z, int uWidth, int uDepth)
     {
         Vector3Int newPos = new Vector3Int();
         newPos.x = x * 10 + (5 * uWidth);
@@ -104,7 +123,7 @@ public static class World_Pathfinding
         return newPos;
     }
 
-    public static Coords worldToCoord(Vector3 Pos)
+    public  Coords worldToCoord(Vector3 Pos)
     {
         Coords Grid = new Coords((int)Mathf.Floor((Pos.x) / CellSize),
                                  (int)Mathf.Floor((Pos.y) / CellSize),
@@ -112,7 +131,7 @@ public static class World_Pathfinding
         return Grid;
     }
 
-    public static Vector3Int worldToCoord(Vector3 Pos, int uWidth, int uDepth)
+    public  Vector3Int worldToCoord(Vector3 Pos, int uWidth, int uDepth)
     {
         Vector3Int Grid = new Vector3Int();
         Grid.x = (int)Mathf.Floor((Pos.x) / CellSize);
@@ -131,21 +150,31 @@ public static class World_Pathfinding
         return Grid;
     }
 
-    //Find Path
 
-    public static List<Vector3> findPath(int xEnd, int yEnd, int zEnd, int xSt, int ySt, int zSt, int uWidth, int uHeight, int uDepth, bool flight)
+    public int worldToCoord(Vector3 Pos, int uDepth)
     {
 
-        if (xEnd < 0 || xEnd >= width || yEnd < 0 || yEnd >= depth || zEnd < 0 || zEnd >= height || mapIndex[xEnd,yEnd,zEnd].type == Tile_Type.Ladder) {  return null; }
+        int x = (int)Mathf.Floor((Pos.x) / CellSize);
+        int y = (int)Mathf.Floor((Pos.y) / CellSize);
+        int z = (int)Mathf.Floor((Pos.z) / CellSize);
 
-        if (!isAreaWalkable(xEnd, yEnd, zEnd))
+        if (uDepth > 1)
+            y -= (int)uDepth / 2;
+
+
+        return x + y + z;
+    }
+
+    //Find Path
+
+    public List<Vector3> findPath(int xEnd, int yEnd, int zEnd, int xSt, int ySt, int zSt)
+    {
+        if (xEnd < 0 || xEnd >= width || yEnd < 0 || yEnd >= depth || zEnd < 0 || zEnd >= height || mapIndex[xEnd, yEnd, zEnd].type == Tile_Type.Ladder) { return null; }
+
+        if (!mapIndex[xEnd, yEnd, zEnd].IsWalkable)
         {
             return null;
         }
-
-        
-
-        
 
         Coords startCoord = mapIndex[xSt, ySt, zSt];
         Coords EndCoord = mapIndex[xEnd, yEnd, zEnd];
@@ -192,12 +221,97 @@ public static class World_Pathfinding
             if (currentNode == EndCoord)
             {
                 // Path found, construct the path
-                List<Vector3> path = calcuatePath(currentNode,uWidth,uDepth);
+                List<Vector3> path = calcuatePath(currentNode);
                 return path;
             }
 
             // Get the neighboring nodes of the current node
-            List<Coords> neighbors = getNeighbourList(currentNode, uWidth, uHeight, uDepth, flight);
+            List<Coords> neighbors = getNeighbourList(currentNode);
+
+            foreach (Coords neighbor in neighbors)
+            {
+                if (closedList.Contains(neighbor) )
+                    continue;
+
+                int tentativeGCost = currentNode.m_gCost + calculateDistanceCost(currentNode, neighbor);
+
+                if (!openList.Contains(neighbor) || tentativeGCost < neighbor.m_gCost)
+                {
+                    neighbor.m_gCost = tentativeGCost;
+                    neighbor.m_hCost = calculateDistanceCost(neighbor, EndCoord);
+                    neighbor.CalculateFCost();
+                    neighbor.LastCoord = currentNode;
+
+                    if (!openList.Contains(neighbor))
+                        openList.Add(neighbor);
+                }
+            }
+        }
+
+        // No path found
+        return null;
+    }
+
+    public int findPathT(int xEnd, int yEnd, int zEnd, int xSt, int ySt, int zSt)
+    {
+        if (xEnd < 0 || xEnd >= width || yEnd < 0 || yEnd >= depth || zEnd < 0 || zEnd >= height || mapIndex[xEnd, yEnd, zEnd].type == Tile_Type.Ladder) { return 0; }
+
+        if (!mapIndex[xEnd, yEnd, zEnd].IsWalkable)
+        {
+            return 0;
+        }
+
+        Coords startCoord = mapIndex[xSt, ySt, zSt];
+        Coords EndCoord = mapIndex[xEnd, yEnd, zEnd];
+
+        //depth for hegiht
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < depth; y++)
+            {
+                for (int z = 0; z < height; z++)
+                {
+                    Coords Cord = mapIndex[x, y, z];
+                    Cord.m_gCost = int.MaxValue;
+                    Cord.CalculateFCost();
+                    Cord.LastCoord = null;
+                }
+
+            }
+        }
+
+        //now start calucalting the value of the startnode 
+        //calulates cost between start node and node the object is trying to reach
+        startCoord.m_gCost = 0;
+        startCoord.m_hCost = calculateDistanceCost(startCoord, EndCoord);
+        startCoord.CalculateFCost();
+
+        //open closed list
+        List<Coords> openList = new List<Coords>();
+        List<Coords> closedList = new List<Coords>();
+
+        // Add the start node to the open list
+        openList.Add(startCoord);
+
+        while (openList.Count > 0)
+        {
+            // Find the node with the lowest fCost in the open list
+            Coords currentNode = FindLowestFCostNode(openList);
+
+            // Move the current node from open to closed list
+            openList.Remove(currentNode);
+            closedList.Add(currentNode);
+
+            // Check if the current node is the target node
+            if (currentNode == EndCoord)
+            {
+                // Path found, construct the path
+                List<Vector3> path = calcuatePath(currentNode);
+                return path.Count;
+            }
+
+            // Get the neighboring nodes of the current node
+            List<Coords> neighbors = getNeighbourList(currentNode);
 
             foreach (Coords neighbor in neighbors)
             {
@@ -220,11 +334,11 @@ public static class World_Pathfinding
         }
 
         // No path found
-        return null;
-
+        return 0;
     }
 
-    private static List<Vector3> calcuatePath(Coords EndNode, int uwidth, int uDepth)
+
+    private  List<Vector3> calcuatePath(Coords EndNode)
     {
         List<Coords> path = new List<Coords>();
         path.Add(EndNode);
@@ -249,14 +363,14 @@ public static class World_Pathfinding
             
             foreach (Coords coord in path)
             {
-                vectorPath.Add(coordToWorld(coord, uwidth, uDepth));
+                vectorPath.Add(coordToWorld(coord));
             }
 
             return vectorPath;
         }
 
     }
-    public static int calculateDistanceCost(Coords a, Coords b)
+    public  int calculateDistanceCost(Coords a, Coords b)
     {
         int xDistance = Mathf.Abs(a.x - b.x);
         int yDistance = Mathf.Abs(a.y - b.y);
@@ -271,7 +385,7 @@ public static class World_Pathfinding
         return cost;
     }
 
-    private static Coords FindLowestFCostNode(List<Coords> nodeList)
+    private  Coords FindLowestFCostNode(List<Coords> nodeList)
     {
         Coords lowestFCostNode = nodeList[0];
 
@@ -286,14 +400,22 @@ public static class World_Pathfinding
         return lowestFCostNode;
     }
 
-    private static List<Coords> getNeighbourList(Coords currentNode, int unitWidth, int unitHeight, int unitDepth, bool flight)
+    private  List<Coords> getNeighbourList(Coords currentNode)
     {
         List<Coords> neighbourList = new List<Coords>();
 
         // Define possible neighbor offsets
 
 
-       for(int i = -1; i < 2; i++)
+        int x = currentNode.x;
+        int y = currentNode.y;
+        int z = currentNode.z;
+        int newX = x;
+        int newY = y;
+        int newZ = z;
+
+
+        for (int i = -1; i < 2; i++)
         {
             for (int j = -1; j < 2; j++)
             {
@@ -302,9 +424,9 @@ public static class World_Pathfinding
                     if (i == 0 && j == 0 && k == 0)
                         continue;
 
-                    int newX = currentNode.x + i;
-                    int newY = currentNode.y + j;
-                    int newZ = currentNode.z + k;
+                    newX = x + i;
+                    newY = y + j;
+                    newZ = z + k;
 
                     if (newX >= 0 && newX < width && newY >= 0 && newY < depth && newZ >= 0 && newZ < height)
                     {
@@ -322,62 +444,79 @@ public static class World_Pathfinding
         return neighbourList;
 
     }
+    
 
-
-    private static bool isAreaWalkable(int x, int y, int z)
+    private  bool isAreaWalkable(int x, int y, int z)
     {
         if (!mapIndex[x, y, z].IsWalkable)
             return false;
 
-        /*
-        for (int i = x; i < x + unitwidth; i++)
-        {
-            for (int j = y; j < y + unitDepth; j++)
-            {
-                for (int k = z; k < z + unitheight; k++)
-                {
-                    
-                    if (i < 0 || i >= width || j < 0 || j >= depth || k < 0 || k >= height || mapIndex[i, j, k].type == Tile_Type.Wall)
-                    {
-                        return false;
-                    }
-                    
-                }
-            }
-        }
-        */
         return true;
     }
 
 
-    
-   
 
+    public class Neighbors
+    {
+        public List<Coords> NeighborsList { get; set; }
 
-
-private static void TestingSetup()
+        public Neighbors (List<Coords> neighbours)
         {
-            for (int x = 0; x < 7; x++)
+
+            NeighborsList = neighbours;
+        }
+    }
+
+    // Pre-calculate the neighboring nodes for each node in the map
+    public  Dictionary<Coords, Neighbors> preCalculateNeighbors()
+    {
+        Dictionary<Coords,Neighbors> neighborsDict = new Dictionary<Coords, Neighbors>();
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < depth; y++)
             {
-                for (int z = 14; z < 20; z++)
+                for (int z = 0; z < height; z++)
                 {
-                    mapIndex[x, 3, z].settype(Tile_Type.floor);
+                    Neighbors list = new Neighbors(getNeighbourList(mapIndex[x, y, z])); //list of coords
+                    neighborsDict.Add(mapIndex[x, y, z], list);
+                }
+            }
+        }
+
+        return neighborsDict;
+    }
+
+
+
+
+
+
+
+
+
+    private  void TestingSetup()
+        {
+            
+        
+        for (int x = 0; x < width; x++)
+            {
+                for (int z = 0; z < 25; z++)
+                {
+                    mapIndex[x, 4, z].settype(Tile_Type.floor);
                 }
             }
 
-
-            for (int y = 0; y < 5; y++)
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 25; z < height; z++)
             {
-                mapIndex[2, y, 14].settype(Tile_Type.Ladder);
+                mapIndex[x, 0, z].settype(Tile_Type.floor);
             }
-
         }
 
 
-
-
-
-   
+    }
 
 
 

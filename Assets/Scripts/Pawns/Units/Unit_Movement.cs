@@ -11,6 +11,7 @@ public class Unit_Movement : MonoBehaviour
     private int rotaionSpeed = 1000;
     private AudioManager _audio;
     bool dash = false;
+    World_Pathfinding _path;
     private void Awake()
     {
         _unit = GetComponent<Unit>();
@@ -19,6 +20,7 @@ public class Unit_Movement : MonoBehaviour
     private void Start()
     {
         _audio = AudioManager.instance;
+        _path = World_Pathfinding.Instance;
     }
 
     public void moveToTarget(int endX, int endY, int endZ)
@@ -27,9 +29,9 @@ public class Unit_Movement : MonoBehaviour
         if (_isMoving == true )
             return;
 
-
+        
         //call this end of turn if set to auto go somewhere
-        List<Vector3> path = World_Pathfinding.findPath(endX, endY,endZ, _unit.x, _unit.y,_unit.z, _unit.width, _unit.height, _unit.depth,_unit.flying);
+        List<Vector3> path = _path.findPath(endX, endY,endZ, _unit.x, _unit.y,_unit.z);
 
         if (path.Count > _unit.movementPoints)
         {
@@ -37,6 +39,8 @@ public class Unit_Movement : MonoBehaviour
             return;
 
         }
+
+
         dash = false;
 
         if (path.Count > _unit.movementPoints / 2)
@@ -44,6 +48,7 @@ public class Unit_Movement : MonoBehaviour
 
         if (path != null)
         {
+            _unit.covers.Clear();
             animator.speed = 1;
             int limitedPathLength = Mathf.Min(path.Count, _unit.movementPoints);
             List<Vector3> limitedPath = path.GetRange(0, limitedPathLength);
@@ -78,12 +83,12 @@ public class Unit_Movement : MonoBehaviour
                 targetRotation = Quaternion.LookRotation(directionToTarget);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotaionSpeed * Time.deltaTime);
                 transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * speed );
-
+                
                 yield return null;
             }
             transform.position = targetPosition;
         }
-        Vector3Int temportayChangethisplease = World_Pathfinding.worldToCoord(transform.position, _unit.width,_unit.depth);
+        Vector3Int temportayChangethisplease = _path.worldToCoord(transform.position, _unit.width, _unit.depth);
         _unit.x = temportayChangethisplease.x;
         _unit.y = temportayChangethisplease.y;
         _unit.z = temportayChangethisplease.z;
@@ -98,7 +103,7 @@ public class Unit_Movement : MonoBehaviour
 
         if (dash)
             AC = 2;
-
+        UnitManager.Instance.updateVision();
         _unit.DeleteCover();
         _unit.cmdCheckCover(oldRotation, AC);
         _isMoving = false;

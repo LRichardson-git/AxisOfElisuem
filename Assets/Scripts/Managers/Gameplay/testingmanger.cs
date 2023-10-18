@@ -87,8 +87,8 @@ public class testingmanger : NetworkBehaviour
                     
                     
 
-                    if (World_Pathfinding.findPath(i, j, k, unit.x, unit.y, unit.z, unit.width, unit.height, unit.depth, unit.flying) != null)
-                        allPaths.Add(World_Pathfinding.coordToWorld(i,j,k,1,1));
+                   // if (World_Pathfinding.findPath(i, j, k, unit.x, unit.y, unit.z, unit.width, unit.height, unit.depth, unit.flying) != null)
+                      //  allPaths.Add(World_Pathfinding.coordToWorld(i,j,k,1,1));
 
                 }
  

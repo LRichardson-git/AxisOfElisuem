@@ -21,6 +21,7 @@ public class Shooting_View_Controller : MonoBehaviour
     public Button firebutton;
     //dont see why not
     public static Shooting_View_Controller Instance;
+    private CameraControler _controler;
     private int unitID;
     private TargetData Tdata;
     Ability CurrentAbility;
@@ -30,6 +31,7 @@ public class Shooting_View_Controller : MonoBehaviour
         Instance = this;
         manager.SetActive(false);
         _selector = ObjectSelector.Instance;
+        _controler = CameraControler.LocalInstance;
     }
 
     public void Activate()
@@ -51,6 +53,7 @@ public class Shooting_View_Controller : MonoBehaviour
         ChanceToDmg.text = Data.minDmg + "-" + Data.maxDmg + " Dmg";
         unitID = Data.getUnit().getID();
         Tdata = Data;
+        _controler.SetCameraUnit(Data.getUnit().transform.position);
     }
 
     public void UpdateInfo(Ability ability) {
@@ -94,6 +97,13 @@ public class Shooting_View_Controller : MonoBehaviour
         Deactivate();
     }
 
+    public bool On()
+    {
+        if (manager.active)
+            return true;
+
+        return false;
+    }
     public void Deactivate()
     {
         manager.SetActive(false);

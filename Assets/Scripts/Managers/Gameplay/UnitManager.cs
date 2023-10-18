@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UnitManager : MonoBehaviour
@@ -14,41 +17,77 @@ public class UnitManager : MonoBehaviour
     public GameObject Floor;
     Material floorMaterial;
     private List<smoke> smokeList;
+    Thread thread;
+    World_Pathfinding _path;
+    Shooting shooting;
+
+    testingpath _testingpath;
+    testingpath _testingpath2;
+    List<Unit> inVision;
     private void Awake()
     {
         Instance = this;
         //_units = new List<Unit>();
         _highlighters = new List<GameObject>();
         smokeList = new List<smoke>();
+        _path = World_Pathfinding.Instance;
+        shooting = Shooting.Instance;
+        inVision = new List<Unit>();
     }
 
     private void Start()
     {
-        floorMaterial = Floor.GetComponent<Renderer>().material;
+        //floorMaterial = Floor.GetComponent<Renderer>().material;
 
         int tempId = 0;
 
         foreach (Unit unit in _units) {
             unit.SetID(tempId);
             tempId++;
-                }
+        }
+
+        _testingpath = new testingpath();
+        _testingpath2 = new testingpath();
+
+
+
+
+
     }
+
+    public void SetupSight(int ID)
+    {
+        foreach (Unit unit in _units)
+            if (unit.ownedBy != ID)
+                unit.cantSee();
+    }
+
 
     public void setPlayerID()
     {
         //dumb way of doing this
         foreach (Unit unit in _units)
         {
+            
             unit.setPlayerID();
             unit.addAbility(new Fire());
             unit.addAbility(new GrenadeAbility(5, 2, 4));
-            unit.addAbility(new SmokeAbility(2,2,5));
+            unit.addAbility(new SmokeAbility(2, 2, 5));
             unit.addAbility(new RunAndGunAbility());
             unit.addAbility(new MedPack());
             unit.addAbility(new HeadshotAbility());
             unit.init();
+
         }
-        }
+
+        SetupSight(Player.LocalInstance.playerID);
+    }
+
+    public void startt()
+    {
+        foreach (Unit unit in _units)
+            unit.GetComponent<Solider>().begun = true;
+    }
 
     public void newTurn()
     {
@@ -59,12 +98,53 @@ public class UnitManager : MonoBehaviour
 
         foreach (Unit unit in _units)
             if (Player.LocalInstance.turn == true)
+            {
                 unit.ActionPoints = 2;
+                shooting.CheckSight(unit);
+
+            }
+        inVision.Clear();
+        foreach(Unit unit in _units)
+        {
+            foreach (TargetData data in unit.getList())
+                if (!inVision.Contains(data.getUnit()) && unit.isOwned)
+                    inVision.Add(data.getUnit());
+
+        }
+
+        foreach (Unit unit in _units)
+            if (!unit.isOwned)
+                unit.cantSee();
+
+        foreach (Unit unit in inVision)
+            unit.canSee();
 
         ObjectSelector.Instance.Deselect();
     }
 
+
+    public void updateVision()
+    {
+        foreach (Unit unit in _units)
+            if (!unit.isOwned)
+                unit.cantSee();
+
+        foreach (Unit unit in _units)
+            foreach (TargetData data in unit.getList())
+                data.getUnit().canSee();
+                    
+    }
+
+
     //Change in future
+
+    //enemy moves or unit dies
+    public void TeamCheckSight(int ID)
+    {
+        foreach (Unit unit in _units)
+            if (unit.ownedBy == ID)
+                Shooting.Instance.CheckSight(unit);
+    }
     public int GetModifers(Unit unit)
     {
         int modifers = 0;
@@ -93,7 +173,7 @@ public class UnitManager : MonoBehaviour
             if (smokeList[i] = objec)
                 return i;
         }
-     
+
         return -1;
     }
 
@@ -132,59 +212,88 @@ public class UnitManager : MonoBehaviour
 
         int movement = unit.movementPoints;
         int notDash = movement / 2;
-        // calculate paths to all walkable end points
-        for (int i = unit.x - (movement); i < unit.x + movement; i++)
-        {
-            for (int j = unit.y - (movement); j < unit.y + movement; j++)
-            {
-                if (j < 0)
-                    continue;
 
-                for (int k = unit.z - (movement); k < unit.z + movement; k++)
-                {
-                    // calculate distance from center
-                    float distance = Mathf.Sqrt(Mathf.Pow(i - unit.x, 2) + Mathf.Pow(j - unit.y, 2) + Mathf.Pow(k - unit.z, 2));
-
-
-
-
-                    if (unit.ActionPoints < 2)
-                        spawnHighlighter(true, i, j, k, unit);
-                    else if (unit.ActionPoints > 2)
-                        spawnHighlighter(false, i, j, k, unit) ;
-
-                    else 
-                        spawnHighlighter(i, j, k, unit);
-                }
-            }
-        }
+        
 
 
     }
 
+    public void checkSightsmove(Unit target)
+    {
+        bool seen = false;
+        foreach(Unit unit in _units)
+        {
+            //owned by player
+            if (unit != target && Player.LocalInstance.playerID == unit.ownedBy)
+            {
+
+                if (Shooting.Instance.CanSeeUnit(unit, target))
+                {
+                    seen = true;
+                    target.canSee();
+                    break;
+                }
+
+            }
+        }
+
+        if (!seen)
+            target.cantSee();
+
+    }
+
+
+
+    public void test(Unit unit)
+    {
+        removePaths();
+        Debug.Log("test"); 
+        foreach (moveable move in unit.moveables)
+            _highlighters.Add(Instantiate(HighlightDash, _path.coordToWorld(move.x, move.y, move.z, 1, 1), Quaternion.identity));
+    }
+    
+    void addMoveable(int i, int j, int k, Unit unit)
+    {
+        int p = _testingpath.findPath(i, j, k, unit.x, unit.y, unit.z);
+        if (p <= unit.movementPoints && p != 0)
+        {
+            unit.addmove(i, j, k);
+        }
+    }
+
+    void addMoveable2(int i, int j, int k, Unit unit)
+    {
+        int p = _testingpath2.findPath(i, j, k, unit.x, unit.y, unit.z);
+        if (p <= unit.movementPoints && p != 0)
+        {
+            unit.addmove(i, j, k);
+        }
+    }
+
+
     void spawnHighlighter( int i, int j , int k, Unit unit)
     {
-        List<Vector3> path = World_Pathfinding.findPath(i, j, k, unit.x, unit.y, unit.z, unit.width, unit.height, unit.depth, unit.flying);
+        int p = _path.findPathT(i, j, k, unit.x, unit.y, unit.z);
 
-        if (path != null && path.Count <= unit.movementPoints)
+        if (p <= unit.movementPoints && p != 0)
         {
-            if (path.Count > unit.movementPoints / 2)
-                _highlighters.Add(Instantiate(HighlightDash, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+            if (p > unit.movementPoints / 2)
+                _highlighters.Add(Instantiate(HighlightDash, _path.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
             else
-                _highlighters.Add(Instantiate(HighlightTile, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+                _highlighters.Add(Instantiate(HighlightTile, _path.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
         }
     }
 
     void spawnHighlighter(bool dash,int i, int j, int k, Unit unit)
     {
-        List<Vector3> path = World_Pathfinding.findPath(i, j, k, unit.x, unit.y, unit.z, unit.width, unit.height, unit.depth, unit.flying);
+        List<Vector3> path = _path.findPath(i, j, k, unit.x, unit.y, unit.z);
 
         if (path != null && path.Count <= unit.movementPoints)
         {
             if (!dash)
-                _highlighters.Add(Instantiate(HighlightTile, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+                _highlighters.Add(Instantiate(HighlightTile, _path.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
             else
-                _highlighters.Add(Instantiate(HighlightDash, World_Pathfinding.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+                _highlighters.Add(Instantiate(HighlightDash, _path.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
         }
     }
 

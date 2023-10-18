@@ -18,6 +18,7 @@ public class Player : NetworkBehaviour
 
     public static Player LocalInstance { get; private set; }
     ObjectSelector _selector;
+    //haoppens once at start
     public void SetIDSetup(int ID)
     {
         playerID = ID;
@@ -27,6 +28,10 @@ public class Player : NetworkBehaviour
             turn = false;
             _selector.canAction = false;
         }
+
+        Shooting.Instance.Team = ID;
+
+
     }
 
 
@@ -70,6 +75,9 @@ public class Player : NetworkBehaviour
 
         if (Input.GetKeyUp(KeyCode.P))
             Debug.Log(playerID);
+
+        if (Input.GetKeyUp(KeyCode.K))
+            UnitManager.Instance.startt();
 
         if (Input.GetKeyUp(KeyCode.Delete))
             CmdEndTurn(playerID);

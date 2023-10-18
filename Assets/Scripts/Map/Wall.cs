@@ -26,7 +26,7 @@ public class Wall : MonoBehaviour
             float xE = transform.position.x / 2 - x;
             float yE = transform.position.y / 2 + y;
             Vector3 pos = new Vector3(xE,yE, transform.position.z);
-            World_Pathfinding.setNotwalkble(World_Pathfinding.worldToCoord(pos),x,y,z);
+            World_Pathfinding.Instance.setNotwalkble(World_Pathfinding.Instance.worldToCoord(pos),x,y,z);
 
 
         }
@@ -36,12 +36,12 @@ public class Wall : MonoBehaviour
             float zE = transform.position.z - (10 * z /2);
             float yE = transform.position.y / 2 + y;
             Vector3 pos = new Vector3(transform.position.x, yE, zE);
-            World_Pathfinding.setNotwalkble(World_Pathfinding.worldToCoord(pos), x, y,z);
+            World_Pathfinding.Instance.setNotwalkble(World_Pathfinding.Instance.worldToCoord(pos), x, y,z);
 
         }
 
         else
-            World_Pathfinding.setNotwalkble(World_Pathfinding.worldToCoord(transform.position));
+            World_Pathfinding.Instance.setNotwalkble(World_Pathfinding.Instance.worldToCoord(transform.position));
 
 
     }

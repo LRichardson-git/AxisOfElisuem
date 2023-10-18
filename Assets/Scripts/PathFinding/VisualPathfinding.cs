@@ -52,11 +52,11 @@ public  class VisualPathfinding : MonoBehaviour
 
         
 
-        var endCoord = World_Pathfinding.worldToCoord(hit.point,_unit.width,_unit.depth);
+        var endCoord = World_Pathfinding.Instance.worldToCoord(hit.point,_unit.width,_unit.depth);
          // assuming the current object's position is the starting point
 
         // Call the findPath function to get the path
-        var path = World_Pathfinding.findPath(endCoord.x, endCoord.y,endCoord.z, _unit.x, _unit.y,_unit.z, _unit.width, _unit.height,1,_unit.flying);
+        var path = World_Pathfinding.Instance.findPath(endCoord.x, endCoord.y,endCoord.z, _unit.x, _unit.y,_unit.z);
 
         if (path != null)
         {

@@ -23,8 +23,8 @@ public class Shooting : NetworkBehaviour
     List<Cover> coverList;
     List<Vector3> Visited;
     public GameObject Smoke;
-  
 
+    public int Team = 0;
     
     private void Awake()
     {
@@ -33,7 +33,7 @@ public class Shooting : NetworkBehaviour
         directions = new List<Vector3> { west, north, east, south };
         coverList = new List<Cover>();
         Visited = new List<Vector3>();
-        
+
     }
 
     private void Start()
@@ -45,25 +45,33 @@ public class Shooting : NetworkBehaviour
     {
         unit.DeleteList();
         // Iterate through all units in the scene
+        
         foreach (Unit targetUnit in UnitManager.Instance.GetUnitList())
         {
-            if (targetUnit == unit || targetUnit.ownedBy == Player.LocalInstance.playerID)
+            if (targetUnit == unit || targetUnit.ownedBy == Team)
                 continue;
 
-            //add condition for team
-            // Check if the unit can see the target unit
-            CanSeeUnit(unit, targetUnit);
+            //if cant see unit it is invisible
+            if (CanSeeUnit(unit, targetUnit))
+                targetUnit.canSee();
                 
             
+
         }
     }
 
-    private bool CanSeeUnit(Unit unit, Unit target)
+    
+
+    public bool CanSeeUnit(Unit unit, Unit target)
     {
+
+        
+
         Vector3 direction = target.targetPoint.transform.position - unit.targetPoint.transform.position;
         float distance = Vector3.Distance(unit.transform.position, target.transform.position);
         targetP = target.transform.position;
-
+        if (distance < unit.Vision)
+            return false;
 
         //normal enemy in open
         RaycastHit hitInfo;
