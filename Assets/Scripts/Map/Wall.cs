@@ -16,33 +16,13 @@ public class Wall : MonoBehaviour
 
 
 
-        x = (int)transform.localScale.x / 10;
-        y = (int)transform.localScale.y / 10;
-        z = (int)transform.localScale.z / 10;
-
-        if (x > z)
-        {
-            
-            float xE = transform.position.x / 2 - x;
-            float yE = transform.position.y / 2 + y;
-            Vector3 pos = new Vector3(xE,yE, transform.position.z);
-            World_Pathfinding.Instance.setNotwalkble(World_Pathfinding.Instance.worldToCoord(pos),x,y,z);
+        x = (int)(transform.position.x - 5) / 10;
+        y = (int)(transform.position.y - 10) / 10;
+        z = (int)(transform.position.z) / 10;
 
 
-        }
-            
-        else if (z > x)
-        {
-            float zE = transform.position.z - (10 * z /2);
-            float yE = transform.position.y / 2 + y;
-            Vector3 pos = new Vector3(transform.position.x, yE, zE);
-            World_Pathfinding.Instance.setNotwalkble(World_Pathfinding.Instance.worldToCoord(pos), x, y,z);
-
-        }
-
-        else
-            World_Pathfinding.Instance.setNotwalkble(World_Pathfinding.Instance.worldToCoord(transform.position));
-
+        World_Pathfinding.Instance.setType(x, y, z, Tile_Type.Wall);
+        World_Pathfinding.Instance.setType(x, y + 1, z, Tile_Type.Wall);
 
     }
 

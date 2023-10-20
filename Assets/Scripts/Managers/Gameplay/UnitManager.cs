@@ -213,6 +213,7 @@ public class UnitManager : MonoBehaviour
         int movement = unit.movementPoints;
         int notDash = movement / 2;
 
+        //check the 4 ys with floors we will go to, simple as
         
 
 

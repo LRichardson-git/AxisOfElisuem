@@ -38,8 +38,10 @@ public class Coords
     }
     public void settype(Tile_Type type) { 
         this.type = type; 
-        if (this.type == Tile_Type.floor || this.type == Tile_Type.Ladder)
+        if (type == Tile_Type.floor || type == Tile_Type.Ladder)
             IsWalkable=true;
+        else
+            IsWalkable=false;
         }
     public void CalculateFCost() //movement cost
     {

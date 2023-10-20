@@ -130,6 +130,13 @@ public class World_Pathfinding :MonoBehaviour
                                  (int)Mathf.Floor((Pos.z) / CellSize));
         return Grid;
     }
+    public Vector3Int worldToCoordT(Vector3 Pos)
+    {
+        Vector3Int Grid = new Vector3Int((int)Mathf.Floor((Pos.x) / CellSize),
+                                 (int)Mathf.Floor((Pos.y) / CellSize),
+                                 (int)Mathf.Floor((Pos.z) / CellSize));
+        return Grid;
+    }
 
     public  Vector3Int worldToCoord(Vector3 Pos, int uWidth, int uDepth)
     {
