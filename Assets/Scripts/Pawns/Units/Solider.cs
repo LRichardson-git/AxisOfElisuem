@@ -9,10 +9,7 @@ public class Solider : Unit
 
     public GameObject gunModel;
     float tickTimer = 0;
-    float tickTimerMax = 0.6f;
     float LastActionTime = 0;
-    World_Pathfinding path;
-    UnitManager manager;
     int old = 0;
     public bool begun = false;
 

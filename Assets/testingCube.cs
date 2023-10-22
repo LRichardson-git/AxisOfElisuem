@@ -11,6 +11,6 @@ public class testingCube : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-         lol = World_Pathfinding.Instance.worldToCoordT(transform.position); 
+         //lol = World_Pathfinding.Instance.worldToCoordT(transform.position); 
     }
 }

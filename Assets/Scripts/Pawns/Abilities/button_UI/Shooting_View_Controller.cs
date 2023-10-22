@@ -99,7 +99,7 @@ public class Shooting_View_Controller : MonoBehaviour
 
     public bool On()
     {
-        if (manager.active)
+        if (manager.activeSelf)
             return true;
 
         return false;

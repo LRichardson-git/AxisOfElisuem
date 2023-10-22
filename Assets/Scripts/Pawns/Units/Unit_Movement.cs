@@ -29,21 +29,25 @@ public class Unit_Movement : MonoBehaviour
         if (_isMoving == true )
             return;
 
-        
-        //call this end of turn if set to auto go somewhere
-        List<Vector3> path = _path.findPath(endX, endY,endZ, _unit.x, _unit.y,_unit.z);
 
-        if (path.Count > _unit.movementPoints)
+
+
+
+        //call this end of turn if set to auto go somewhere
+
+        int distance = _path.testdistance(_unit, endX, endY, endZ);
+
+        if (distance == -1)
         {
             _audio.PlaySound("Error");
             return;
 
         }
 
-
+        List<Vector3> path = _path.findPath(endX, endY, endZ, _unit.x, _unit.y, _unit.z);
         dash = false;
 
-        if (path.Count > _unit.movementPoints / 2)
+        if (distance > _unit.movementPoints / 2)
             dash = true;
 
         if (path != null)

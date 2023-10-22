@@ -1,9 +1,6 @@
 using UnityEngine;
 using Mirror;
 using System.Collections.Generic;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 public class testingmanger : NetworkBehaviour
 {
     public GameObject blocker;
@@ -65,46 +62,7 @@ public class testingmanger : NetworkBehaviour
         
     }
     
-    public void testPath(Unit unit)
-    {
-
-        List<Vector3> allPaths = new List<Vector3>();
-
-        //tempoirary
-        int temp = 0;
-        int movement = unit.movementPoints;
-        Vector3 last;
-        // calculate paths to all walkable end points
-        for (int i = unit.x - (movement); i < unit.x + movement; i++)
-        {
-            for (int j = unit.y - (movement); j < unit.y + movement; j++)
-            {
-                if (j < 0)
-                    continue;
-
-                for (int k = unit.z - (movement); k < unit.z + movement; k++)
-                {
-                    
-                    
-
-                   // if (World_Pathfinding.findPath(i, j, k, unit.x, unit.y, unit.z, unit.width, unit.height, unit.depth, unit.flying) != null)
-                      //  allPaths.Add(World_Pathfinding.coordToWorld(i,j,k,1,1));
-
-                }
  
-            }
-        }
-
-        //so lets a go
-        for(int i = 0 ; i < allPaths.Count; i++) 
-        {
-
-            Instantiate(blocker, allPaths[i], Quaternion.identity);
-        }
-
-
-
-    }
 
 
     [ClientRpc]

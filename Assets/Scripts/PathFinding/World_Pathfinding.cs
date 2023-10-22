@@ -10,7 +10,7 @@ public class World_Pathfinding :MonoBehaviour
 
     private  Coords[,,] mapIndex;
 
-    int width = 40, height = 40, depth = 15;
+    int width = 40, height = 40, depth = 13;
 
     public int CellSize = 10;
 
@@ -18,8 +18,8 @@ public class World_Pathfinding :MonoBehaviour
 
     public static World_Pathfinding Instance;
 
-    
 
+    public List<Vector3> EntryPoints;
 
     private void Awake()
     {
@@ -265,7 +265,7 @@ public class World_Pathfinding :MonoBehaviour
 
         if (!mapIndex[xEnd, yEnd, zEnd].IsWalkable)
         {
-            return 0;
+            return -1;
         }
 
         Coords startCoord = mapIndex[xSt, ySt, zSt];
@@ -341,7 +341,7 @@ public class World_Pathfinding :MonoBehaviour
         }
 
         // No path found
-        return 0;
+        return -1;
     }
 
 
@@ -406,6 +406,48 @@ public class World_Pathfinding :MonoBehaviour
 
         return lowestFCostNode;
     }
+
+
+    //not the best way but will change in future
+    int diffrence(int num1, int num2)
+    {
+        int cout;
+
+        cout = Mathf.Max(num2, num1) - Mathf.Min(num1, num2);
+        return cout;
+    }
+    public int testdistance(Unit unit, int x , int y , int z)
+    {
+        Vector3Int temp = new Vector3Int(unit.x, unit.y, unit.z);
+        Vector3Int temp2 = new Vector3Int(x, y, z);
+        if (x < 0 || x >= width || y < 0 || y >= depth || z < 0 || z >= height || mapIndex[x, y, z].type == Tile_Type.Ladder || !mapIndex[x, y, z].IsWalkable) { return -1; }
+
+        int tempint = (int)Vector3.Distance(temp, temp2);
+        if (y != unit.y)
+        {
+            
+
+
+                tempint += diffrence(unit.y, y);
+            
+        }
+
+
+
+        //Debug.Log(x + " " + y + " " + z + " : " + tempint);
+        if (tempint < unit.movementPoints)
+        {
+
+
+
+
+
+            return (int)(Vector3.Distance(temp, temp2));
+        }
+        else
+            return -1;
+    }
+
 
     private  List<Coords> getNeighbourList(Coords currentNode)
     {
@@ -502,17 +544,17 @@ public class World_Pathfinding :MonoBehaviour
 
 
 
-    private  void TestingSetup()
-        {
-            
-        
+    private void TestingSetup()
+    {
+
+
         for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < 25; z++)
             {
-                for (int z = 0; z < 25; z++)
-                {
-                    mapIndex[x, 4, z].settype(Tile_Type.floor);
-                }
+                mapIndex[x, 4, z].settype(Tile_Type.floor);
             }
+        }
 
         for (int x = 0; x < width; x++)
         {
@@ -522,7 +564,12 @@ public class World_Pathfinding :MonoBehaviour
             }
         }
 
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 1; y < 4; y++)
+                mapIndex[x, y, 25].settype(Tile_Type.Ladder);
 
+        }
     }
 
 

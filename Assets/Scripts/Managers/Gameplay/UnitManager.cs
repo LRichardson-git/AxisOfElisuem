@@ -24,14 +24,15 @@ public class UnitManager : MonoBehaviour
     testingpath _testingpath;
     testingpath _testingpath2;
     List<Unit> inVision;
+
+    public bool testt = false;
     private void Awake()
     {
         Instance = this;
         //_units = new List<Unit>();
         _highlighters = new List<GameObject>();
         smokeList = new List<smoke>();
-        _path = World_Pathfinding.Instance;
-        shooting = Shooting.Instance;
+      
         inVision = new List<Unit>();
     }
 
@@ -49,7 +50,8 @@ public class UnitManager : MonoBehaviour
         _testingpath = new testingpath();
         _testingpath2 = new testingpath();
 
-
+        _path = World_Pathfinding.Instance;
+        shooting = Shooting.Instance;
 
 
 
@@ -211,11 +213,62 @@ public class UnitManager : MonoBehaviour
             return;
 
         int movement = unit.movementPoints;
-        int notDash = movement / 2;
+        int notDash = 0;
 
         //check the 4 ys with floors we will go to, simple as
-        
 
+        if (testt)
+        {
+            for (int j = 0; j < 9; j += 4)
+            {
+                notDash++;
+                for (int i = unit.x - (movement); i < unit.x + movement; i++)
+                {
+
+
+
+                    for (int k = unit.z - (movement); k < unit.z + movement; k++)
+                    {
+
+                        spawnHighlighter(i, j, k, unit);
+
+                    }
+
+                }
+            }
+        }
+        else
+        {
+
+            for (int j = 0; j < 13; j += 4)
+            {
+                notDash++;
+
+               
+
+                    for (int i = unit.x - (movement); i < unit.x + movement; i++)
+                {
+
+
+
+                    for (int k = unit.z - (movement); k < unit.z + movement; k++)
+                    {
+                         
+
+
+
+
+                        int temp = _path.testdistance(unit, i, j, k);
+                        if (temp != -1 && temp < unit.movementPoints)
+                            spawnHighlighter(i, j, k, temp, unit);
+
+                    }
+
+                }
+
+            }
+
+      }
 
     }
 
@@ -271,9 +324,19 @@ public class UnitManager : MonoBehaviour
         }
     }
 
+    void spawnHighlighter(int i, int j, int k, int distance, Unit unit)
+    {
+
+            if (distance > unit.movementPoints / 2 || unit.ActionPoints < 2)
+                _highlighters.Add(Instantiate(HighlightDash, _path.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+            else
+                _highlighters.Add(Instantiate(HighlightTile, _path.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+        
+    }
 
     void spawnHighlighter( int i, int j , int k, Unit unit)
     {
+       // Debug.Log(unit);
         int p = _path.findPathT(i, j, k, unit.x, unit.y, unit.z);
 
         if (p <= unit.movementPoints && p != 0)

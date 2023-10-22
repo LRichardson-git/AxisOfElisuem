@@ -12,8 +12,6 @@ public class Grenade : NetworkBehaviour
     private AudioSource audioSource;
     private Rigidbody rb;
     InputManager inputManager;
-    bool Aiming = false;
-    bool fire = false;
     [SerializeField]
     GameObject explosion;
     [SerializeField]
@@ -33,6 +31,8 @@ public class Grenade : NetworkBehaviour
     [SerializeField]
     AudioClip S_Smoke;
 
+
+   
 
     Vector3 firepoint;
 
