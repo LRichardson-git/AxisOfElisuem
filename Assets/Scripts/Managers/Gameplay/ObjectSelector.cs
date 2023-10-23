@@ -57,9 +57,15 @@ public class ObjectSelector : MonoBehaviour
             SelectUnit();
         }
 
+        if (_input.SwitchTarget)
+            nextUnit();
+
+
         //unity selected
         if (selectedUnit == null)
             return;
+
+
 
         if (_input.rightClick)
         {
@@ -94,6 +100,51 @@ public class ObjectSelector : MonoBehaviour
 
 
     }
+
+    void nextUnit()
+    {
+        List<Unit> TempList = _unitManager.GetUnitList();
+        int point = 0;
+
+        for (int i = 0; i < TempList.Count; i++)
+
+
+            if (TempList[i] == selectedUnit)
+            {
+                point = i + 1;
+                while (point < TempList.Count) {
+
+                        if (TempList[point].ActionPoints > 0 && TempList[point].ownedBy == Player.LocalInstance.playerID)
+                        {
+                            SelectUnit(TempList[point]);
+                            return;
+                        }
+                    point++;
+
+                  }
+
+                        for (int j = 0; j < TempList.Count; j++)
+                        {
+                            if (TempList[j].ActionPoints > 0 && TempList[j].ownedBy == Player.LocalInstance.playerID) 
+                            {
+                                SelectUnit(TempList[j]);
+                                return;
+
+
+                            }
+
+                    }
+
+                }
+
+            }
+
+        
+
+
+
+        
+
 
     public void resetUnit()
     {

@@ -303,16 +303,27 @@ public class Shooting : NetworkBehaviour
             CheckCoverSpot(dir, unit, coverHeight.Tall);
         }
 
-        foreach (Vector3 dir in directions)
+        if (Visited.Count < 1)
         {
-
-            foreach (Vector3 dir2 in Visited)
+            foreach (Vector3 dir in directions)
             {
-                if (dir2 != dir)
-                    CheckCoverSpot(dir, unit, coverHeight.Short);
+
+
+                CheckCoverSpot(dir, unit, coverHeight.Short);
+
             }
         }
+        else
+        {
+            foreach (Vector3 dir in directions)
+            {
 
+                    if (!Visited.Contains(dir))
+                        CheckCoverSpot(dir, unit, coverHeight.Short);
+                
+            }
+        }
+       // Debug.Log(coverList.Count);
         return coverList;
     }
 
@@ -322,10 +333,15 @@ public class Shooting : NetworkBehaviour
         RaycastHit hit;
 
         Vector3 pos = unit.transform.position;
-        if (height == coverHeight.Tall)
-            pos = unit.targetPoint.transform.position;
-        else
-            pos.y = 2.5f;
+  
+            
+
+        pos = unit.targetPoint.transform.position;
+
+        if (height != coverHeight.Tall) {
+            pos.y -= 15.5f;
+ 
+        }
 
         if (Physics.Raycast(pos, direction, out hit, 10f))
         {
@@ -338,10 +354,7 @@ public class Shooting : NetworkBehaviour
                 lookpoint.y = unit.Model.transform.position.y;
                 unit.Model.transform.LookAt(lookpoint);
                 unit.Model.transform.Rotate(0,45,0);
-              //  Quaternion temp = unit.transform.rotation;
-             //   temp.rot = 0;
-              //  unit.transform.rotation = temp;
-               // Debug.Log(temp);
+   
                 
             }
         }

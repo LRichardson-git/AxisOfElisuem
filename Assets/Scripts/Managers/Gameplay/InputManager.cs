@@ -41,6 +41,7 @@ public class InputManager : MonoBehaviour
         leftClick = Input.GetMouseButtonDown(0);
         leftLetGo = Input.GetMouseButtonUp(0);
         rightLetGo = Input.GetMouseButtonUp(1);
+        SwitchTarget = Input.GetKeyDown(KeyCode.Tab);
 
         if (Input.GetKeyDown(KeyCode.Escape) || rightLetGo)
         {

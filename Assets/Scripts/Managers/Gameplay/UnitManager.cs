@@ -83,6 +83,7 @@ public class UnitManager : MonoBehaviour
         }
 
         SetupSight(Player.LocalInstance.playerID);
+        startt();
     }
 
     public void startt()

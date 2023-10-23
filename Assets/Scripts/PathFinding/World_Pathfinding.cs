@@ -10,7 +10,7 @@ public class World_Pathfinding :MonoBehaviour
 
     private  Coords[,,] mapIndex;
 
-    int width = 40, height = 40, depth = 13;
+    int width = 60, height = 40, depth = 13;
 
     public int CellSize = 10;
 
@@ -48,6 +48,8 @@ public class World_Pathfinding :MonoBehaviour
 
     public  void setType(int x, int y, int z, Tile_Type type)
     {
+        
+
         mapIndex[x, y, z].settype(type);
     }
 
@@ -543,7 +545,7 @@ public class World_Pathfinding :MonoBehaviour
 
 
 
-
+    //soo bad but wanna finsih it
     private void TestingSetup()
     {
 
@@ -570,6 +572,42 @@ public class World_Pathfinding :MonoBehaviour
                 mapIndex[x, y, 25].settype(Tile_Type.Ladder);
 
         }
+        //base
+
+        for (int x = 25; x < 35; x++)
+        {
+            for (int y = 5; y < 8; y++)
+            {
+                //mapIndex[x, y, 8].settype(Tile_Type.Ladder);
+                
+                mapIndex[x, y, 19].settype(Tile_Type.Ladder);
+                
+                }
+        }
+
+        
+            for (int y = 5; y < 8; y++)
+            {
+                
+                for (int z = 9; z < 19; z++)
+                {
+                    mapIndex[24, y, z].settype(Tile_Type.Ladder);
+                    mapIndex[35, y, z].settype(Tile_Type.Ladder);
+                }
+            }
+
+        //top
+
+        for (int y = 9; y < 11; y++)
+        {
+
+            for (int z = 9; z < 13; z++)
+            {
+                mapIndex[27, y, z].settype(Tile_Type.Ladder);
+                mapIndex[32, y, z].settype(Tile_Type.Ladder);
+            }
+        }
+
     }
 
 

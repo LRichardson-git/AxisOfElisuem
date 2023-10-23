@@ -78,15 +78,38 @@ public class Unit_Movement : MonoBehaviour
         {
             Vector3 targetPosition = path[i];
             //targetPosition.y = 5 * _unit.depth;
-            
+            animator.speed = 2;
+            if (targetPosition.y  > transform.position.y )
+            {
+                //check like if next point on path if greater than + 10 to continue i tink
+                speed = 15f;
+                animator.SetFloat("Y", 2);
+            }
+            else if (targetPosition.y < transform.position.y)
+            {
+                speed = 15f;
+                animator.SetFloat("Y", -2);
+            }
+            else
+            {
+                speed = 20f;
+                animator.SetFloat("Y", 0);
+
+            }
+
+
             while (Vector3.Distance(transform.position, targetPosition) >= speed * Time.deltaTime)
             {
                 //rotate towards location and set run animtion
                 animator.SetFloat("Speed", 2);
-                directionToTarget = targetPosition - transform.position;
+                Vector3 copy = targetPosition;
+                copy.y = transform.position.y;
+                directionToTarget = copy - transform.position;
                 targetRotation = Quaternion.LookRotation(directionToTarget);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotaionSpeed * Time.deltaTime);
                 transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * speed );
+
+                
                 
                 yield return null;
             }
