@@ -39,7 +39,7 @@ public class Unit_Movement : MonoBehaviour
 
         if (distance == -1)
         {
-            _audio.PlaySound("Error");
+            _audio.PlaySoundL("Error");
             return;
 
         }
@@ -79,20 +79,20 @@ public class Unit_Movement : MonoBehaviour
             Vector3 targetPosition = path[i];
             //targetPosition.y = 5 * _unit.depth;
             animator.speed = 2;
-            if (targetPosition.y  > transform.position.y )
+            if (targetPosition.y  > transform.position.y + 5 )
             {
                 //check like if next point on path if greater than + 10 to continue i tink
-                speed = 15f;
+                speed = 20f;
                 animator.SetFloat("Y", 2);
             }
-            else if (targetPosition.y < transform.position.y)
+            else if (targetPosition.y < transform.position.y - 5)
             {
-                speed = 15f;
+                speed = 20f;
                 animator.SetFloat("Y", -2);
             }
             else
             {
-                speed = 20f;
+                speed = 50f;
                 animator.SetFloat("Y", 0);
 
             }

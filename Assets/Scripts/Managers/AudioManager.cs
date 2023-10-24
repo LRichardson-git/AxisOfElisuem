@@ -55,7 +55,7 @@ public class AudioManager : NetworkBehaviour
 
 
 
-        [Command(requiresAuthority = false)]
+    [Command(requiresAuthority = false)]
     public void cmDPlaySound(string name)
     {
         if (soundDictionary.ContainsKey(name))
@@ -69,6 +69,13 @@ public class AudioManager : NetworkBehaviour
         audioSource.clip = soundDictionary[name];
         audioSource.Play();
         
+    }
+
+    public void PlaySoundL(string name)
+    {
+        audioSource.loop = false;
+        audioSource.clip = soundDictionary[name];
+        audioSource.Play();
     }
     [Command(requiresAuthority =false)]
     public void cmdStopSound()

@@ -27,6 +27,18 @@ public class CameraControler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        float scroll = Input.mouseScrollDelta.y * 80;
+        float newY = transform.position.y - scroll * speed * Time.deltaTime;
+        newY = Mathf.Clamp(newY, 50, 200); // Ensure the new Y position is within the specified limits
+        transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+
+
+
+
+
+
+
+
         Vector3 motion = GetMotionInput();
         HandleRotation();
         MoveCamera(motion);
@@ -78,9 +90,9 @@ public class CameraControler : MonoBehaviour
     public void SetCameraUnit (Vector3 position)
     {
         
-        position.x -= 85;
+        position.x -= 125;
         position.y += 80;
-        position.z -= 80;
+        position.z -= 105;
         //55
         //10
         //55

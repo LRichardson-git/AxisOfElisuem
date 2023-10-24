@@ -144,7 +144,7 @@ public class AbilityManager : MonoBehaviour
         float totalWidth = (buttonWidth + buttonSpacing) * unit.Abilities.Count;
 
         //spawn based on centre
-        Vector2 spawnPosition = new Vector2((Screen.width / 2) - (totalWidth / 2), 70);
+        Vector2 spawnPosition = new Vector2((Screen.width / 2) - (totalWidth / 2) - buttonWidth + 9, 70);
 
 
         for (int i = 0; i < unit.Abilities.Count; i++)

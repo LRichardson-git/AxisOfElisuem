@@ -106,9 +106,21 @@ public class ObjectSelector : MonoBehaviour
         List<Unit> TempList = _unitManager.GetUnitList();
         int point = 0;
 
+
+
+        if (selectedUnit == null)
+        {
+            foreach (Unit unit in _unitManager.GetUnitList())
+                if (unit.ownedBy == Player.LocalInstance.playerID && unit.ActionPoints > 0)
+                    SelectUnit(unit);
+        }
+
+
+
+
+
+
         for (int i = 0; i < TempList.Count; i++)
-
-
             if (TempList[i] == selectedUnit)
             {
                 point = i + 1;
@@ -148,6 +160,9 @@ public class ObjectSelector : MonoBehaviour
 
     public void resetUnit()
     {
+        if (selectedUnit == null)
+            return;
+
         selectedUnit.crit = 10;
         //done to make sure anything effecting shooting is reset
         _shooting.CheckSight(selectedUnit);
@@ -177,6 +192,10 @@ public class ObjectSelector : MonoBehaviour
 
     public void Deselect()
     {
+
+        if (selectedUnit == null)
+            return;
+
         selectedUnit.Deselect();
         selectedUnit = null;
 
@@ -222,10 +241,7 @@ public class ObjectSelector : MonoBehaviour
         selectedUnit.Select();
         _shooting.CheckSight(selectedUnit);
         _shooting.SpawnButtons(selectedUnit.getList());
-        //call
-        //_unitManager.ShowPaths(selectedUnit);
         _unitManager.ShowPaths(selectedUnit);
-        //_unitManager.test(selectedUnit);
         _abilityManager.createButtons(selectedUnit);
     }
 

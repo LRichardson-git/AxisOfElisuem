@@ -48,13 +48,15 @@ public class Shooting : NetworkBehaviour
         
         foreach (Unit targetUnit in UnitManager.Instance.GetUnitList())
         {
-            if (targetUnit == unit || targetUnit.ownedBy == Team)
+            if (targetUnit == unit || targetUnit.ownedBy == Player.LocalInstance.playerID)
                 continue;
+
 
             //if cant see unit it is invisible
             if (CanSeeUnit(unit, targetUnit))
                 targetUnit.canSee();
-                
+
+
             
 
         }
@@ -70,7 +72,7 @@ public class Shooting : NetworkBehaviour
         Vector3 direction = target.targetPoint.transform.position - unit.targetPoint.transform.position;
         float distance = Vector3.Distance(unit.transform.position, target.transform.position);
         targetP = target.transform.position;
-        if (distance < unit.Vision)
+        if (distance > unit.Vision)
             return false;
 
         //normal enemy in open

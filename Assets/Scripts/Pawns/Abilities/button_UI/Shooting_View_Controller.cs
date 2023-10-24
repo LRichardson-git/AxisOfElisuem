@@ -26,6 +26,7 @@ public class Shooting_View_Controller : MonoBehaviour
     private TargetData Tdata;
     Ability CurrentAbility;
     bool AbilityA = false;
+    Unit CurrrentUnit;
     private void Start()
     {
         Instance = this;
@@ -45,6 +46,11 @@ public class Shooting_View_Controller : MonoBehaviour
     public void UpdateInfo(TargetData Data)
     {
         
+        if (CurrrentUnit != null)
+            CurrrentUnit.DeHighlight();
+            
+
+        CurrrentUnit = Data.getUnit();
         ChanceToCrit.gameObject.SetActive(true);
         Name.text = "fire";
         Description.text = "Fire at the target unit and end this units turn";
@@ -54,6 +60,7 @@ public class Shooting_View_Controller : MonoBehaviour
         unitID = Data.getUnit().getID();
         Tdata = Data;
         _controler.SetCameraUnit(Data.getUnit().transform.position);
+        CurrrentUnit.highlight();
     }
 
     public void UpdateInfo(Ability ability) {
@@ -106,6 +113,8 @@ public class Shooting_View_Controller : MonoBehaviour
     }
     public void Deactivate()
     {
+        if (CurrrentUnit != null)
+            CurrrentUnit.DeHighlight();
         manager.SetActive(false);
         _selector.canAction = true;
         _selector.resetUnit();

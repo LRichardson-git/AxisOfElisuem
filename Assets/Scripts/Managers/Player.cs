@@ -23,6 +23,7 @@ public class Player : NetworkBehaviour
     {
         playerID = ID;
 
+        //player 1 starts with first turn
         if (ID != 1)
         {
             turn = false;
@@ -30,6 +31,7 @@ public class Player : NetworkBehaviour
         }
 
         Shooting.Instance.Team = ID;
+        
 
 
     }
@@ -127,6 +129,8 @@ public class Player : NetworkBehaviour
             turn = false;
             _selector.canAction = false;
         }
+
+        UnitManager.Instance.newTurn();
     }
 
 

@@ -26,6 +26,7 @@ public class UnitManager : MonoBehaviour
     List<Unit> inVision;
 
     public bool testt = false;
+    bool init = false;
     private void Awake()
     {
         Instance = this;
@@ -67,6 +68,10 @@ public class UnitManager : MonoBehaviour
 
     public void setPlayerID()
     {
+
+        if (init != false)
+            return;
+
         //dumb way of doing this
         foreach (Unit unit in _units)
         {
@@ -77,27 +82,33 @@ public class UnitManager : MonoBehaviour
             unit.addAbility(new SmokeAbility(2, 2, 5));
             unit.addAbility(new RunAndGunAbility());
             unit.addAbility(new MedPack());
-            unit.addAbility(new HeadshotAbility());
             unit.init();
 
         }
 
         SetupSight(Player.LocalInstance.playerID);
+
         startt();
+        init = true;
     }
 
+    //called after everying is initlized
     public void startt()
     {
         foreach (Unit unit in _units)
             unit.GetComponent<Solider>().begun = true;
+
+        
     }
 
     public void newTurn()
     {
+        
+        if (smokeList.Count >0)
+            for (int i = 0; i < smokeList.Count; i++)
+                smokeList[i].updateLife(i);
 
-        for (int i = 0; i < smokeList.Count; i++)
-            smokeList[i].updateLife(i);
-
+       
 
         foreach (Unit unit in _units)
             if (Player.LocalInstance.turn == true)
@@ -106,6 +117,7 @@ public class UnitManager : MonoBehaviour
                 shooting.CheckSight(unit);
 
             }
+         
         inVision.Clear();
         foreach(Unit unit in _units)
         {
@@ -114,14 +126,14 @@ public class UnitManager : MonoBehaviour
                     inVision.Add(data.getUnit());
 
         }
-
+        
         foreach (Unit unit in _units)
             if (!unit.isOwned)
                 unit.cantSee();
-
+        
         foreach (Unit unit in inVision)
             unit.canSee();
-
+        
         ObjectSelector.Instance.Deselect();
     }
 
