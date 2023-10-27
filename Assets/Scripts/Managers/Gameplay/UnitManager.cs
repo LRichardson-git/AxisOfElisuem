@@ -111,7 +111,7 @@ public class UnitManager : MonoBehaviour
        
 
         foreach (Unit unit in _units)
-            if (Player.LocalInstance.turn == true)
+            if (Player.LocalInstance.turn == true && unit.alive)
             {
                 unit.ActionPoints = 2;
                 shooting.CheckSight(unit);
@@ -208,7 +208,16 @@ public class UnitManager : MonoBehaviour
 
     public List<Unit> GetUnitList() { return _units; }
 
-    public void RemoveUnit(Unit unit) { _units.Remove(unit); }
+    public void RemoveUnit(int ID) {
+        Debug.Log(ID);
+        foreach (Unit unit in _units)
+            if (unit.getID() == ID)
+            {
+                _units.Remove(unit);
+                break;
+            }
+            
+       }
 
     public void removePaths()
     {
@@ -375,5 +384,8 @@ public class UnitManager : MonoBehaviour
     }
 
 
-
+    public void removeUnit(Unit unit)
+    {
+        _units.Remove(unit);
+    }
 }

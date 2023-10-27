@@ -96,10 +96,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6ffa198d6e046b468a9a0964f5d19e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minDmg: 2
+  minDmg: 4
   maxDmg: 5
   penetration: 0
   minRange: 1
   maxRange: 18
   Critc: 10
   punishment: 2
+  sound: Rifle

@@ -103,4 +103,4 @@ MonoBehaviour:
   maxRange: 35
   Critc: 20
   punishment: 5
-  Size: {x: 2, y: 1, z: 2}
+  sound: Sniper

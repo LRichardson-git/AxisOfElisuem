@@ -46,28 +46,40 @@ public class Unit : Tile_Object
     public UnitManager manager;
 
     public GameObject Model;
+    public health hpS;
+
+    public bool alive = true;
+    BoxCollider collider; 
 
     void OnHpChanged(int _Old, int _New)
     {
         if (HP > maxHP)
             HP = maxHP;
 
-        UnitInfo.OnInfoChanged(HP);
 
+        hpS.setSize(HP);
 
-
+       
         if (HP <= 0)
         {
-           // UnitManager.Instance.RemoveUnit(this);
-
-
-            //NetworkServer.Destroy(this.gameObject);
-
+            // UnitManager.Instance.RemoveUnit(this);
+            alive = false;
+            ActionPoints = -10;
+            unalive();
+            playAnim("Death", this.transform.position);
         }
         // -0 delete self
     }
 
-   
+
+    void unalive()
+    {
+        //UnitManager.Instance.RemoveUnit(ID);
+        Destroy(collider);
+        hpS.gameObject.SetActive(false);
+        World_Pathfinding.Instance.setType(x, y, z, Tile_Type.floor);
+    }
+
 
 
     //maybe dir makes more sense with hitchanges with it?
@@ -98,11 +110,11 @@ public class Unit : Tile_Object
         Abilities = new List<Ability>();
         audioManager = AudioManager.instance;
         // _material = GetComponent<Renderer>();
-        renderers = GetComponentsInChildren<Renderer>();
+        renderers = Model.GetComponentsInChildren<Renderer>();
         moveables = new List<moveable>();
         path = World_Pathfinding.Instance;
         manager = UnitManager.Instance;
-
+        collider = GetComponent<BoxCollider>();
         if (ownedBy != -1)
         {
             foreach (NetworkConnection conn in NetworkServer.connections.Values)
@@ -138,6 +150,25 @@ public class Unit : Tile_Object
             ObjectSelector.Instance.refreshUnit();
     }
 
+    public void doAction(int ACost, int wait)
+    {
+        ActionPoints -= ACost;
+
+        if (ActionPoints < 1)
+        {
+            turn = false;
+            Invoke("actionn", wait);
+        }
+        else
+            ObjectSelector.Instance.refreshUnit();
+    }
+
+    void actionn()
+    {
+        ObjectSelector.Instance.Deselect();
+    }
+
+
     internal void Deselect()
     {
         selected = false;
@@ -159,10 +190,12 @@ public class Unit : Tile_Object
 
     public void canSee() {
         Model.SetActive(true);
+        hpS.gameObject.SetActive(true);
     }
 
     public void cantSee( ) {
         Model.SetActive(false);
+        hpS.gameObject.SetActive(false);
     }
     public List<TargetData> getList() { return InVision; }
 
@@ -215,16 +248,18 @@ public class Unit : Tile_Object
 
     public void highlight()
     {
+        highlighted = true;
         foreach (Renderer renderer in renderers){
-            highlighted = true;
+            
             renderer.material.color = Color.green;
         }
         }
 
     public void DeHighlight() {
+        highlighted = false;
         foreach (Renderer renderer in renderers)
         {
-            highlighted = false;
+            
             renderer.material.color = DefaultColor;
         }
     }
@@ -243,7 +278,7 @@ public class Unit : Tile_Object
         Abilities.Remove(ability);
     }
 
-    public void playAnim(string anim, Vector3 direction) { direction.y = transform.position.y;   transform.LookAt(direction);  animator.speed = 2;  animator.Play(anim); audioManager.cmDPlaySound(anim); }
+    public void playAnim(string anim, Vector3 direction) { direction.y = Model.transform.position.y;   Model.gameObject.transform.LookAt(direction);  animator.speed = 2;  animator.Play(anim); audioManager.cmDPlaySound(anim); }
     
 }
 

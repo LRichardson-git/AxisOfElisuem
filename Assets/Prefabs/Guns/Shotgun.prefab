@@ -103,3 +103,4 @@ MonoBehaviour:
   maxRange: 7
   Critc: 30
   punishment: 6
+  sound: Shotgun

@@ -60,11 +60,14 @@ public class AudioManager : NetworkBehaviour
     {
         if (soundDictionary.ContainsKey(name))
             PlaySound(name);
+        else
+            Debug.Log("sound not found : " +name);
     }
 
     [ClientRpc]
     public void PlaySound(string name)
     {
+        //Debug.Log(name);
         audioSource.loop = false;
         audioSource.clip = soundDictionary[name];
         audioSource.Play();

@@ -25,7 +25,9 @@ public class Shooting : NetworkBehaviour
     public GameObject Smoke;
 
     public int Team = 0;
-    
+
+    public ShowHitDmg HitChance;
+    public ShowHitDmg DmgChance;
     private void Awake()
     {
         Instance = this;
@@ -48,10 +50,10 @@ public class Shooting : NetworkBehaviour
         
         foreach (Unit targetUnit in UnitManager.Instance.GetUnitList())
         {
-            if (targetUnit == unit || targetUnit.ownedBy == Player.LocalInstance.playerID)
+            if (targetUnit == unit || targetUnit.ownedBy == Player.LocalInstance.playerID || !unit.alive)
                 continue;
 
-
+            //Debug.Log(unit.name);
             //if cant see unit it is invisible
             if (CanSeeUnit(unit, targetUnit))
                 targetUnit.canSee();
@@ -426,14 +428,27 @@ public class Shooting : NetworkBehaviour
     public void CmdHitUnit(int unitID, int HitChance, int Dmg, int Pen, int crit)
     {
         int Damage = Dmg;
+
+        Showhit(HitChance, unitID);
+
+
         if (Random.Range(0, 100) <= HitChance)
         {
             if (Random.Range(0, 100) <= crit)
                 Damage = Dmg * 2;
 
-            dmgUnit(unitID, Damage, Pen);
+            StartCoroutine(DamageUnit(unitID, Damage, Pen));
             return;
         }
+
+    }
+
+     IEnumerator  DamageUnit(int ID, int Damage, int Pen) {
+
+
+        yield return new WaitForSeconds(2);
+        ShowDmg(Damage, ID);
+        dmgUnit(ID, Damage, Pen);
 
     }
 
@@ -455,6 +470,18 @@ public class Shooting : NetworkBehaviour
 
     }
 
+
+    [ClientRpc]
+    void Showhit(int Hit, int ID)
+    {
+        HitChance.ShowDmghit(Hit, ID);
+    }
+
+    [ClientRpc]
+    void ShowDmg(int Hit, int ID)
+    {
+        DmgChance.ShowDmghit(Hit, ID); 
+    }
 
     public void dmgUnit(int ID, int Dmg, int pen)
     {

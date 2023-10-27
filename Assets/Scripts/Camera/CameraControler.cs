@@ -15,6 +15,7 @@ public class CameraControler : MonoBehaviour
     private Vector3 rotationPoint;
     private Quaternion defaultRotation;
     public float Speed = 10;
+    public Camera cam2;
     public static CameraControler LocalInstance { get; private set; }
     void Awake()
     {
@@ -70,6 +71,8 @@ public class CameraControler : MonoBehaviour
         transform.Translate(motion * speed * Time.deltaTime, Space.World);
         cam.transform.position = transform.position;
         cam.transform.rotation = transform.rotation;
+        cam2.transform.position = transform.position;
+        cam2.transform.rotation = transform.rotation;
     }
 
     public void MoveCamera(Vector3 motion, float speed)
@@ -98,17 +101,40 @@ public class CameraControler : MonoBehaviour
         //55
 
         //-29.27 90 - 25.5
-        StartCoroutine(CameraMoveSmooth(position));
+        StartCoroutine(CameraMoveSmooth(position,0));
         transform.rotation = defaultRotation;
     }
 
-    IEnumerator CameraMoveSmooth(Vector3 target)
+    public void SetCameraUnit(Vector3 position, int speedT)
     {
-       
+
+        position.x -= 125;
+        position.y += 80;
+        position.z -= 105;
+        //55
+        //10
+        //55
+
+        //-29.27 90 - 25.5
+        StartCoroutine(CameraMoveSmooth(position, speedT));
+        transform.rotation = defaultRotation;
+    }
+
+
+
+
+    IEnumerator CameraMoveSmooth(Vector3 target, int possilbeSpeed)
+    {
+
+        int speedtrue = speed;
+
+        if (possilbeSpeed != 0)
+            speedtrue = possilbeSpeed;
+
         while (Vector3.Distance(transform.position, target) > 10)
         {
             
-            transform.position = Vector3.MoveTowards(transform.position,target, (speed * 2) * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position,target, (speedtrue * 2) * Time.deltaTime);
             yield return null;
         }
     }

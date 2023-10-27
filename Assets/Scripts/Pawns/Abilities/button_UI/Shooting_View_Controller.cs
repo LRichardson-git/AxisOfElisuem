@@ -2,6 +2,8 @@ using UnityEngine;
 using TMPro;
 using Random = UnityEngine.Random;
 using UnityEngine.UI;
+using System.Collections;
+
 public class Shooting_View_Controller : MonoBehaviour
 {
     [SerializeField]
@@ -24,6 +26,7 @@ public class Shooting_View_Controller : MonoBehaviour
     private CameraControler _controler;
     private int unitID;
     private TargetData Tdata;
+    AudioManager _audio;
     Ability CurrentAbility;
     bool AbilityA = false;
     Unit CurrrentUnit;
@@ -33,6 +36,7 @@ public class Shooting_View_Controller : MonoBehaviour
         manager.SetActive(false);
         _selector = ObjectSelector.Instance;
         _controler = CameraControler.LocalInstance;
+        _audio = AudioManager.instance;
     }
 
     public void Activate()
@@ -51,6 +55,7 @@ public class Shooting_View_Controller : MonoBehaviour
             
 
         CurrrentUnit = Data.getUnit();
+        _selector.playAnimation("Aiming", Data.getUnit().transform.position);
         ChanceToCrit.gameObject.SetActive(true);
         Name.text = "fire";
         Description.text = "Fire at the target unit and end this units turn";
@@ -94,7 +99,8 @@ public class Shooting_View_Controller : MonoBehaviour
         {
             int Dmg = Random.Range(Tdata.minDmg, Tdata.maxDmg);
             Shooting.Instance.CmdHitUnit(unitID, Tdata.getHit(), Dmg, Tdata.getUnit().gun.penetration, Tdata.getCrit());
-            _selector.getSelectedUnit().doAction(2);
+            StartCoroutine(ShootSound(_selector.getSelectedUnit()));
+            _selector.getSelectedUnit().doAction(2,3);
             
         }
         else if (CurrentAbility != null)
@@ -103,6 +109,16 @@ public class Shooting_View_Controller : MonoBehaviour
         }
         Deactivate();
     }
+
+    IEnumerator ShootSound(Unit unit)
+    {
+
+
+        yield return new WaitForSeconds(1);
+        _audio.cmDPlaySound(unit.gun.sound);
+
+    }
+
 
     public bool On()
     {
