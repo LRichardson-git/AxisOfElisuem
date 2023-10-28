@@ -26,9 +26,13 @@ public class ObjectSelector : MonoBehaviour
     Shooting _shooting;
 
     World_Pathfinding path;
-    private void Start()
+    private void Awake()
     {
         Instance = this;
+    }
+    private void Start()
+    {
+        
 
         _input = GetComponent<InputManager>();
         _abilityManager = AbilityManager.Instance;
@@ -238,7 +242,7 @@ public class ObjectSelector : MonoBehaviour
         
         Vector3 unitTransform = selectedUnit.transform.position;
         
-        CameraControler.LocalInstance.SetCameraUnit(unitTransform);
+        CameraControler.LocalInstance.SetCameraUnit(unitTransform,60);
         // Select the new unit
         selectedUnit.Select();
         _shooting.CheckSight(selectedUnit);

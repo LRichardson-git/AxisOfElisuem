@@ -68,6 +68,21 @@ public class ShowHitDmg : MonoBehaviour
     }
 
 
+    public void ShowDmghit(int dmgHit, Vector3 pos)
+    {
+   
+        graphic.SetActive(true);
+
+        StartCoroutine(FadeIn());
+        if (hit)
+            dmgHitText.text = "%" + dmgHit;
+        else
+            dmgHitText.text = dmgHit + " *";
+
+        transform.position = pos;
+
+    }
+
 
     IEnumerator FadeIn()
     {

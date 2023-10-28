@@ -58,7 +58,7 @@ public class AbilityManager : MonoBehaviour
     void Update()
     {
 
-        if (!active || currentAbility == null)
+        if (!active || currentAbility == null || ObjectSelector.Instance.getSelectedUnit().ActionPoints < 1)
             return;
 
 

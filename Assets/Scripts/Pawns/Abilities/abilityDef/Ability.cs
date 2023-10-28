@@ -15,7 +15,7 @@ public abstract class Ability
     public string Animation;
 
     public string Damage;
-
+    public int wait = 0;
     public List<TargetData> old;
     public bool activated = false;
     private int v;
@@ -55,8 +55,8 @@ public abstract class Ability
 
         }
     
-        if (uses <100)
-            ObjectSelector.Instance.getSelectedUnit().doAction(Cost);
+        
+            ObjectSelector.Instance.getSelectedUnit().doAction(Cost,wait);
 
     }
   

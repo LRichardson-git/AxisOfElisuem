@@ -115,16 +115,6 @@ public class Unit : Tile_Object
         path = World_Pathfinding.Instance;
         manager = UnitManager.Instance;
         collider = GetComponent<BoxCollider>();
-        if (ownedBy != -1)
-        {
-            foreach (NetworkConnection conn in NetworkServer.connections.Values)
-            {
-                
-                   // NetworkIdentity.AssignClientAuthority(conn);
-                    break;
-                
-            }
-        }
 
     }
 
@@ -137,6 +127,25 @@ public class Unit : Tile_Object
     }
 
     public void clearMove() { moveables.Clear(); }
+    public void doAction(int ACost, int time)
+    {
+        ActionPoints -= ACost;
+        Invoke("action", time);
+    }
+
+    void action()
+    {
+        
+
+        if (ActionPoints < 1)
+        {
+            turn = false;
+            ObjectSelector.Instance.Deselect();
+        }
+        else
+            ObjectSelector.Instance.refreshUnit();
+    }
+
     public void doAction(int ACost)
     {
         ActionPoints -= ACost;
@@ -150,23 +159,7 @@ public class Unit : Tile_Object
             ObjectSelector.Instance.refreshUnit();
     }
 
-    public void doAction(int ACost, int wait)
-    {
-        ActionPoints -= ACost;
-
-        if (ActionPoints < 1)
-        {
-            turn = false;
-            Invoke("actionn", wait);
-        }
-        else
-            ObjectSelector.Instance.refreshUnit();
-    }
-
-    void actionn()
-    {
-        ObjectSelector.Instance.Deselect();
-    }
+  
 
 
     internal void Deselect()

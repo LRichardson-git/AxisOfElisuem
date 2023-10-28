@@ -185,6 +185,11 @@ public class World_Pathfinding :MonoBehaviour
             return null;
         }
 
+        foreach (Unit unit in UnitManager.Instance.GetUnitList())
+            if (unit.x == xEnd && unit.y == yEnd && unit.z == zEnd)
+                return null;
+
+
         Coords startCoord = mapIndex[xSt, ySt, zSt];
         Coords EndCoord = mapIndex[xEnd, yEnd, zEnd];
 

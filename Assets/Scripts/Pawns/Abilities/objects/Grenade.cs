@@ -32,7 +32,7 @@ public class Grenade : NetworkBehaviour
     AudioClip S_Smoke;
 
 
-   
+    public ShowHitDmg showDmg;
 
     Vector3 firepoint;
 

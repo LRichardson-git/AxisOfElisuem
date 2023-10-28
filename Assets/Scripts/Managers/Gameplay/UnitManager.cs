@@ -78,10 +78,25 @@ public class UnitManager : MonoBehaviour
             
             unit.setPlayerID();
             unit.addAbility(new Fire());
-            unit.addAbility(new GrenadeAbility(5, 2, 4));
-            unit.addAbility(new SmokeAbility(2, 2, 5));
-            unit.addAbility(new RunAndGunAbility());
-            unit.addAbility(new MedPack());
+            if (unit.gun.sound == "Rifle")
+            {
+                unit.addAbility(new GrenadeAbility(5, 2, 4));
+                unit.addAbility(new SmokeAbility(2, 2, 5));
+                unit.addAbility(new GrenadeAbility(5, 2, 4));
+            }
+
+            else if (unit.gun.sound == "Sniper")
+            {
+                unit.addAbility(new MedPack());
+                unit.addAbility(new SmokeAbility(2, 2, 5));
+            }
+
+            else
+            {
+                unit.addAbility(new GrenadeAbility(5, 2, 4));
+                unit.addAbility(new RunAndGunAbility());
+            }
+
             unit.init();
 
         }
@@ -349,10 +364,13 @@ public class UnitManager : MonoBehaviour
     void spawnHighlighter(int i, int j, int k, int distance, Unit unit)
     {
 
-            if (distance > unit.movementPoints / 2 || unit.ActionPoints < 2)
-                _highlighters.Add(Instantiate(HighlightDash, _path.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+        Quaternion rot = new Quaternion(90, 0, 0, 90);
+        Vector3 Pos = _path.coordToWorld(i, j, k, 1, 1);
+        Pos.y += 0.6f;
+        if (distance > unit.movementPoints / 2 || unit.ActionPoints < 2)
+                _highlighters.Add(Instantiate(HighlightDash, Pos, rot));
             else
-                _highlighters.Add(Instantiate(HighlightTile, _path.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+                _highlighters.Add(Instantiate(HighlightTile, Pos, rot));
         
     }
 
@@ -360,28 +378,18 @@ public class UnitManager : MonoBehaviour
     {
        // Debug.Log(unit);
         int p = _path.findPathT(i, j, k, unit.x, unit.y, unit.z);
-
+        Quaternion rot = new Quaternion(90, 0, 0, 90);
+        Vector3 Pos = _path.coordToWorld(i, j, k, 1, 1);
+        Pos.y += 0.6f;
         if (p <= unit.movementPoints && p != 0)
         {
             if (p > unit.movementPoints / 2)
-                _highlighters.Add(Instantiate(HighlightDash, _path.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+                _highlighters.Add(Instantiate(HighlightDash, Pos, rot));
             else
-                _highlighters.Add(Instantiate(HighlightTile, _path.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
+                _highlighters.Add(Instantiate(HighlightTile, Pos, rot));
         }
     }
 
-    void spawnHighlighter(bool dash,int i, int j, int k, Unit unit)
-    {
-        List<Vector3> path = _path.findPath(i, j, k, unit.x, unit.y, unit.z);
-
-        if (path != null && path.Count <= unit.movementPoints)
-        {
-            if (!dash)
-                _highlighters.Add(Instantiate(HighlightTile, _path.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
-            else
-                _highlighters.Add(Instantiate(HighlightDash, _path.coordToWorld(i, j, k, 1, 1), Quaternion.identity));
-        }
-    }
 
 
     public void removeUnit(Unit unit)

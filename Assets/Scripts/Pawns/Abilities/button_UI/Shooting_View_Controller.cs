@@ -3,6 +3,7 @@ using TMPro;
 using Random = UnityEngine.Random;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Shooting_View_Controller : MonoBehaviour
 {
@@ -30,21 +31,54 @@ public class Shooting_View_Controller : MonoBehaviour
     Ability CurrentAbility;
     bool AbilityA = false;
     Unit CurrrentUnit;
+    InputManager _input;
+    bool active = false;
     private void Start()
     {
         Instance = this;
         manager.SetActive(false);
-        _selector = ObjectSelector.Instance;
+        
         _controler = CameraControler.LocalInstance;
         _audio = AudioManager.instance;
+        _input = InputManager.Instance;
+        _selector = ObjectSelector.Instance;
     }
 
     public void Activate()
     {
+        
         AbilityA = false;
         manager.SetActive(true);
         firebutton.gameObject.SetActive(true);
         _selector.canAction = false;
+    }
+
+    private void Update()
+    {
+        if (!active)
+            return;
+
+        //if (_input.Hotbar == 1)
+           // Fire();
+        //shouldt called getcomponent so much
+        if (_input.SwitchTarget) {
+
+            List<GameObject> buttons = Shooting.Instance.getButtons();
+            if (buttons.Count > 1)
+            {
+                for (int i = 0; i < buttons.Count; i++)
+                    if (buttons[i].GetComponent<ButtonScript>().data == Tdata)
+                    {
+                        if (i + 1 < buttons.Count)
+                            UpdateInfo(buttons[i + 1].GetComponent<ButtonScript>().data);
+                        else
+                            UpdateInfo(buttons[0].GetComponent<ButtonScript>().data);
+
+                        break;
+                    }
+            }
+        }
+
     }
 
     public void UpdateInfo(TargetData Data)
@@ -52,8 +86,8 @@ public class Shooting_View_Controller : MonoBehaviour
         
         if (CurrrentUnit != null)
             CurrrentUnit.DeHighlight();
-            
 
+        active = true;
         CurrrentUnit = Data.getUnit();
         _selector.playAnimation("Aiming", Data.getUnit().transform.position);
         ChanceToCrit.gameObject.SetActive(true);
@@ -64,7 +98,7 @@ public class Shooting_View_Controller : MonoBehaviour
         ChanceToDmg.text = Data.minDmg + "-" + Data.maxDmg + " Dmg";
         unitID = Data.getUnit().getID();
         Tdata = Data;
-        _controler.SetCameraUnit(Data.getUnit().transform.position);
+        _controler.SetCameraUnit(Data.getUnit().transform.position,50);
         CurrrentUnit.highlight();
     }
 
@@ -134,5 +168,6 @@ public class Shooting_View_Controller : MonoBehaviour
         manager.SetActive(false);
         _selector.canAction = true;
         _selector.resetUnit();
+        active = false;
     }
 }

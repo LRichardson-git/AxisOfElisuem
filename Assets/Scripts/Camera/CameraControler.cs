@@ -116,6 +116,7 @@ public class CameraControler : MonoBehaviour
         //55
 
         //-29.27 90 - 25.5
+        StopCoroutine(CameraMoveSmooth(position,speedT));
         StartCoroutine(CameraMoveSmooth(position, speedT));
         transform.rotation = defaultRotation;
     }
@@ -145,7 +146,10 @@ public class CameraControler : MonoBehaviour
 
 
 
-
+    public void goTOcurrent()
+    {
+        SetCameraUnit(ObjectSelector.Instance.getSelectedUnit().transform.position,50);
+    }
 
     private void HandleRotation()
     {

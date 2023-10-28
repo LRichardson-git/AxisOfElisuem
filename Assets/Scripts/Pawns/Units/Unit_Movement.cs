@@ -21,6 +21,7 @@ public class Unit_Movement : MonoBehaviour
     {
         _audio = AudioManager.instance;
         _path = World_Pathfinding.Instance;
+        animator.speed = 1.5f;
     }
 
     public void moveToTarget(int endX, int endY, int endZ)
@@ -37,7 +38,7 @@ public class Unit_Movement : MonoBehaviour
 
         int distance = _path.testdistance(_unit, endX, endY, endZ);
 
-        if (distance == -1)
+        if (distance == -1 || _unit.ActionPoints < 1)
         {
             _audio.PlaySoundL("Error");
             return;
@@ -63,13 +64,16 @@ public class Unit_Movement : MonoBehaviour
             // Update the unit's movement path
             _unit.movementPoints -= limitedPathLength;
         }
-        else { Debug.Log("path is null"); }
+        else {
+            _audio.PlaySoundL("Error");
+            return;
+        }
        
     }
 
     private IEnumerator moveAlongPath(List<Vector3> path)
     {
-
+        bool updown = false;
         Vector3 directionToTarget;
         Quaternion targetRotation;
         _unit.Model.transform.rotation = Quaternion.identity;
@@ -79,34 +83,57 @@ public class Unit_Movement : MonoBehaviour
             Vector3 targetPosition = path[i];
             //targetPosition.y = 5 * _unit.depth;
             animator.speed = 2;
-            if (targetPosition.y  > transform.position.y + 5 )
+
+            if (i + 1 < path.Count)
             {
-                //check like if next point on path if greater than + 10 to continue i tink
-                speed = 20f;
-                animator.SetFloat("Y", 2);
-            }
-            else if (targetPosition.y < transform.position.y - 5)
-            {
-                speed = 20f;
-                animator.SetFloat("Y", -2);
-            }
-            else
-            {
-                speed = 50f;
-                animator.SetFloat("Y", 0);
+
+                if (path[i+1].y > transform.position.y + 11)
+                {
+                    //check like if next point on path if greater than + 10 to continue i tink
+                    speed = 20f;
+                    animator.SetFloat("Y", 2);
+                    updown = true;
+                }
+                
+                else if (i > 1 && path[i - 2].y > path[i].y + 11)
+                {
+                    speed = 20f;
+                    animator.SetFloat("Y", -2);
+
+                    
+
+                    if (updown == false) {
+                        updown = true;
+                        transform.Rotate(0,180,0);
+                    }
+                    
+                }
+                else
+                {
+                    speed = 50f;
+                    
+                    animator.SetFloat("Y", 0);
+                    animator.SetFloat("Speed", 2);
+                    updown = false;
+                    //animator.speed = 1.5f;
+                }
+
+                
 
             }
-
 
             while (Vector3.Distance(transform.position, targetPosition) >= speed * Time.deltaTime)
             {
                 //rotate towards location and set run animtion
-                animator.SetFloat("Speed", 2);
-                Vector3 copy = targetPosition;
-                copy.y = transform.position.y;
-                directionToTarget = copy - transform.position;
-                targetRotation = Quaternion.LookRotation(directionToTarget);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotaionSpeed * Time.deltaTime);
+                if (!updown)
+                {
+                    Vector3 copy = targetPosition;
+                    copy.y = transform.position.y;
+                    directionToTarget = copy - transform.position;
+                    targetRotation = Quaternion.LookRotation(directionToTarget);
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotaionSpeed * Time.deltaTime);
+                }
+                
                 transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * speed );
 
                 
@@ -120,7 +147,10 @@ public class Unit_Movement : MonoBehaviour
         _unit.y = temportayChangethisplease.y;
         _unit.z = temportayChangethisplease.z;
 
+        animator.StopPlayback();
+        animator.SetFloat("Y", 0);
         animator.SetFloat("Speed", 0);
+
         _audio.cmdStopSound();
 
         Quaternion oldRotation = _unit.Model.transform.rotation;

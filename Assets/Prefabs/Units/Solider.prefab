@@ -910,6 +910,7 @@ MonoBehaviour:
   manager: {fileID: 0}
   Model: {fileID: 4957018710631938343}
   hpS: {fileID: 5634342436407043361}
+  alive: 1
   targetPoint: {fileID: 3733059511987968925}
   targetPoints:
   - {fileID: 1328850105500021425}
@@ -1615,7 +1616,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7979600659655690277}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -0.244, y: 0.8200003, z: 0}
+  m_LocalPosition: {x: -0.244, y: 0.743, z: 0}
   m_LocalScale: {x: 1.63, y: 0.12, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1996,7 +1997,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 427246, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.376
+      value: -0.48
       objectReference: {fileID: 0}
     - target: {fileID: 427246, guid: 7aa6f6434be94e44583bd055d3a42eee, type: 3}
       propertyPath: m_LocalPosition.z
