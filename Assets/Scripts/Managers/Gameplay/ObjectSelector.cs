@@ -242,7 +242,7 @@ public class ObjectSelector : MonoBehaviour
         
         Vector3 unitTransform = selectedUnit.transform.position;
         
-        CameraControler.LocalInstance.SetCameraUnit(unitTransform,60);
+        CameraControler.LocalInstance.SetCameraUnit(unitTransform);
         // Select the new unit
         selectedUnit.Select();
         _shooting.CheckSight(selectedUnit);
@@ -292,7 +292,7 @@ public class ObjectSelector : MonoBehaviour
         //nothing in way fire
         if (grenade.CheckFire(selectedUnit.transform.position, End))
         {
-            grenade.gameObject.SetActive(true); grenade.fireF(End, ability, animspeed, ability.Explode);
+            grenade.gameObject.SetActive(true); grenade.fireF(End, ability, animspeed, ability.Explode, selectedUnit.getID());
             selectedUnit.GetComponent<Solider>().gunModel.gameObject.SetActive(false);
             return true;
         }
@@ -302,8 +302,9 @@ public class ObjectSelector : MonoBehaviour
                 if (grenade.CheckFire(targetPoint.transform.position, End))
                 {
                     grenade.Aim(targetPoint.transform.position);
-                    grenade.gameObject.SetActive(true); grenade.fireF(End, ability, animspeed, ability.Explode);
+                    grenade.gameObject.SetActive(true); grenade.fireF(End, ability, animspeed, ability.Explode, selectedUnit.getID());
                     selectedUnit.GetComponent<Solider>().gunModel.gameObject.SetActive(false);
+
                     return true;
                 }
             }

@@ -309,7 +309,7 @@ public class UnitManager : MonoBehaviour
 
     }
 
-    public void checkSightsmove(Unit target)
+    public bool checkSightsmove(Unit target)
     {
         bool seen = false;
         foreach(Unit unit in _units)
@@ -329,8 +329,11 @@ public class UnitManager : MonoBehaviour
         }
 
         if (!seen)
+        {
             target.cantSee();
-
+            return false;
+        }
+        return true;
     }
 
 

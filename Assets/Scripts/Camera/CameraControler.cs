@@ -16,12 +16,19 @@ public class CameraControler : MonoBehaviour
     private Quaternion defaultRotation;
     public float Speed = 10;
     public Camera cam2;
+    public Camera cam3;
+    Vector3 zero;
+    bool moving;
+    Vector3 target;
+    Solider CurrentlyFollowing;
     public static CameraControler LocalInstance { get; private set; }
     void Awake()
     {
         cam = Camera.main;
         LocalInstance = this;
         defaultRotation = transform.rotation;
+        zero = new Vector3 (0, 0, 0);
+        target = new Vector3(0, 0, 0);
     }
 
 
@@ -36,12 +43,27 @@ public class CameraControler : MonoBehaviour
 
 
 
+        int speedtrue = speed;
+
+        if (moving)
+        {
+            if (!CurrentlyFollowing.seen)
+                moving = false;
+            else
+            {
+                SetCameraUnit(CurrentlyFollowing.transform.position);
 
 
 
 
-        Vector3 motion = GetMotionInput();
+                return;
+            }
+        }
+        
         HandleRotation();
+    
+        Vector3 motion = GetMotionInput();
+
         MoveCamera(motion);
     }
 
@@ -56,12 +78,23 @@ public class CameraControler : MonoBehaviour
         cameraRight.Normalize();
 
         // Calculate the horizontal and vertical inputs relative to camera orientation
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        float verticalInput = Input.GetAxisRaw("Vertical");
+        
+            float horizontalInput = Input.GetAxisRaw("Horizontal");
+            float verticalInput = Input.GetAxisRaw("Vertical");
+        
+        if (isRotating)
+        {
+            horizontalInput = 0;
+            verticalInput= 0;
+        }
 
         // Calculate the motion vector using camera orientation
         Vector3 motion = (cameraForward * verticalInput) + (cameraRight * horizontalInput);
         motion.Normalize();
+        cam2.transform.position = transform.position;
+        cam2.transform.rotation = transform.rotation;
+        cam3.transform.position = transform.position;
+        cam3.transform.rotation = transform.rotation;
 
         return motion;
     }
@@ -71,8 +104,7 @@ public class CameraControler : MonoBehaviour
         transform.Translate(motion * speed * Time.deltaTime, Space.World);
         cam.transform.position = transform.position;
         cam.transform.rotation = transform.rotation;
-        cam2.transform.position = transform.position;
-        cam2.transform.rotation = transform.rotation;
+        
     }
 
     public void MoveCamera(Vector3 motion, float speed)
@@ -92,38 +124,55 @@ public class CameraControler : MonoBehaviour
     //change to take rotation into account in future
     public void SetCameraUnit (Vector3 position)
     {
-        
-        position.x -= 125;
-        position.y += 80;
-        position.z -= 105;
-        //55
-        //10
-        //55
+        Vector3 Endpoint = getEndPosition(position);
 
-        //-29.27 90 - 25.5
-        StartCoroutine(CameraMoveSmooth(position,0));
-        transform.rotation = defaultRotation;
+        if (Endpoint != zero)
+        {
+            transform.position = Endpoint;
+        }
+        else
+            GoDefaultstaet(position, speed);
     }
 
     public void SetCameraUnit(Vector3 position, int speedT)
     {
 
-        position.x -= 125;
-        position.y += 80;
-        position.z -= 105;
-        //55
-        //10
-        //55
+        Vector3 Endpoint = getEndPosition(position);
+        if (Endpoint != zero)
+        {
+            StopCoroutine("CameraMoveSmooth");
+            new WaitForSeconds(0.1f);
+            StartCoroutine(CameraMoveSmooth(Endpoint, speedT));
+        }
+        else
+            GoDefaultstaet(position, speedT);
 
-        //-29.27 90 - 25.5
-        StopCoroutine(CameraMoveSmooth(position,speedT));
-        StartCoroutine(CameraMoveSmooth(position, speedT));
-        transform.rotation = defaultRotation;
+       
     }
 
+    //get position camera should go relative to current rotation and positon
+    Vector3 getEndPosition(Vector3 position) {
 
+        Vector3 Endpoint = new Vector3(0,0,0);
+        RaycastHit hit;
 
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, Mathf.Infinity))
+        {
+            Endpoint = hit.point;
+            Endpoint -= transform.position;
+            Endpoint = position - Endpoint;
+            //Endpoint.y = position.y + 80;
 
+        }
+
+        return Endpoint;    
+    }
+
+    public void FollowUnit(Solider unit)
+    {
+        moving = true;
+        CurrentlyFollowing = unit;
+    }
     IEnumerator CameraMoveSmooth(Vector3 target, int possilbeSpeed)
     {
 
@@ -142,7 +191,20 @@ public class CameraControler : MonoBehaviour
 
 
 
+    void GoDefaultstaet(Vector3 position, int speedT)
+    {
+        position.x -= 125;
+        position.y += 80;
+        position.z -= 105;
+        //55
+        //10
+        //55
 
+        //-29.27 90 - 25.5
+        StopCoroutine(CameraMoveSmooth(position, speedT));
+        StartCoroutine(CameraMoveSmooth(position, speedT));
+        transform.rotation = defaultRotation;
+    }
 
 
 

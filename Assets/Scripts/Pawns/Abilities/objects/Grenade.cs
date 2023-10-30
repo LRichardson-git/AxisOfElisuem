@@ -163,17 +163,17 @@ public class Grenade : NetworkBehaviour
     }
 
 
-
-    public void fireF(Vector3 target, GrenadeAbility ability,float delay, bool type)
+    //what we call when fire
+    public void fireF(Vector3 target, GrenadeAbility ability,float delay, bool type, int ID)
     {
         _Line.positionCount = 0;
 
 
-        StartCoroutine(FireGWithDelay(target, ability, delay));
+        StartCoroutine(FireGWithDelay(target, ability, delay, ID));
 
         this.type = type;
 
-        cmdCallSetup();
+        cmdCallSetup(type,ID);
 
         
             
@@ -181,7 +181,7 @@ public class Grenade : NetworkBehaviour
     }
 
 
-    public void fireG(Vector3 target, GrenadeAbility ability) {
+    public void fireG(Vector3 target, GrenadeAbility ability, int ID) {
         Vector3 direction = target - firepoint;
         Vector3 groundDirection = new Vector3(direction.x, 0, direction.z);
         Vector3 targetPos = new Vector3(groundDirection.magnitude, direction.y, 0);
@@ -195,19 +195,19 @@ public class Grenade : NetworkBehaviour
         CalculatePathHeight(targetPos, height, out v0, out angle, out time);
 
         StopAllCoroutines();
-        StartCoroutine(Coroutine_Movement(groundDirection.normalized, v0, angle, time, ability, target));
+        StartCoroutine(Coroutine_Movement(groundDirection.normalized, v0, angle, time, ability, target,ID));
     }
 
 
 
-    public IEnumerator FireGWithDelay(Vector3 target, GrenadeAbility ability, float delay)
+    public IEnumerator FireGWithDelay(Vector3 target, GrenadeAbility ability, float delay,int ID)
     {
         yield return new WaitForSeconds(delay);
-        fireG(target, ability);
+        fireG(target, ability,ID);
     }
 
 
-    IEnumerator Coroutine_Movement(Vector3 direction,float v0, float angle, float time, GrenadeAbility ability, Vector3 target)
+    IEnumerator Coroutine_Movement(Vector3 direction,float v0, float angle, float time, GrenadeAbility ability, Vector3 target, int ID)
     {
         float t = 0;
 
@@ -223,18 +223,23 @@ public class Grenade : NetworkBehaviour
         ability.ExcuteAbility(target);
         ObjectSelector.Instance.returnGun(); //gun was disabled until animation complete
         ObjectSelector.Instance.playAnimation("Grounded", target);
+        cmdenableGun(ID);
     }
 
 
     [Command(requiresAuthority = false)]
-    void cmdCallSetup()
+    void cmdCallSetup(bool Type, int ID)
     {
-        SetupE();
+        SetupE(Type, ID);
     }
     [ClientRpc]
-    void SetupE()
+    void SetupE(bool Type, int ID)
     {
-        if (type == true)
+        foreach(Unit unit in UnitManager.Instance.GetUnitList())
+            if (unit.getID() == ID)
+                unit.GetComponent<Solider>().gunModel.gameObject.SetActive(false);
+
+        if (Type == true)
         {
             grenadeN.SetActive(true);
             grenadeS.SetActive(false);
@@ -247,6 +252,18 @@ public class Grenade : NetworkBehaviour
 
     }
 
+    [Command(requiresAuthority = false)]
+    void cmdenableGun( int ID)
+    {
+        enableGun( ID);
+    }
+    [ClientRpc]
+    void enableGun( int ID)
+    {
+        foreach (Unit unit in UnitManager.Instance.GetUnitList())
+            if (unit.getID() == ID)
+                unit.GetComponent<Solider>().gunModel.gameObject.SetActive(true);
+    }
 
 
 
@@ -264,6 +281,8 @@ public class Grenade : NetworkBehaviour
         grenadeN.SetActive(false);
         grenadeS.SetActive(false);
         Instantiate(explosion, transform.position,Quaternion.identity);
+
+
        // Instantiate(newObject, transform.position, Quaternion.identity);
     }
     [Command(requiresAuthority = false)]

@@ -87,6 +87,7 @@ public class Shooting_View_Controller : MonoBehaviour
         if (CurrrentUnit != null)
             CurrrentUnit.DeHighlight();
 
+        Debug.Log("test");
         active = true;
         CurrrentUnit = Data.getUnit();
         _selector.playAnimation("Aiming", Data.getUnit().transform.position);
@@ -98,7 +99,7 @@ public class Shooting_View_Controller : MonoBehaviour
         ChanceToDmg.text = Data.minDmg + "-" + Data.maxDmg + " Dmg";
         unitID = Data.getUnit().getID();
         Tdata = Data;
-        _controler.SetCameraUnit(Data.getUnit().transform.position,50);
+        _controler.SetCameraUnit(Data.getUnit().transform.position, 100);
         CurrrentUnit.highlight();
     }
 
@@ -167,7 +168,6 @@ public class Shooting_View_Controller : MonoBehaviour
             CurrrentUnit.DeHighlight();
         manager.SetActive(false);
         _selector.canAction = true;
-        _selector.resetUnit();
         active = false;
     }
 }

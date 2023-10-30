@@ -12,13 +12,16 @@ public class Solider : Unit
     float LastActionTime = 0;
     int old = 0;
     public bool begun = false;
-
+    public bool seen = false;
   
 
     private void Update()
     {
         if (!begun || isOwned)
             return;
+
+        if (Player.LocalInstance.turn)
+            seen = false; return;
 
 
         float TimeSinceLastAction = Time.time - LastActionTime;
@@ -31,11 +34,20 @@ public class Solider : Unit
             //other units know to attack
             if (old != World_Pathfinding.Instance.worldToCoord(transform.position, depth))
             {
-                UnitManager.Instance.checkSightsmove(this);
+                if (UnitManager.Instance.checkSightsmove(this))
+                {
+                    if (seen)
+                        CameraControler.LocalInstance.FollowUnit(this);
+
+                    seen = true;
+                }
+                else
+                    seen = false;
                 old = World_Pathfinding.Instance.worldToCoord(transform.position, depth);
             }
-                LastActionTime = Time.time;
-
+           
+            
+            LastActionTime = Time.time;
         }
 
 
