@@ -16,7 +16,6 @@ public class CameraControler : MonoBehaviour
     private Quaternion defaultRotation;
     public float Speed = 10;
     public Camera cam2;
-    public Camera cam3;
     Vector3 zero;
     bool moving;
     Vector3 target;
@@ -36,7 +35,7 @@ public class CameraControler : MonoBehaviour
     void Update()
     {
         float scroll = Input.mouseScrollDelta.y * 80;
-        float newY = transform.position.y - scroll * speed * Time.deltaTime;
+        float newY = transform.position.y - scroll * 10 * Time.deltaTime;
         newY = Mathf.Clamp(newY, 50, 200); // Ensure the new Y position is within the specified limits
         transform.position = new Vector3(transform.position.x, newY, transform.position.z);
 
@@ -45,6 +44,14 @@ public class CameraControler : MonoBehaviour
 
         int speedtrue = speed;
 
+        
+        
+        HandleRotation();
+    
+        Vector3 motion = GetMotionInput();
+
+        MoveCamera(motion);
+
         if (moving)
         {
             if (!CurrentlyFollowing.seen)
@@ -52,19 +59,9 @@ public class CameraControler : MonoBehaviour
             else
             {
                 SetCameraUnit(CurrentlyFollowing.transform.position);
-
-
-
-
                 return;
             }
         }
-        
-        HandleRotation();
-    
-        Vector3 motion = GetMotionInput();
-
-        MoveCamera(motion);
     }
 
     private Vector3 GetMotionInput()
@@ -93,8 +90,6 @@ public class CameraControler : MonoBehaviour
         motion.Normalize();
         cam2.transform.position = transform.position;
         cam2.transform.rotation = transform.rotation;
-        cam3.transform.position = transform.position;
-        cam3.transform.rotation = transform.rotation;
 
         return motion;
     }
@@ -125,10 +120,10 @@ public class CameraControler : MonoBehaviour
     public void SetCameraUnit (Vector3 position)
     {
         Vector3 Endpoint = getEndPosition(position);
-
         if (Endpoint != zero)
         {
             transform.position = Endpoint;
+            
         }
         else
             GoDefaultstaet(position, speed);
@@ -151,21 +146,39 @@ public class CameraControler : MonoBehaviour
     }
 
     //get position camera should go relative to current rotation and positon
-    Vector3 getEndPosition(Vector3 position) {
+    Vector3 getEndPositionC(Vector3 position) {
 
-        Vector3 Endpoint = new Vector3(0,0,0);
+        Vector3 Endpoint = new Vector3(0, 0, 0);
         RaycastHit hit;
 
-        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, Mathf.Infinity))
+        if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity))
         {
-            Endpoint = hit.point;
+            Endpoint = hit.point * 1.02f;
+            Debug.Log(Vector3.Distance(hit.point, transform.position));
             Endpoint -= transform.position;
             Endpoint = position - Endpoint;
             //Endpoint.y = position.y + 80;
 
         }
 
-        return Endpoint;    
+
+        return Endpoint;
+    }
+
+    Vector3 getEndPosition(Vector3 position)
+    {
+
+        Vector3 Endpoint = new Vector3(0, 0, 0);
+        float distance = 153; // Desired distance
+
+        Vector3 direction = transform.forward;
+        Endpoint = transform.position + (direction * distance);
+
+        Endpoint -= transform.position;
+        Endpoint = position - Endpoint;
+
+
+        return Endpoint;
     }
 
     public void FollowUnit(Solider unit)
@@ -210,7 +223,7 @@ public class CameraControler : MonoBehaviour
 
     public void goTOcurrent()
     {
-        SetCameraUnit(ObjectSelector.Instance.getSelectedUnit().transform.position,50);
+        SetCameraUnit(ObjectSelector.Instance.getSelectedUnit().transform.position);
     }
 
     private void HandleRotation()

@@ -55,7 +55,7 @@ public abstract class Ability
 
         }
     
-        
+        if (uses < 90)
             ObjectSelector.Instance.getSelectedUnit().doAction(Cost,wait);
 
     }

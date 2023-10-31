@@ -45,10 +45,17 @@ public class AudioManager : NetworkBehaviour
     void soundLoop(string name)
     {
         audioSource.loop = true;
-        PlaySound(name);
+        PlaySoundLocal(name);
     }
 
+    public void PlaySoundLocal(string name)
+    {
+        //Debug.Log(name);
+        audioSource.loop = false;
+        audioSource.clip = soundDictionary[name];
+        audioSource.Play();
 
+    }
 
 
 

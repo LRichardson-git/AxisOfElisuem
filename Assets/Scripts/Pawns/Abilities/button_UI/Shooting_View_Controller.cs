@@ -99,7 +99,7 @@ public class Shooting_View_Controller : MonoBehaviour
         ChanceToDmg.text = Data.minDmg + "-" + Data.maxDmg + " Dmg";
         unitID = Data.getUnit().getID();
         Tdata = Data;
-        _controler.SetCameraUnit(Data.getUnit().transform.position, 100);
+        _controler.SetCameraUnit(Data.getUnit().transform.position, 140);
         CurrrentUnit.highlight();
     }
 

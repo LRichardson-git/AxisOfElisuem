@@ -29,7 +29,7 @@ public class MedPack : Ability
     {
         if (target == null)
         {
-            _audio.PlaySound("Error");
+            _audio.PlaySoundLocal("Error");
             return false;
 
         }
@@ -42,7 +42,7 @@ public class MedPack : Ability
             return true;
         }
         else
-            _audio.PlaySound("Error");
+            _audio.PlaySoundLocal("Error");
 
         dehighlight();
         return false;
@@ -69,7 +69,7 @@ public class MedPack : Ability
             if (!target.highlighted)
             {
                 _selector.hoveredUnit().highlight();
-                AudioManager.instance.PlaySound("select");
+                AudioManager.instance.PlaySoundLocal("select");
 
             }      
         }

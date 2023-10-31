@@ -42,7 +42,7 @@ public class World_Pathfinding :MonoBehaviour
 
         
 
-        NeighbourList = preCalculateNeighbors();
+       // NeighbourList = preCalculateNeighbors();
     }
 
 
@@ -577,6 +577,20 @@ public class World_Pathfinding :MonoBehaviour
                 mapIndex[x, y, 25].settype(Tile_Type.Ladder);
 
         }
+
+        for (int x = 0; x < 29; x++)
+        {
+            for (int y = 1; y < 4; y++)
+                mapIndex[x, y, 25].settype(Tile_Type.Ladder);
+
+        }
+
+        for (int x = 33; x < width; x++)
+        {
+            for (int y = 1; y < 4; y++)
+                mapIndex[x, y, 25].settype(Tile_Type.Ladder);
+
+        }
         //base
 
         for (int x = 25; x < 35; x++)
@@ -603,7 +617,7 @@ public class World_Pathfinding :MonoBehaviour
 
         //top
 
-        for (int y = 9; y < 11; y++)
+        for (int y = 8; y < 12; y++)
         {
 
             for (int z = 9; z < 13; z++)

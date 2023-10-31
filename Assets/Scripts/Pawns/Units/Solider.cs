@@ -21,9 +21,10 @@ public class Solider : Unit
             return;
 
         if (Player.LocalInstance.turn)
+        {
             seen = false; return;
 
-
+        }
         float TimeSinceLastAction = Time.time - LastActionTime;
 
 

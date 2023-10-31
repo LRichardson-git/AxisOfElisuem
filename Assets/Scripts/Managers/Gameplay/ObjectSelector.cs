@@ -309,7 +309,7 @@ public class ObjectSelector : MonoBehaviour
                 }
             }
         ability.deActivate();
-        AudioManager.instance.PlaySound("Error");
+        AudioManager.instance.PlaySoundLocal("Error");
         return false;
     }
 

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FollowMouse : MonoBehaviour
@@ -7,24 +5,21 @@ public class FollowMouse : MonoBehaviour
     Ray ray;
     public Camera cam;
     RaycastHit hit;
-    World_Pathfinding path;
-    private void Start()
-    {
-        
-        path = World_Pathfinding.Instance;
-    }
 
-
-
-    void Update()
+    //IDK why but if I used inputmanager or a refernce to worldpathdinng it didnt work in build dosent make sense
+    void FixedUpdate()
     {
         ray = cam.ScreenPointToRay(Input.mousePosition);
-        
 
         if (Physics.Raycast(ray, out hit))
         {
 
-            transform.position = path.coordToWorld(path.worldToCoord(hit.point),1);
+            if (hit.collider.tag != "Finish")
+            {
+
+                Vector3 worldPos = World_Pathfinding.Instance.coordToWorld(World_Pathfinding.Instance.worldToCoord(hit.point), 1);
+                transform.position = worldPos;
+            }
         }
     }
 }

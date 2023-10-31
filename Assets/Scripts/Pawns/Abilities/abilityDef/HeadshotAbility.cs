@@ -50,7 +50,7 @@ public class HeadshotAbility : Ability
             return true;
         }
         else
-            _audio.PlaySound("Error");
+            _audio.PlaySoundLocal("Error");
         return false;
     }
 
