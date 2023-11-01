@@ -269,19 +269,19 @@ public class Grenade : NetworkBehaviour
 
 
     [Command(requiresAuthority = false)]
-    public void cmdCallExplosion()
+    public void cmdCallExplosion(Vector3 target)
     {
 
-        explode();
+        explode(target);
     }
     [ClientRpc]
-    void explode()
+    void explode(Vector3 target)
     {
         audioSource.clip = S_Explosion;
         audioSource.Play();
         grenadeN.SetActive(false);
         grenadeS.SetActive(false);
-        Instantiate(explosion, transform.position,Quaternion.identity);
+        Instantiate(explosion, target,Quaternion.identity);
 
 
        // Instantiate(newObject, transform.position, Quaternion.identity);

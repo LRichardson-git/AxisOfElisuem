@@ -312,7 +312,7 @@ public class Unit : Tile_Object
     public void playAnim(string anim) { animator.speed = 2; animator.Play(anim); }
 
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void moving()
     {
         moveee(movee);

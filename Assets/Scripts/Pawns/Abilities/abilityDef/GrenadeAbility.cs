@@ -145,7 +145,7 @@ public class GrenadeAbility : Ability
 
         }
         //play animation
-        Grenade.Instance.cmdCallExplosion();
+        Grenade.Instance.cmdCallExplosion(worldSpace);
         deActivate();
         damageUnits(list);
     }

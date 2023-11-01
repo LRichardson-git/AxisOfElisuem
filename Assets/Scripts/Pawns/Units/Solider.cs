@@ -17,8 +17,9 @@ public class Solider : Unit
 
     private void Update()
     {
-        if (!begun || isOwned)
+        if (!begun || ownedBy == Player.LocalInstance.playerID)
             return;
+
         if (movee == false)
         {
             seen = false;

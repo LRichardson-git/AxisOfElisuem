@@ -105,7 +105,7 @@ public class ObjectSelector : MonoBehaviour
 
     }
 
-    void nextUnit()
+    public void nextUnit()
     {
         List<Unit> TempList = _unitManager.GetUnitList();
         int point = 0;

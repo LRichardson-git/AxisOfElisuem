@@ -51,7 +51,7 @@ public class Shooting : NetworkBehaviour
         
         foreach (Unit targetUnit in UnitManager.Instance.GetUnitList())
         {
-            if (targetUnit == unit || targetUnit.ownedBy == Player.LocalInstance.playerID || !unit.alive)
+            if (targetUnit == unit || targetUnit.ownedBy == Player.LocalInstance.playerID || !targetUnit.alive)
                 continue;
 
             //Debug.Log(unit.name);

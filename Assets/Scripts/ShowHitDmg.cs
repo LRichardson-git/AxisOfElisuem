@@ -17,7 +17,7 @@ public class ShowHitDmg : MonoBehaviour
     private void Start()
     {
         cameraa = CameraControler.LocalInstance;
-        graphic.SetActive(false);
+        
         if (!hit)
         {
             y = 0;
@@ -27,7 +27,7 @@ public class ShowHitDmg : MonoBehaviour
         invis.a = 0;
         holder = graphic.GetComponent<SpriteRenderer>();
         diamond = graphic.GetComponentInChildren<SpriteRenderer>();
-        
+        graphic.SetActive(false);
         Vector3 temp = new Vector3(graphic.transform.localPosition.x, graphic.transform.localPosition.y + y, graphic.transform.localPosition.z);
         graphic.transform.localPosition = temp;
     }
@@ -36,7 +36,6 @@ public class ShowHitDmg : MonoBehaviour
     {
         transform.LookAt(cameraa.transform.position);
 
-      //  transform.rotation *= Quaternion.Euler(0, 180, 0);
 
     }
 
@@ -51,7 +50,10 @@ public class ShowHitDmg : MonoBehaviour
                 unit = unitp;
                 break;
             }
-        
+
+        if (unit == null)
+            Debug.Log("Null");
+
         CameraControler.LocalInstance.SetCameraUnit(unit.transform.position, 200);
 
         
@@ -59,6 +61,7 @@ public class ShowHitDmg : MonoBehaviour
         
         
         StartCoroutine(FadeIn());
+
         if (hit)
             dmgHitText.text = "%" + dmgHit;
         else

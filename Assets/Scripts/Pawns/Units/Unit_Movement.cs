@@ -63,6 +63,7 @@ public class Unit_Movement : MonoBehaviour
 
             // Update the unit's movement path
             _unit.movementPoints -= limitedPathLength;
+            _unit.moving();
         }
         else {
             _audio.PlaySoundL("Error");
@@ -79,7 +80,7 @@ public class Unit_Movement : MonoBehaviour
         _unit.Model.transform.rotation = Quaternion.identity;
         _isMoving = true;
         _unit.movee = true;
-        _unit.moving();
+        
         for (int i = 0; i < path.Count; i++)
         {
             Vector3 targetPosition = path[i];
@@ -155,14 +156,14 @@ public class Unit_Movement : MonoBehaviour
 
         _audio.cmdStopSound();
 
-        Quaternion oldRotation = _unit.Model.transform.rotation;
+        Quaternion oldRotation = transform.rotation;
         transform.rotation = Quaternion.identity;
 
         int AC = 1;
 
         if (dash)
             AC = 2;
-        UnitManager.Instance.updateVision();
+        UnitManager.Instance.updateVision(); //why is this here? scared to move
         _unit.DeleteCover();
         _unit.cmdCheckCover(oldRotation, AC);
         _unit.cmdCheckSight();
