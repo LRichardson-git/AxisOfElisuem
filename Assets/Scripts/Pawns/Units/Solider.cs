@@ -13,12 +13,17 @@ public class Solider : Unit
     int old = 0;
     public bool begun = false;
     public bool seen = false;
-  
+    float tracker = 0;
 
     private void Update()
     {
         if (!begun || isOwned)
             return;
+        if (movee == false)
+        {
+            seen = false;
+            return;
+        }
 
         if (Player.LocalInstance.turn)
         {
@@ -32,23 +37,23 @@ public class Solider : Unit
 
         if (TimeSinceLastAction > 0.1)
         {
+            Debug.Log("XD");
             //other units know to attack
-            if (old != World_Pathfinding.Instance.worldToCoord(transform.position, depth))
-            {
-                if (UnitManager.Instance.checkSightsmove(this))
-                {
-                    if (seen)
-                        CameraControler.LocalInstance.FollowUnit(this);
 
-                    seen = true;
-                }
-                else
-                    seen = false;
-                old = World_Pathfinding.Instance.worldToCoord(transform.position, depth);
+            if (UnitManager.Instance.checkSightsmove(this))
+            {
+                
+                if (!seen)
+                    CameraControler.LocalInstance.FollowUnit(this);
+                seen = true;
+
             }
-           
-            
-            LastActionTime = Time.time;
+            else
+            {
+                seen = false;
+                Debug.Log("XD");
+
+            }            LastActionTime = Time.time;
         }
 
 

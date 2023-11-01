@@ -67,8 +67,8 @@ public class AudioManager : NetworkBehaviour
     {
         if (soundDictionary.ContainsKey(name))
             PlaySound(name);
-        else
-            Debug.Log("sound not found : " +name);
+       
+            
     }
 
     [ClientRpc]

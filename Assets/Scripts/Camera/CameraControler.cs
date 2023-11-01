@@ -20,7 +20,10 @@ public class CameraControler : MonoBehaviour
     bool moving;
     Vector3 target;
     Solider CurrentlyFollowing;
+    bool switching;
     public static CameraControler LocalInstance { get; private set; }
+
+    Coroutine MovingCam;
     void Awake()
     {
         cam = Camera.main;
@@ -46,9 +49,13 @@ public class CameraControler : MonoBehaviour
 
         
         
+        
         HandleRotation();
     
         Vector3 motion = GetMotionInput();
+
+        if (switching)
+            motion = Vector3.zero;
 
         MoveCamera(motion);
 
@@ -119,6 +126,8 @@ public class CameraControler : MonoBehaviour
     //change to take rotation into account in future
     public void SetCameraUnit (Vector3 position)
     {
+        if (MovingCam != null)
+            StopCoroutine(MovingCam);
         Vector3 Endpoint = getEndPosition(position);
         if (Endpoint != zero)
         {
@@ -131,13 +140,13 @@ public class CameraControler : MonoBehaviour
 
     public void SetCameraUnit(Vector3 position, int speedT)
     {
-
+        switching = false;
         Vector3 Endpoint = getEndPosition(position);
         if (Endpoint != zero)
         {
-            StopCoroutine("CameraMoveSmooth");
-            new WaitForSeconds(0.1f);
-            StartCoroutine(CameraMoveSmooth(Endpoint, speedT));
+            if ( MovingCam != null)
+                StopCoroutine(MovingCam);
+            MovingCam = StartCoroutine(CameraMoveSmooth(Endpoint, speedT));
         }
         else
             GoDefaultstaet(position, speedT);
@@ -188,18 +197,19 @@ public class CameraControler : MonoBehaviour
     }
     IEnumerator CameraMoveSmooth(Vector3 target, int possilbeSpeed)
     {
+        switching = true;
+        float speedtrue = Vector3.Distance(transform.position,target);
+        speedtrue /= 30;
 
-        int speedtrue = speed;
-
-        if (possilbeSpeed != 0)
-            speedtrue = possilbeSpeed;
+        
 
         while (Vector3.Distance(transform.position, target) > 10)
         {
             
-            transform.position = Vector3.MoveTowards(transform.position,target, (speedtrue * 2) * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position,target, (possilbeSpeed * speedtrue) * Time.deltaTime);
             yield return null;
         }
+        switching = false;
     }
 
 

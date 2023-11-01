@@ -30,11 +30,6 @@ public class Coords
         LastCoord = null;
         type = Tile_Type.air;
 
-        if (y < 1)
-        {
-            type = Tile_Type.floor;
-            IsWalkable = true;
-        }
     }
     public void settype(Tile_Type type) { 
         this.type = type; 
@@ -43,6 +38,7 @@ public class Coords
         else
             IsWalkable=false;
         }
+
     public void CalculateFCost() //movement cost
     {
         m_fCost = m_gCost + m_hCost;

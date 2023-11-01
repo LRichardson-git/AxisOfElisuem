@@ -42,7 +42,8 @@ public class ShowHitDmg : MonoBehaviour
 
     public void ShowDmghit(int dmgHit, int ID)
     {
-        this.gameObject.SetActive(true);
+        graphic.SetActive(true);
+        Debug.Log("test");
         Unit unit = null;
         foreach (Unit unitp in UnitManager.Instance.GetUnitList())
             if (unitp.getID() == ID)
@@ -50,12 +51,12 @@ public class ShowHitDmg : MonoBehaviour
                 unit = unitp;
                 break;
             }
-        if (unit.isOwned)
-            CameraControler.LocalInstance.SetCameraUnit(unit.transform.position, 30);
+        
+        CameraControler.LocalInstance.SetCameraUnit(unit.transform.position, 200);
 
         
 
-        graphic.SetActive(true);
+        
         
         StartCoroutine(FadeIn());
         if (hit)
@@ -66,23 +67,6 @@ public class ShowHitDmg : MonoBehaviour
         transform.position = unit.transform.position;
 
     }
-
-
-    public void ShowDmghit(int dmgHit, Vector3 pos)
-    {
-   
-        graphic.SetActive(true);
-
-        StartCoroutine(FadeIn());
-        if (hit)
-            dmgHitText.text = "%" + dmgHit;
-        else
-            dmgHitText.text = dmgHit + " *";
-
-        transform.position = pos;
-
-    }
-
 
     IEnumerator FadeIn()
     {
@@ -112,6 +96,6 @@ public class ShowHitDmg : MonoBehaviour
 
     }
 
-    void goInvis() { this.gameObject.SetActive(false); }
+    void goInvis() { graphic.SetActive(false); }
 
 }

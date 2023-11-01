@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-
+using System;
 
 public class Unit : Tile_Object
 {
@@ -10,7 +10,7 @@ public class Unit : Tile_Object
     public int movementPoints = 2;
     public int height = 1;
     public bool flying = false;
-    public const int maxHP = 5;
+    int maxHP = 5;
     public int Vision = 20;
     public int range = 18;
     public int aim = 50;
@@ -31,11 +31,15 @@ public class Unit : Tile_Object
     [SerializeField]
     private Animator animator;
     public Color DefaultColor;
+    public Color seethrough;
     public bool highlighted = false;
     public int ownedBy = -1;
     //Networked so client can know
     [SyncVar(hook = nameof(OnHpChanged))]
     public int HP = 5;
+
+    
+    public bool movee = false;
     
     public int ActionPoints = 2;
     public bool turn = true;
@@ -49,7 +53,8 @@ public class Unit : Tile_Object
     public health hpS;
 
     public bool alive = true;
-    BoxCollider collider; 
+    BoxCollider collider;
+    public int maxMovementPoints =13;
 
     void OnHpChanged(int _Old, int _New)
     {
@@ -77,7 +82,7 @@ public class Unit : Tile_Object
         //UnitManager.Instance.RemoveUnit(ID);
         Destroy(collider);
         hpS.gameObject.SetActive(false);
-        World_Pathfinding.Instance.setType(x, y, z, Tile_Type.floor);
+        alive = false;
     }
 
 
@@ -115,7 +120,18 @@ public class Unit : Tile_Object
         path = World_Pathfinding.Instance;
         manager = UnitManager.Instance;
         collider = GetComponent<BoxCollider>();
+        maxMovementPoints = movementPoints;
+        hpS.setSize(HP);
+        maxHP = HP;
+        foreach (Renderer renderer in renderers)
+        {
+            if (ownedBy == 1)
+                DefaultColor = Color.blue;
+            else
+                DefaultColor = Color.red;
 
+            renderer.material.color = DefaultColor;
+        }
     }
 
 
@@ -182,15 +198,35 @@ public class Unit : Tile_Object
     public void setPlayerID() { if (isOwned) { Player.LocalInstance.SetIDSetup(ownedBy); } }
 
     public void canSee() {
-        Model.SetActive(true);
+        foreach (Renderer renderer in renderers)
+        {
+
+
+            renderer.material.color = DefaultColor;
+        }
+
         hpS.gameObject.SetActive(true);
     }
 
     public void cantSee( ) {
-        Model.SetActive(false);
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.material.color = seethrough;
+        }
         hpS.gameObject.SetActive(false);
     }
     public List<TargetData> getList() { return InVision; }
+    [Command]
+    internal void cmdCheckSight()
+    {
+        checksightE();
+    }
+    [ClientRpc]
+    void checksightE()
+    {
+        UnitManager.Instance.checkSightsmove(this);
+    }
+
 
     [Command]
     public void cmdCheckCover(Quaternion rot, int AC) { checkCover(rot,AC); }
@@ -272,7 +308,21 @@ public class Unit : Tile_Object
     }
 
     public void playAnim(string anim, Vector3 direction) { direction.y = Model.transform.position.y;   Model.gameObject.transform.LookAt(direction);  animator.speed = 2;  animator.Play(anim); audioManager.cmDPlaySound(anim); }
-    
+
+    public void playAnim(string anim) { animator.speed = 2; animator.Play(anim); }
+
+
+    [Command]
+    public void moving()
+    {
+        moveee(movee);
+    }
+    [ClientRpc]
+    public void moveee(bool t)
+    {
+        movee = t;
+    }
+
 }
 
 

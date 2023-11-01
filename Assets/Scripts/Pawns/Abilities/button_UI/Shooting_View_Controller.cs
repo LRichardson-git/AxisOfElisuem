@@ -87,7 +87,6 @@ public class Shooting_View_Controller : MonoBehaviour
         if (CurrrentUnit != null)
             CurrrentUnit.DeHighlight();
 
-        Debug.Log("test");
         active = true;
         CurrrentUnit = Data.getUnit();
         _selector.playAnimation("Aiming", Data.getUnit().transform.position);
@@ -134,7 +133,7 @@ public class Shooting_View_Controller : MonoBehaviour
         {
             int Dmg = Random.Range(Tdata.minDmg, Tdata.maxDmg);
             Shooting.Instance.CmdHitUnit(unitID, Tdata.getHit(), Dmg, Tdata.getUnit().gun.penetration, Tdata.getCrit());
-            StartCoroutine(ShootSound(_selector.getSelectedUnit()));
+            StartCoroutine(ShootSound(_selector.getSelectedUnit(),CurrrentUnit.getID()));
             _selector.getSelectedUnit().doAction(2,3);
             
         }
@@ -145,13 +144,13 @@ public class Shooting_View_Controller : MonoBehaviour
         Deactivate();
     }
 
-    IEnumerator ShootSound(Unit unit)
+    IEnumerator ShootSound(Unit unit, int ID)
     {
 
 
         yield return new WaitForSeconds(1);
         _audio.cmDPlaySound(unit.gun.sound);
-
+        Shooting.Instance.CmDShootAtunit(unit.getID(), ID);   
     }
 
 

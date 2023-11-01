@@ -12,7 +12,7 @@ public class Player : NetworkBehaviour
     [SyncVar]
     public bool turn = true;
 
-    
+    bool setup = false;
 
     public int playerID = 0;
 
@@ -24,15 +24,17 @@ public class Player : NetworkBehaviour
         playerID = ID;
 
         //player 1 starts with first turn
-        if (ID != 1)
+        if (ID != 1 && setup == false)
         {
+            setup = true;
             turn = false;
             _selector.canAction = false;
+            Shooting.Instance.Team = ID;
         }
 
-        Shooting.Instance.Team = ID;
-        
 
+        
+        
 
     }
 
@@ -75,13 +77,7 @@ public class Player : NetworkBehaviour
 
         if (!isOwned) { return; }
 
-        if (Input.GetKeyUp(KeyCode.P))
-            Debug.Log(playerID);
-
-        if (Input.GetKeyUp(KeyCode.K))
-            UnitManager.Instance.startt();
-
-        if (Input.GetKeyUp(KeyCode.Delete))
+        if (Input.GetKeyUp(KeyCode.KeypadEnter))
             CmdEndTurn(playerID);
     }
 

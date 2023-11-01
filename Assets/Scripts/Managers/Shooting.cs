@@ -28,6 +28,7 @@ public class Shooting : NetworkBehaviour
 
     public ShowHitDmg HitChance;
     public ShowHitDmg DmgChance;
+    public fol bullet;
     private void Awake()
     {
         Instance = this;
@@ -85,7 +86,7 @@ public class Shooting : NetworkBehaviour
             TargetData Data = new TargetData(target,CalulateHitPercentage(unit,unit.targetPoint,target),unit.crit + unit.gun.getCrit(), target.targetPoint);
             Data.setDmg(unit.gun.getMin(), unit.gun.getMax());
             unit.addToList(Data);
-            //Debug.Log("straight line");
+           // Debug.Log("straight line");
             return true;
         }
 
@@ -112,8 +113,11 @@ public class Shooting : NetworkBehaviour
                 Vector3 coverDir = unitPoint.transform.position - unit.targetPoint.transform.position;
                 foreach (Cover cover in unit.covers)
                 {
+
                     if (coverDir.normalized == cover.Direction)
                     {
+
+//Debug.Log( unitPoint.name);
                         shouldbreak = true;
                         break;
                     }
@@ -127,13 +131,13 @@ public class Shooting : NetworkBehaviour
                 direction = target.targetPoint.transform.position - unitPoint.transform.position;
                 if (Physics.Raycast(unitPoint.transform.position, direction, out hitInfo2, distance))
                 {
-                    if (hitInfo2.collider.gameObject.CompareTag("Unit"))
+                    if (hitInfo2.collider.gameObject.CompareTag("Unit") && !hitInfo2.collider.gameObject.GetComponent<Unit>().isOwned)
                     {
                         
                         TargetData Data1 = new TargetData(target, CalulateHitPercentage(unit, unitPoint, target), unit.crit + unit.gun.getCrit(), target.targetPoint);
                         Data1.setDmg(unit.gun.getMin(), unit.gun.getMax());
                         unit.addToList(Data1);
-                        //Debug.Log("in cover1");
+                        //Debug.Log(unitPoint.name);
                         return true;
                     }
                     else if (target.covers.Count > 0)
@@ -149,6 +153,7 @@ public class Shooting : NetworkBehaviour
                                 Data.setDmg(unit.gun.getMin(), unit.gun.getMax());
                                 unit.addToList(Data);
                                 //Debug.Log("in cover2");
+                                //Debug.Log(unitPoint.name);
                                 return true;
                             }
                         }
@@ -166,13 +171,14 @@ public class Shooting : NetworkBehaviour
                    if (Physics.Raycast(unit.targetPoint.transform.position, direction, out RaycastHit hitInfoC, distance))
                         {
 
-                        if (hitInfoC.collider.gameObject.CompareTag("Unit"))
+                        if (hitInfoC.collider.gameObject.CompareTag("Unit") && !hitInfoC.collider.gameObject.GetComponent<Unit>().isOwned)
                         {
                             Debug.DrawLine(unit.targetPoint.transform.position, targetPoint.transform.position, Color.green, 10f);
                             TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unit.targetPoint, target), unit.crit + unit.gun.getCrit(), targetPoint);
                             Data.setDmg(unit.gun.getMin(), unit.gun.getMax());
                             unit.addToList(Data);
-                            return true;
+                       // Debug.Log(targetPoint.name);
+                        return true;
                         }
 
                        
@@ -183,6 +189,7 @@ public class Shooting : NetworkBehaviour
                     TargetData Data = new TargetData(target, CalulateHitPercentage(unit, unit.targetPoint, target), unit.crit + unit.gun.getCrit(), targetPoint);
                     Data.setDmg(unit.gun.getMin(), unit.gun.getMax());
                     unit.addToList(Data);
+                   // Debug.Log(targetPoint.name);
                     return true;
                 }
             }
@@ -207,11 +214,13 @@ public class Shooting : NetworkBehaviour
         {
             Modifers += EnemyCover(Hitpoint, Target);
 
-            if (Modifers > 0) 
-                { unit.crit = 30; }
+            if (Modifers > 0)
+            { unit.crit += 30; Modifers += 15; }
             else
                 unit.crit = 0;
         }
+        else
+            Modifers += 25;
 
 
         if (unit.y > Target.y + 1)
@@ -235,10 +244,13 @@ public class Shooting : NetworkBehaviour
         {
             Modifers -= (unit.gun.punishment * ( unit.gun.minRange - distance));
         }
+        
 
+
+        
 
         result = (int)unit.aim + (int)Modifers;
-
+        result = Math.Clamp(result,0, 100);
         return result;
     }
 
@@ -250,10 +262,12 @@ public class Shooting : NetworkBehaviour
         //1 == no cover
         float closestCover = 1;
 
-        if (Vector3.Distance(HitPoint.transform.position, Target.transform.position) <= 16)
+        if (Vector3.Distance(HitPoint.transform.position, Target.transform.position) <= 18)
+        {
+            //Debug.Log("close");
             return 30;
 
-
+        }
 
         foreach (Cover cover in Target.covers)
         {
@@ -282,7 +296,7 @@ public class Shooting : NetworkBehaviour
         else if (coverType == coverHeight.Short)
             return -20;
 
-        else if (coverType == coverHeight.none && Target.covers.Count > 0)
+        else if (coverType == coverHeight.none)
             return 30;
 
         return 0;
@@ -327,7 +341,7 @@ public class Shooting : NetworkBehaviour
                 
             }
         }
-       // Debug.Log(coverList.Count);
+        Debug.Log(coverList.Count);
         return coverList;
     }
 
@@ -436,9 +450,7 @@ public class Shooting : NetworkBehaviour
         {
             if (Random.Range(0, 100) <= crit)
                 Damage = Dmg * 2;
-
             StartCoroutine(DamageUnit(unitID, Damage, Pen));
-            return;
         }
 
     }
@@ -451,7 +463,6 @@ public class Shooting : NetworkBehaviour
         dmgUnit(ID, Damage, Pen);
 
     }
-
 
 
     [Command(requiresAuthority = false)]
@@ -470,16 +481,48 @@ public class Shooting : NetworkBehaviour
 
     }
 
+    [Command(requiresAuthority = false)]
+    public void CmDShootAtunit(int SpawnID, int ID)
+    {
+        spawnbullet(SpawnID, ID);
+    }
+    [ClientRpc]
+    void spawnbullet(int SpawnID, int ID)
+    {
+        Vector3 spawn = new Vector3();
+        Vector3 target = new Vector3();
+        foreach (Unit unit in _unitManager.GetUnitList())
+        {
+            if (SpawnID == unit.getID()) {
+                spawn = unit.transform.position;
+                continue;
+            }
+
+            if (ID == unit.getID())
+            {
+                target = unit.transform.position;
+                continue;    
+            }
+        }
+
+        fol temp = Instantiate(bullet, spawn, Quaternion.identity);
+        temp.initil(target);
+
+    }
+
+
 
     [ClientRpc]
     void Showhit(int Hit, int ID)
     {
+        Debug.Log("showhit");
         HitChance.ShowDmghit(Hit, ID);
     }
 
     [ClientRpc]
     void ShowDmg(int Hit, int ID)
     {
+
         DmgChance.ShowDmghit(Hit, ID); 
     }
 

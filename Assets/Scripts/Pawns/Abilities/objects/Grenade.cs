@@ -44,6 +44,7 @@ public class Grenade : NetworkBehaviour
         Instance = this;
     }
 
+    
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -194,7 +195,7 @@ public class Grenade : NetworkBehaviour
         float time;
         CalculatePathHeight(targetPos, height, out v0, out angle, out time);
 
-        StopAllCoroutines();
+        
         StartCoroutine(Coroutine_Movement(groundDirection.normalized, v0, angle, time, ability, target,ID));
     }
 
@@ -286,19 +287,21 @@ public class Grenade : NetworkBehaviour
        // Instantiate(newObject, transform.position, Quaternion.identity);
     }
     [Command(requiresAuthority = false)]
-    public void cmdSpawnSmoke(int radius)
+    public void cmdSpawnSmoke(int radius, Vector3 target)
     {
-        smooke(radius);
+        smooke(radius,target);
+        
     }
 
     [ClientRpc]
-    void smooke(int radius)
+    void smooke(int radius,Vector3 target)
     {
+        Debug.Log(transform.position);
         audioSource.clip = S_Smoke;
         audioSource.Play();
         grenadeN.SetActive(false);
         grenadeS.SetActive(false);
-        smoke Smoke = Instantiate(smoke, transform.position, Quaternion.identity).GetComponent<smoke>();
+        smoke Smoke = Instantiate(smoke, target, Quaternion.identity).GetComponent<smoke>();
         Smoke.radius = radius;
         UnitManager.Instance.addObject(Smoke);
     }

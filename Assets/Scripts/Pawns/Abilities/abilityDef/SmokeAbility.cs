@@ -53,7 +53,7 @@ public class SmokeAbility : GrenadeAbility
 
         public override void ExcuteAbility(Vector3 worldSpace)
     {
-        Grenade.Instance.cmdSpawnSmoke(radius);
+        Grenade.Instance.cmdSpawnSmoke(radius,worldSpace);
         deActivate();
     }
 }

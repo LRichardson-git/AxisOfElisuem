@@ -5,7 +5,7 @@ using UnityEngine;
 public class health : MonoBehaviour
 {
     public List<GameObject> Health;
-    private void Start()
+    private void Awake()
     {
         Health = new List<GameObject>();
 
@@ -19,7 +19,7 @@ public class health : MonoBehaviour
 
     public void setSize(int hp)
     {
-
+        
 
         for (int i =0; i < Health.Count ; i++)
         {

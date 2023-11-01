@@ -95,6 +95,13 @@ public class UnitManager : MonoBehaviour
             {
                 unit.addAbility(new GrenadeAbility(5, 2, 4));
                 unit.addAbility(new RunAndGunAbility());
+                if (Player.LocalInstance.playerID == unit.ownedBy && Player.LocalInstance.playerID == 2)
+                {
+                    
+                    Quaternion temp = Quaternion.Euler(30, -45, 0);
+                    CameraControler.LocalInstance.transform.rotation = temp;
+                    CameraControler.LocalInstance.SetCameraUnit(unit.transform.position);
+                }
             }
 
             unit.init();
@@ -130,7 +137,8 @@ public class UnitManager : MonoBehaviour
             {
                 unit.ActionPoints = 2;
                 shooting.CheckSight(unit);
-
+                unit.turn = true;
+                unit.movementPoints = unit.maxMovementPoints;
             }
          
         inVision.Clear();
@@ -254,29 +262,6 @@ public class UnitManager : MonoBehaviour
 
         //check the 4 ys with floors we will go to, simple as
 
-        if (testt)
-        {
-            for (int j = 0; j < 9; j += 4)
-            {
-                notDash++;
-                for (int i = unit.x - (movement); i < unit.x + movement; i++)
-                {
-
-
-
-                    for (int k = unit.z - (movement); k < unit.z + movement; k++)
-                    {
-
-                        spawnHighlighter(i, j, k, unit);
-
-                    }
-
-                }
-            }
-        }
-        else
-        {
-
             for (int j = 0; j < 13; j += 4)
             {
                 notDash++;
@@ -305,7 +290,7 @@ public class UnitManager : MonoBehaviour
 
             }
 
-      }
+      
 
     }
 
@@ -346,29 +331,23 @@ public class UnitManager : MonoBehaviour
             _highlighters.Add(Instantiate(HighlightDash, _path.coordToWorld(move.x, move.y, move.z, 1, 1), Quaternion.identity));
     }
     
-    void addMoveable(int i, int j, int k, Unit unit)
-    {
-        int p = _testingpath.findPath(i, j, k, unit.x, unit.y, unit.z);
-        if (p <= unit.movementPoints && p != 0)
-        {
-            unit.addmove(i, j, k);
-        }
-    }
-
-    void addMoveable2(int i, int j, int k, Unit unit)
-    {
-        int p = _testingpath2.findPath(i, j, k, unit.x, unit.y, unit.z);
-        if (p <= unit.movementPoints && p != 0)
-        {
-            unit.addmove(i, j, k);
-        }
-    }
 
     void spawnHighlighter(int i, int j, int k, int distance, Unit unit)
     {
 
+
+
         Quaternion rot = new Quaternion(90, 0, 0, 90);
         Vector3 Pos = _path.coordToWorld(i, j, k, 1, 1);
+
+
+
+        if (unit.ActionPoints > 2)
+        {
+            _highlighters.Add(Instantiate(HighlightTile, Pos, rot));
+            return;
+        }
+
         Pos.y += 0.6f;
         if (distance > unit.movementPoints / 2 || unit.ActionPoints < 2)
                 _highlighters.Add(Instantiate(HighlightDash, Pos, rot));
@@ -377,21 +356,7 @@ public class UnitManager : MonoBehaviour
         
     }
 
-    void spawnHighlighter( int i, int j , int k, Unit unit)
-    {
-       // Debug.Log(unit);
-        int p = _path.findPathT(i, j, k, unit.x, unit.y, unit.z);
-        Quaternion rot = new Quaternion(90, 0, 0, 90);
-        Vector3 Pos = _path.coordToWorld(i, j, k, 1, 1);
-        Pos.y += 0.6f;
-        if (p <= unit.movementPoints && p != 0)
-        {
-            if (p > unit.movementPoints / 2)
-                _highlighters.Add(Instantiate(HighlightDash, Pos, rot));
-            else
-                _highlighters.Add(Instantiate(HighlightTile, Pos, rot));
-        }
-    }
+
 
 
 

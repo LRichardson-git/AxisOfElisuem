@@ -78,6 +78,8 @@ public class Unit_Movement : MonoBehaviour
         Quaternion targetRotation;
         _unit.Model.transform.rotation = Quaternion.identity;
         _isMoving = true;
+        _unit.movee = true;
+        _unit.moving();
         for (int i = 0; i < path.Count; i++)
         {
             Vector3 targetPosition = path[i];
@@ -163,14 +165,17 @@ public class Unit_Movement : MonoBehaviour
         UnitManager.Instance.updateVision();
         _unit.DeleteCover();
         _unit.cmdCheckCover(oldRotation, AC);
+        _unit.cmdCheckSight();
         _isMoving = false;
+        _unit.movee = false;
+        _unit.GetComponent<Solider>().seen = false;
+        _unit.moving();
 
-        
 
-        
-        
 
-       
+
+
+
 
     }
     
