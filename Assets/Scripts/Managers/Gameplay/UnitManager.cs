@@ -120,7 +120,7 @@ public class UnitManager : MonoBehaviour
         foreach (Unit unit in _units)
             unit.GetComponent<Solider>().begun = true;
 
-        
+        Debug.Log("begun is true");
     }
 
     public void newTurn()

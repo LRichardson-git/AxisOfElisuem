@@ -442,7 +442,7 @@ public class Shooting : NetworkBehaviour
     public void CmdHitUnit(int unitID, int HitChance, int Dmg, int Pen, int crit)
     {
         int Damage = Dmg;
-
+        Debug.Log("Test");
         Showhit(HitChance, unitID);
 
 
@@ -486,6 +486,7 @@ public class Shooting : NetworkBehaviour
     {
         spawnbullet(SpawnID, ID);
     }
+
     [ClientRpc]
     void spawnbullet(int SpawnID, int ID)
     {

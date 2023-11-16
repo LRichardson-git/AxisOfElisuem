@@ -31,6 +31,7 @@ public class CameraControler : MonoBehaviour
         defaultRotation = transform.rotation;
         zero = new Vector3 (0, 0, 0);
         target = new Vector3(0, 0, 0);
+        
     }
 
 

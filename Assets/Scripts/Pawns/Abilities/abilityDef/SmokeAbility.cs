@@ -11,7 +11,7 @@ public class SmokeAbility : GrenadeAbility
         //setanimationname
         Animation = "Throw_Grenade";
         Icon = "SmokeG";
-        wait = 5;
+        wait = 20;
     }
 
 

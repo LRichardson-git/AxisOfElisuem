@@ -16,9 +16,9 @@ public class Wall : MonoBehaviour
 
 
 
-        x = (int)(transform.position.x - 5) / 10;
+        x = (int)(transform.position.x - 5) / 10; //81
         y = (int)(transform.position.y - 10) / 10;
-        z = (int)(transform.position.z) / 10;
+        z = (int)(transform.position.z - 5) / 10;
 
 
         World_Pathfinding.Instance.setType(x, y, z, Tile_Type.Wall);

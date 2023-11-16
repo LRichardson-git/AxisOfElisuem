@@ -14,6 +14,7 @@ public class ShowHitDmg : MonoBehaviour
     int y = 2;
     public int speedTOgo;
     float timee = 3.5f;
+    //bool active = false; //avoid weird bug
     private void Start()
     {
         cameraa = CameraControler.LocalInstance;
@@ -42,7 +43,6 @@ public class ShowHitDmg : MonoBehaviour
     public void ShowDmghit(int dmgHit, int ID)
     {
         graphic.SetActive(true);
-        Debug.Log("test");
         Unit unit = null;
         foreach (Unit unitp in UnitManager.Instance.GetUnitList())
             if (unitp.getID() == ID)

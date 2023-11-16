@@ -16,6 +16,7 @@ public class Player : NetworkBehaviour
 
     public int playerID = 0;
 
+    public Grenade gren;
     public static Player LocalInstance { get; private set; }
     ObjectSelector _selector;
     //haoppens once at start
@@ -34,7 +35,6 @@ public class Player : NetworkBehaviour
 
 
         
-        
 
     }
 
@@ -49,8 +49,8 @@ public class Player : NetworkBehaviour
     {
         
         if (!isOwned) { return; }
-        
 
+        gren = Grenade.Instance;
         LocalInstance = this;
         Setup();
         Ui_Manager.Instance.init();
@@ -129,6 +129,8 @@ public class Player : NetworkBehaviour
 
         UnitManager.Instance.newTurn();
     }
+
+
 
 
 }

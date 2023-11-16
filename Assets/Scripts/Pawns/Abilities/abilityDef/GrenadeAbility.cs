@@ -23,7 +23,7 @@ public class GrenadeAbility : Ability
         radius = radius * 20;
         //setanimationname
         Animation = "Throw_Grenade";
-        wait =5;
+        wait = 20;
     }
 
 

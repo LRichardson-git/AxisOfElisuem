@@ -24,7 +24,7 @@ public class Grenade : NetworkBehaviour
 
     [SerializeField] float _initVelocity;
     [SerializeField] float _angle;
-    [SerializeField ] float step;
+    [SerializeField] float step;
     //float height;
     [SerializeField]
     AudioClip S_Explosion;
@@ -44,7 +44,7 @@ public class Grenade : NetworkBehaviour
         Instance = this;
     }
 
-    
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -53,7 +53,8 @@ public class Grenade : NetworkBehaviour
         inputManager = InputManager.Instance;
     }
 
-    public void setTarget(Vector3 Start, Vector3 target) { transform.position = Start; targetLocation = target;  firepoint = Start; }
+
+    public void setTarget(Vector3 Start, Vector3 target) { transform.position = Start; targetLocation = target; firepoint = Start; }
 
 
     public void Aim(Vector3 firepoint)
@@ -70,7 +71,7 @@ public class Grenade : NetworkBehaviour
         {
             target = hit.point;
         }
-        
+
 
 
         Vector3 direction = target - firepoint;
@@ -93,21 +94,21 @@ public class Grenade : NetworkBehaviour
         return (-b + sign * Mathf.Sqrt(b * b - 4 * a * c)) / (2 * a);
     }
 
-    
+
     private void DrawPath(Vector3 direction, float v0, float angle, float time, float step) {
 
         step = Mathf.Max(0.01f, step);
         _Line.positionCount = (int)(time / step) + 2;
         int count = 0;
-        
-        for (float i = 0; i < time; i+= step){
+
+        for (float i = 0; i < time; i += step) {
 
             float x = v0 * i * Mathf.Cos(angle);
             float y = v0 * i * Mathf.Sin(angle) - 0.5f * -Physics.gravity.y * Mathf.Pow(i, 2);
             _Line.SetPosition(count, firepoint + direction * x + Vector3.up * y);
             count++;
 
-            }
+        }
 
         float xfinal = v0 * time * Mathf.Cos(angle);
         float yfinal = v0 * time * Mathf.Sin(angle) - 0.5f * -Physics.gravity.y * Mathf.Pow(time, 2);
@@ -129,13 +130,13 @@ public class Grenade : NetworkBehaviour
 
         angle = Mathf.Atan(b * time / xt);
 
-        v0 =b/Mathf.Sin(angle);
+        v0 = b / Mathf.Sin(angle);
     }
 
 
     public bool CheckFire(Vector3 start, Vector3 target)
     {
-        Vector3 middlepos = new Vector3 (0,0,0);
+        Vector3 middlepos = new Vector3(0, 0, 0);
         for (int i = 0; i < _Line.positionCount / 2; i++)
         {
             middlepos = _Line.GetPosition(i);
@@ -157,7 +158,7 @@ public class Grenade : NetworkBehaviour
 
 
 
-            
+
 
 
         return false;
@@ -165,7 +166,7 @@ public class Grenade : NetworkBehaviour
 
 
     //what we call when fire
-    public void fireF(Vector3 target, GrenadeAbility ability,float delay, bool type, int ID)
+    public void fireF(Vector3 target, GrenadeAbility ability, float delay, bool type, int ID)
     {
         _Line.positionCount = 0;
 
@@ -174,13 +175,14 @@ public class Grenade : NetworkBehaviour
 
         this.type = type;
 
-        cmdCallSetup(type,ID);
-
         
-            
+
+
+
 
     }
 
+    //XD
 
     public void fireG(Vector3 target, GrenadeAbility ability, int ID) {
         Vector3 direction = target - firepoint;
@@ -194,24 +196,56 @@ public class Grenade : NetworkBehaviour
         float v0;
         float time;
         CalculatePathHeight(targetPos, height, out v0, out angle, out time);
+        cmdCallSetup(type, ID);
 
-        
-        StartCoroutine(Coroutine_Movement(groundDirection.normalized, v0, angle, time, ability, target,ID));
+        startmovement(groundDirection, v0, angle, time, firepoint, ID);
+        StartCoroutine(localTime( time,target,ability));
     }
 
 
 
-    public IEnumerator FireGWithDelay(Vector3 target, GrenadeAbility ability, float delay,int ID)
+    public IEnumerator FireGWithDelay(Vector3 target, GrenadeAbility ability, float delay, int ID)
     {
         yield return new WaitForSeconds(delay);
-        fireG(target, ability,ID);
+        fireG(target, ability, ID);
     }
 
+    //
 
-    IEnumerator Coroutine_Movement(Vector3 direction,float v0, float angle, float time, GrenadeAbility ability, Vector3 target, int ID)
+    IEnumerator localTime(float time, Vector3 target, Ability ability)
     {
+
+
         float t = 0;
 
+        while (t < time)
+        {
+            t += Time.deltaTime * speed;
+            yield return null;
+        }
+
+
+        ObjectSelector.Instance.playAnimation("Grounded", target);
+        ability.ExcuteAbility(target);
+        ability.wait = 1;
+        ability.Final();
+    }
+
+    
+
+
+    [Command(requiresAuthority = false)]
+    void startmovement(Vector3 groundDirection,float v0, float angle, float time, Vector3 startp, int ID) {
+
+
+        StartCoroutine(Coroutine_Movement(groundDirection.normalized, v0, angle, time, ID,startp));
+
+    }
+
+    IEnumerator Coroutine_Movement(Vector3 direction,float v0, float angle, float time, int ID, Vector3 startp)
+    {
+        float t = 0;
+        firepoint = startp;
         while (t < time)
         {
             float x = v0 * t * Mathf.Cos(angle);
@@ -220,11 +254,8 @@ public class Grenade : NetworkBehaviour
             t += Time.deltaTime * speed;
             yield return null;
         }
-
-        ability.ExcuteAbility(target);
-        ObjectSelector.Instance.returnGun(); //gun was disabled until animation complete
-        ObjectSelector.Instance.playAnimation("Grounded", target);
-        cmdenableGun(ID);
+        
+        enableGun(ID);
     }
 
 

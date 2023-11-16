@@ -63,7 +63,7 @@ public class Unit_Movement : MonoBehaviour
 
             // Update the unit's movement path
             _unit.movementPoints -= limitedPathLength;
-            _unit.moving();
+            
         }
         else {
             _audio.PlaySoundL("Error");
@@ -80,7 +80,7 @@ public class Unit_Movement : MonoBehaviour
         _unit.Model.transform.rotation = Quaternion.identity;
         _isMoving = true;
         _unit.movee = true;
-        
+        _unit.moving(_unit.movee);
         for (int i = 0; i < path.Count; i++)
         {
             Vector3 targetPosition = path[i];
@@ -170,7 +170,7 @@ public class Unit_Movement : MonoBehaviour
         _isMoving = false;
         _unit.movee = false;
         _unit.GetComponent<Solider>().seen = false;
-        _unit.moving();
+        _unit.moving(_unit.movee);
 
 
 

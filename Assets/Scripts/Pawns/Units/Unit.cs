@@ -313,9 +313,9 @@ public class Unit : Tile_Object
 
 
     [Command(requiresAuthority = false)]
-    public void moving()
+    public void moving(bool t)
     {
-        moveee(movee);
+        moveee(t);
     }
     [ClientRpc]
     public void moveee(bool t)
