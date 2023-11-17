@@ -891,7 +891,7 @@ MonoBehaviour:
   movementPoints: 18
   height: 1
   flying: 0
-  Vision: 220
+  Vision: 300
   range: 40
   aim: 68
   crit: 0
@@ -901,9 +901,11 @@ MonoBehaviour:
   _material: {fileID: 0}
   animator: {fileID: 4957018710641338247}
   DefaultColor: {r: 1, g: 1, b: 1, a: 0}
+  seethrough: {r: 0, g: 0, b: 0, a: 0}
   highlighted: 0
   ownedBy: -1
   HP: 3
+  movee: 0
   ActionPoints: 2
   turn: 1
   path: {fileID: 0}

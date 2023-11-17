@@ -31,6 +31,7 @@ public class Player : NetworkBehaviour
             turn = false;
             _selector.canAction = false;
             Shooting.Instance.Team = ID;
+            MainView.Instance.gameObject.SetActive(true);
         }
 
 
@@ -120,11 +121,13 @@ public class Player : NetworkBehaviour
             turn = true;
             _selector.canAction = true;
             _selector.nextUnit();
+            MainView.Instance.gameObject.SetActive(false);
         }
         else
         {
             turn = false;
             _selector.canAction = false;
+            MainView.Instance.gameObject.SetActive(true);
         }
 
         UnitManager.Instance.newTurn();

@@ -6,22 +6,15 @@ public sealed class MainView : View
     [SerializeField]
     private TextMeshProUGUI TurnText;
 
-    [SerializeField]
-    private TextMeshProUGUI AmmoText;
+    public static MainView Instance { get; private set; }
 
-    private void Update()
+    private void Start()
     {
-        if (!initialized) return;
-        //safety stuff
-        Player player = Player.LocalInstance;
-        if (player == null) return;
-      
-        //display current pawns health
-        TurnText.text = $"Turn: {player.turn}";
-
-        
-
+        Instance = this;
+        TurnText.text = "Enemy Activity";
     }
+
+    
 
 
 

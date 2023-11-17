@@ -71,7 +71,7 @@ public class Unit : Tile_Object
             alive = false;
             ActionPoints = -10;
             unalive();
-            playAnim("Death", this.transform.position);
+            playAnim("Death",transform.position);
         }
         // -0 delete self
     }
@@ -83,6 +83,7 @@ public class Unit : Tile_Object
         Destroy(collider);
         hpS.gameObject.SetActive(false);
         alive = false;
+        UnitManager.Instance.CheckWin(ownedBy);
     }
 
 
@@ -198,21 +199,22 @@ public class Unit : Tile_Object
     public void setPlayerID() { if (isOwned) { Player.LocalInstance.SetIDSetup(ownedBy); } }
 
     public void canSee() {
-        foreach (Renderer renderer in renderers)
-        {
+        // foreach (Renderer renderer in renderers)
+        //  {
 
 
-            renderer.material.color = DefaultColor;
-        }
-
+        //  renderer.material.color = DefaultColor;
+        //  }
+        Model.transform.localScale = new Vector3(1f, 0.5f, 1f);
         hpS.gameObject.SetActive(true);
     }
 
     public void cantSee( ) {
-        foreach (Renderer renderer in renderers)
-        {
-            renderer.material.color = seethrough;
-        }
+        // foreach (Renderer renderer in renderers)
+        //{
+        //   renderer.material.color = seethrough;
+        // }
+        Model.transform.localScale = new Vector3(0f, 0f, 0f);
         hpS.gameObject.SetActive(false);
     }
     public List<TargetData> getList() { return InVision; }

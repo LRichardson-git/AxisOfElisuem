@@ -123,6 +123,34 @@ public class UnitManager : MonoBehaviour
         Debug.Log("begun is true");
     }
 
+    //when a unit dies checks to see if the other team has won
+    public void CheckWin(int team)
+    {
+        bool lost = true;
+        int deaths = 0;
+        foreach(Unit unit in _units)
+        {
+            if (unit.ownedBy == Player.LocalInstance.playerID && unit.alive)
+                lost = false;
+            else if (unit.ownedBy != Player.LocalInstance.playerID && !unit.alive)
+            {
+                deaths++;
+            }
+        }
+
+        if (lost)
+        {
+            //tell other play they won??
+
+        }
+        else if (deaths >= 5)
+        {
+
+            //u win
+        }
+
+    }
+
     public void newTurn()
     {
         
