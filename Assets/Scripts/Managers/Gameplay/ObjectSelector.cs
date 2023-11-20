@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 public class ObjectSelector : MonoBehaviour
 {
     public static ObjectSelector Instance { get; private set; }
@@ -22,10 +22,13 @@ public class ObjectSelector : MonoBehaviour
     private bool buttonDown = false;
     public bool canmove = false;
 
-    public bool canAction = true;
+    public bool canAction = false;
     Shooting _shooting;
 
     World_Pathfinding path;
+    public GameObject victoryScreen;
+    [SerializeField]
+    private TextMeshProUGUI victoryText;
     private void Awake()
     {
         Instance = this;
@@ -103,6 +106,17 @@ public class ObjectSelector : MonoBehaviour
 
 
 
+    }
+
+    public void Win(bool won)
+    {
+        victoryScreen.SetActive(true);
+        if (won)
+            victoryText.text = "You Win!";
+        else
+            victoryText.text = "You Lose!";
+
+        canAction = false;
     }
 
     public void nextUnit()

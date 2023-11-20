@@ -27,6 +27,8 @@ public class UnitManager : MonoBehaviour
 
     public bool testt = false;
     bool init = false;
+    public GameObject activity;
+
     private void Awake()
     {
         Instance = this;
@@ -95,22 +97,16 @@ public class UnitManager : MonoBehaviour
             {
                 unit.addAbility(new GrenadeAbility(5, 2, 4));
                 unit.addAbility(new RunAndGunAbility());
-                if (Player.LocalInstance.playerID == unit.ownedBy && Player.LocalInstance.playerID == 2)
-                {
-                    
-                    Quaternion temp = Quaternion.Euler(30, -45, 0);
-                    CameraControler.LocalInstance.transform.rotation = temp;
-                    CameraControler.LocalInstance.SetCameraUnit(unit.transform.position);
-                }
+                
             }
 
             unit.init();
-
+            
         }
 
         SetupSight(Player.LocalInstance.playerID);
 
-        startt();
+        
         init = true;
     }
 
@@ -120,7 +116,18 @@ public class UnitManager : MonoBehaviour
         foreach (Unit unit in _units)
             unit.GetComponent<Solider>().begun = true;
 
-        Debug.Log("begun is true");
+        if (Player.LocalInstance.turn == false)
+        {
+            activity.SetActive(true);
+            Quaternion temp = Quaternion.Euler(30, -45, 0);
+            CameraControler.LocalInstance.transform.rotation = temp;
+        }
+        else
+            ObjectSelector.Instance.canAction = true;
+
+        ObjectSelector.Instance.nextUnit();
+
+        
     }
 
     //when a unit dies checks to see if the other team has won
@@ -128,6 +135,8 @@ public class UnitManager : MonoBehaviour
     {
         bool lost = true;
         int deaths = 0;
+
+        Debug.Log("checking Win");
         foreach(Unit unit in _units)
         {
             if (unit.ownedBy == Player.LocalInstance.playerID && unit.alive)
@@ -140,13 +149,13 @@ public class UnitManager : MonoBehaviour
 
         if (lost)
         {
-            //tell other play they won??
+            ObjectSelector.Instance.Win(false);
 
         }
-        else if (deaths >= 5)
+        else if (deaths >= _units.Count / 2)
         {
 
-            //u win
+            ObjectSelector.Instance.Win(true);
         }
 
     }
@@ -186,6 +195,7 @@ public class UnitManager : MonoBehaviour
             unit.canSee();
         
         ObjectSelector.Instance.Deselect();
+        ObjectSelector.Instance.nextUnit();
     }
 
 
@@ -350,38 +360,29 @@ public class UnitManager : MonoBehaviour
     }
 
 
-
-    public void test(Unit unit)
-    {
-        removePaths();
-        Debug.Log("test"); 
-        foreach (moveable move in unit.moveables)
-            _highlighters.Add(Instantiate(HighlightDash, _path.coordToWorld(move.x, move.y, move.z, 1, 1), Quaternion.identity));
-    }
     
 
     void spawnHighlighter(int i, int j, int k, int distance, Unit unit)
     {
 
 
-
         Quaternion rot = new Quaternion(90, 0, 0, 90);
         Vector3 Pos = _path.coordToWorld(i, j, k, 1, 1);
 
-
+        Pos.y += 0.6f;
 
         if (unit.ActionPoints > 2)
         {
             _highlighters.Add(Instantiate(HighlightTile, Pos, rot));
-            return;
         }
-
-        Pos.y += 0.6f;
-        if (distance > unit.movementPoints / 2 || unit.ActionPoints < 2)
+        else
+        {
+            Pos.y += 0.6f;
+            if (distance > unit.movementPoints / 2 || unit.ActionPoints < 2)
                 _highlighters.Add(Instantiate(HighlightDash, Pos, rot));
             else
                 _highlighters.Add(Instantiate(HighlightTile, Pos, rot));
-        
+        }
     }
 
 

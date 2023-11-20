@@ -58,7 +58,7 @@ public class Unit_Movement : MonoBehaviour
             int limitedPathLength = Mathf.Min(path.Count, _unit.movementPoints);
             List<Vector3> limitedPath = path.GetRange(0, limitedPathLength);
             // Move the Unit along the limited path
-            _audio.cmdLoopSound("running");
+            _audio.soundLooplocal("running");
             StartCoroutine(moveAlongPath(limitedPath));
 
             // Update the unit's movement path
@@ -85,7 +85,7 @@ public class Unit_Movement : MonoBehaviour
         {
             Vector3 targetPosition = path[i];
             //targetPosition.y = 5 * _unit.depth;
-            animator.speed = 2;
+            animator.speed = 1.3f;
 
             if (i + 1 < path.Count)
             {
@@ -94,6 +94,7 @@ public class Unit_Movement : MonoBehaviour
                 {
                     //check like if next point on path if greater than + 10 to continue i tink
                     speed = 20f;
+                    animator.speed = 2.2f;
                     animator.SetFloat("Y", 2);
                     updown = true;
                 }
@@ -101,6 +102,7 @@ public class Unit_Movement : MonoBehaviour
                 else if (i > 1 && path[i - 2].y > path[i].y + 11)
                 {
                     speed = 20f;
+                    animator.speed = 2.2f;
                     animator.SetFloat("Y", -2);
 
                     
@@ -154,7 +156,7 @@ public class Unit_Movement : MonoBehaviour
         animator.SetFloat("Y", 0);
         animator.SetFloat("Speed", 0);
 
-        _audio.cmdStopSound();
+        _audio.stopSoundLocal();
 
         Quaternion oldRotation = transform.rotation;
         transform.rotation = Quaternion.identity;

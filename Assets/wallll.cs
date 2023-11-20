@@ -13,11 +13,18 @@ public class wallll : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (setfloor) {
+        
+        }
+
+    public void init()
+    {
+        if (setfloor)
+        {
 
             for (int i = pos.x; i < pos.x + dimension.x; i++)
             {
-                for (int j = pos.y; j < pos.y + dimension.y; j++) {
+                for (int j = pos.y; j < pos.y + dimension.y; j++)
+                {
 
                     for (int k = pos.z; k < pos.z + dimension.z; k++)
                     {
@@ -28,7 +35,8 @@ public class wallll : MonoBehaviour
             }
         }
 
-        else {
+        else
+        {
             for (int i = pos.x; i < pos.x + dimension.x; i++)
             {
                 for (int k = pos.z; k < pos.x + dimension.z; k++)
@@ -40,8 +48,7 @@ public class wallll : MonoBehaviour
                     }
                 }
             }
-            }
         }
 
-
-}
+    }
+    }

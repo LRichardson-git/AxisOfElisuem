@@ -50,7 +50,7 @@ public class AudioManager : NetworkBehaviour
 
     public void PlaySoundLocal(string name)
     {
-        //Debug.Log(name);
+        Debug.Log(name);
         audioSource.loop = false;
         audioSource.clip = soundDictionary[name];
         audioSource.Play();
@@ -87,6 +87,21 @@ public class AudioManager : NetworkBehaviour
         audioSource.clip = soundDictionary[name];
         audioSource.Play();
     }
+
+    public void soundLooplocal(string name)
+    {
+        audioSource.loop = true;
+        audioSource.clip = soundDictionary[name];
+        audioSource.Play();
+    }
+
+    public void stopSoundLocal()
+    {
+        audioSource.loop = false;
+        audioSource.Stop();
+    }
+
+
     [Command(requiresAuthority =false)]
     public void cmdStopSound()
     {

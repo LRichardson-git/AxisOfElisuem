@@ -12,6 +12,15 @@ public class Wall : MonoBehaviour
     void Start()
     {
 
+        
+
+
+
+        
+
+    }
+
+    public void init() {
 
 
 
@@ -23,8 +32,6 @@ public class Wall : MonoBehaviour
 
         World_Pathfinding.Instance.setType(x, y, z, Tile_Type.Wall);
         World_Pathfinding.Instance.setType(x, y + 1, z, Tile_Type.Wall);
-
     }
-
     
 }

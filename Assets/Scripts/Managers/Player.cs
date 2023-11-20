@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 using Mirror;
-using UnityEditor;
-using UnityEngine.UI;
-using System;
+
 
 public class Player : NetworkBehaviour
 {
@@ -31,7 +28,7 @@ public class Player : NetworkBehaviour
             turn = false;
             _selector.canAction = false;
             Shooting.Instance.Team = ID;
-            MainView.Instance.gameObject.SetActive(true);
+            
         }
 
 
@@ -40,7 +37,7 @@ public class Player : NetworkBehaviour
     }
 
 
-
+    
 
   
 
@@ -54,7 +51,6 @@ public class Player : NetworkBehaviour
         gren = Grenade.Instance;
         LocalInstance = this;
         Setup();
-        Ui_Manager.Instance.init();
         _selector = ObjectSelector.Instance;
       
     }
@@ -121,13 +117,13 @@ public class Player : NetworkBehaviour
             turn = true;
             _selector.canAction = true;
             _selector.nextUnit();
-            MainView.Instance.gameObject.SetActive(false);
+           // MainView.Instance.gameObject.SetActive(false);
         }
         else
         {
             turn = false;
             _selector.canAction = false;
-            MainView.Instance.gameObject.SetActive(true);
+           // MainView.Instance.gameObject.SetActive(true);
         }
 
         UnitManager.Instance.newTurn();

@@ -341,7 +341,7 @@ public class Shooting : NetworkBehaviour
                 
             }
         }
-        Debug.Log(coverList.Count);
+       // Debug.Log(coverList.Count);
         return coverList;
     }
 
@@ -451,6 +451,7 @@ public class Shooting : NetworkBehaviour
             if (Random.Range(0, 100) <= crit)
                 Damage = Dmg * 2;
             StartCoroutine(DamageUnit(unitID, Damage, Pen));
+            ShowDmg(Damage, unitID);
         }
 
     }
@@ -459,7 +460,7 @@ public class Shooting : NetworkBehaviour
 
 
         yield return new WaitForSeconds(2);
-        ShowDmg(Damage, ID);
+        
         dmgUnit(ID, Damage, Pen);
 
     }
@@ -513,6 +514,15 @@ public class Shooting : NetworkBehaviour
 
 
 
+
+
+
+
+
+
+
+
+
     [ClientRpc]
     void Showhit(int Hit, int ID)
     {
@@ -523,9 +533,21 @@ public class Shooting : NetworkBehaviour
     [ClientRpc]
     void ShowDmg(int Hit, int ID)
     {
-
-        DmgChance.ShowDmghit(Hit, ID); 
+        Debug.Log("showDmg");
+        StartCoroutine(DamageUnit(ID, Hit));
     }
+
+
+    IEnumerator DamageUnit(int ID, int Damage)
+    {
+
+
+        yield return new WaitForSeconds(1.8f);
+        DmgChance.ShowDmghit(Damage, ID);
+        
+
+    }
+
 
     public void dmgUnit(int ID, int Dmg, int pen)
     {

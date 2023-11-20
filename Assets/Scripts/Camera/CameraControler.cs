@@ -21,6 +21,7 @@ public class CameraControler : MonoBehaviour
     Vector3 target;
     Solider CurrentlyFollowing;
     bool switching;
+    Quaternion consttantRot;
     public static CameraControler LocalInstance { get; private set; }
 
     Coroutine MovingCam;
@@ -31,6 +32,7 @@ public class CameraControler : MonoBehaviour
         defaultRotation = transform.rotation;
         zero = new Vector3 (0, 0, 0);
         target = new Vector3(0, 0, 0);
+        
         
     }
 
@@ -60,10 +62,14 @@ public class CameraControler : MonoBehaviour
 
         MoveCamera(motion);
 
+        
         if (moving)
         {
             if (!CurrentlyFollowing.seen)
+            {
                 moving = false;
+                AudioManager.instance.stopSoundLocal();
+            }
             else
             {
                 SetCameraUnit(CurrentlyFollowing.transform.position);
@@ -104,9 +110,15 @@ public class CameraControler : MonoBehaviour
 
     public void MoveCamera(Vector3 motion)
     {
+        
         transform.Translate(motion * speed * Time.deltaTime, Space.World);
+
+        //consttantRot = Quaternion.Euler(30, transform.rotation.y, 0);
+
+        //transform.rotation = consttantRot;
         cam.transform.position = transform.position;
         cam.transform.rotation = transform.rotation;
+
         
     }
 
@@ -195,6 +207,7 @@ public class CameraControler : MonoBehaviour
     {
         moving = true;
         CurrentlyFollowing = unit;
+        AudioManager.instance.soundLooplocal("running");
     }
     IEnumerator CameraMoveSmooth(Vector3 target, int possilbeSpeed)
     {

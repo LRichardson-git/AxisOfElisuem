@@ -17,22 +17,24 @@ public class Solider : Unit
 
     private void Update()
     {
+
+        //removed !begun btw
         if (!begun || ownedBy == Player.LocalInstance.playerID)
         {
-            Debug.Log("XDDDD1");
+
             return;
 
         }
         if (movee == false)
         {
             seen = false;
-            Debug.Log("XDDDD2");
+
             return;
         }
 
         if (Player.LocalInstance.turn)
         {
-            Debug.Log("XDDDD3");
+
             seen = false; return;
 
         }
@@ -44,10 +46,9 @@ public class Solider : Unit
         if (TimeSinceLastAction > 0.1)
         {
             //other units know to attack
-            Debug.Log(this.name);
             if (UnitManager.Instance.checkSightsmove(this))
             {
-                Debug.Log("seeing");
+               // Debug.Log("seeing");
 
                 if (!seen)
                     CameraControler.LocalInstance.FollowUnit(this);
@@ -57,7 +58,7 @@ public class Solider : Unit
             else
             {
                 seen = false;
-                Debug.Log("XD");
+                AudioManager.instance.stopSoundLocal();
 
             }            LastActionTime = Time.time;
         }

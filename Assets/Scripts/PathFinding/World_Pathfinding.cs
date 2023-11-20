@@ -20,7 +20,6 @@ public class World_Pathfinding :MonoBehaviour
 
 
     public List<Vector3> EntryPoints;
-
     private void Awake()
     {
         Instance = this;
@@ -38,14 +37,31 @@ public class World_Pathfinding :MonoBehaviour
             }
         }
 
-        TestingSetup();
 
-        
-
-       // NeighbourList = preCalculateNeighbors();
+        // NeighbourList = preCalculateNeighbors();
     }
 
+    private void Start()
+    {
+        TestingSetup();
 
+        Wall[] walls = FindObjectsOfType<Wall>();
+
+        // Call the init() function on each Wall object
+        foreach (Wall wall in walls)
+        {
+            wall.init();
+        }
+
+
+        wallll[] wallll = FindObjectsOfType<wallll>();
+
+        // Call the init() function on each Wall object
+        foreach (wallll wall in wallll)
+        {
+            wall.init();
+        }
+    }
     public  void setType(int x, int y, int z, Tile_Type type)
     {
         
