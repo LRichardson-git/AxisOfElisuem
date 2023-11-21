@@ -156,6 +156,7 @@ public class GrenadeAbility : Ability
         if (ObjectSelector.Instance.FireGrenade(worldSpace, this))
         {
             ObjectSelector.Instance.playAnimation(Animation, worldSpace);
+            Shooting.Instance.cmdLookat(worldSpace);
             return true;
         }
 

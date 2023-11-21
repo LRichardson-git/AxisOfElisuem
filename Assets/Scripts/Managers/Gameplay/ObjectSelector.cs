@@ -169,10 +169,10 @@ public class ObjectSelector : MonoBehaviour
 
             }
 
-        
 
 
 
+    
         
 
 
@@ -232,7 +232,17 @@ public class ObjectSelector : MonoBehaviour
         
         //select next avaiable unit
     }
+    public void Deselectt()
+    {
 
+        if (selectedUnit == null)
+            return;
+
+        selectedUnit.Deselect();
+        selectedUnit = null;
+
+       UnitManager.Instance.removePaths();
+    }
 
 
     public void refreshUnit()

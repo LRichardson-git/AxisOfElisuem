@@ -124,13 +124,14 @@ public class Unit : Tile_Object
         maxMovementPoints = movementPoints;
         hpS.setSize(HP);
         maxHP = HP;
+
+        if (ownedBy == 1)
+            ColorUtility.TryParseHtmlString("#4575FF", out DefaultColor);
+        else
+            ColorUtility.TryParseHtmlString("#FF4A4A", out DefaultColor);
+
         foreach (Renderer renderer in renderers)
         {
-            if (ownedBy == 1)
-                DefaultColor = Color.blue;
-            else
-                DefaultColor = Color.red;
-
             renderer.material.color = DefaultColor;
         }
     }

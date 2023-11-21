@@ -27,6 +27,7 @@ namespace Mirror
             if (!NetworkClient.isConnected && !NetworkServer.active)
             {
                 StartButtons();
+
             }
             else
             {
@@ -84,7 +85,13 @@ namespace Mirror
                 {
                     if (GUILayout.Button("Server Only")) manager.StartServer();
                 }
+
+
+                
             }
+
+
+
             else
             {
                 // Connecting

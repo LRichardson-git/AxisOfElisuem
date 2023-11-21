@@ -29,6 +29,7 @@ public class UnitManager : MonoBehaviour
     bool init = false;
     public GameObject activity;
 
+
     private void Awake()
     {
         Instance = this;
@@ -56,8 +57,8 @@ public class UnitManager : MonoBehaviour
         _path = World_Pathfinding.Instance;
         shooting = Shooting.Instance;
 
-
-
+        
+        
     }
 
     public void SetupSight(int ID)
@@ -111,25 +112,7 @@ public class UnitManager : MonoBehaviour
     }
 
     //called after everying is initlized
-    public void startt()
-    {
-        foreach (Unit unit in _units)
-            unit.GetComponent<Solider>().begun = true;
-
-        if (Player.LocalInstance.turn == false)
-        {
-            activity.SetActive(true);
-            Quaternion temp = Quaternion.Euler(30, -45, 0);
-            CameraControler.LocalInstance.transform.rotation = temp;
-        }
-        else
-            ObjectSelector.Instance.canAction = true;
-
-        ObjectSelector.Instance.nextUnit();
-
-        
-    }
-
+ 
     //when a unit dies checks to see if the other team has won
     public void CheckWin(int team)
     {

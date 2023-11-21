@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-
+using TMPro;
 public class GameManager : NetworkBehaviour
 {
     // Start is called before the first frame update
@@ -14,7 +14,7 @@ public class GameManager : NetworkBehaviour
     
     public SyncList<int> playerScores = new SyncList<int>();
 
-    
+    public TextMeshProUGUI playersText;
     [SerializeField]
     private int Playerturn = 0;
     private List<NetworkConnectionToClient> connections;
@@ -75,6 +75,7 @@ public class GameManager : NetworkBehaviour
 
         setPlayerID();
 
+        playersText.text = "Players: " + players + "/2"; 
         return players;
     }
 

@@ -29,6 +29,8 @@ public class Shooting : NetworkBehaviour
     public ShowHitDmg HitChance;
     public ShowHitDmg DmgChance;
     public fol bullet;
+    public GameObject LOBBY;
+    public GameObject activity;
     private void Awake()
     {
         Instance = this;
@@ -42,6 +44,9 @@ public class Shooting : NetworkBehaviour
     private void Start()
     {
         _unitManager = UnitManager.Instance;
+
+        if (isServer)
+            LOBBY.SetActive(true);
     }
 
     public void CheckSight(Unit unit)
@@ -512,12 +517,41 @@ public class Shooting : NetworkBehaviour
 
     }
 
+    [Command (requiresAuthority = false)]
+    public void cmdLookat(Vector3 point) {
+
+        PanTo(point);
+    }
 
 
+    [ClientRpc]
+    void PanTo(Vector3 locaiton)
+    {
+        CameraControler.LocalInstance.SetCameraUnit(locaiton, 50);
+    }
+    [Command (requiresAuthority = false)]
+    public void cmdStartGame()
+    {
+        startGame();
+    }
+    [ClientRpc]
+    void startGame()
+    {
+        foreach (Unit unit in _unitManager.GetUnitList())
+            unit.GetComponent<Solider>().begun = true;
 
+        if (Player.LocalInstance.turn == false)
+        {
+            activity.SetActive(true);
+            Quaternion temp = Quaternion.Euler(30, -45, 0);
+            CameraControler.LocalInstance.transform.rotation = temp;
+        }
+        else
+            ObjectSelector.Instance.canAction = true;
 
-
-
+        ObjectSelector.Instance.nextUnit();
+        ObjectSelector.Instance.Deselectt();
+    }
 
 
 
