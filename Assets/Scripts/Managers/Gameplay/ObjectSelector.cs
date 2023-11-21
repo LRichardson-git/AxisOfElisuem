@@ -210,7 +210,7 @@ public class ObjectSelector : MonoBehaviour
 
         //Select next avaiable unity
         foreach (Unit unit in _unitManager.GetUnitList())
-            if (unit.turn == true && unit.isOwned == true)
+            if (unit.turn == true && unit.isOwned == true && unit.alive)
                 SelectUnit(unit);
 
         if (selectedUnit == null) {
@@ -278,7 +278,7 @@ public class ObjectSelector : MonoBehaviour
 
             Unit unit = hit.collider.GetComponent<Unit>();
 
-            if (unit != null && unit.isOwned && unit.turn)
+            if (unit != null && unit.isOwned && unit.turn && unit.alive)
             {
                 SelectUnit(unit);
 

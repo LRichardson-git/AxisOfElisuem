@@ -67,7 +67,6 @@ public class Unit : Tile_Object
        
         if (HP <= 0)
         {
-            // UnitManager.Instance.RemoveUnit(this);
             alive = false;
             ActionPoints = -10;
             unalive();
@@ -200,21 +199,13 @@ public class Unit : Tile_Object
     public void setPlayerID() { if (isOwned) { Player.LocalInstance.SetIDSetup(ownedBy); } }
 
     public void canSee() {
-        // foreach (Renderer renderer in renderers)
-        //  {
 
-
-        //  renderer.material.color = DefaultColor;
-        //  }
         Model.transform.localScale = new Vector3(1f, 0.5f, 1f);
         hpS.gameObject.SetActive(true);
     }
 
     public void cantSee( ) {
-        // foreach (Renderer renderer in renderers)
-        //{
-        //   renderer.material.color = seethrough;
-        // }
+
         Model.transform.localScale = new Vector3(0f, 0f, 0f);
         hpS.gameObject.SetActive(false);
     }
@@ -237,6 +228,7 @@ public class Unit : Tile_Object
     [ClientRpc]
     void checkCover(Quaternion rot, int AC)
     {
+        
         Model.transform.rotation = rot;
         covers = Shooting.Instance.CalulateCover(this);
         //all toghther since checksight needs to know if its in cover
@@ -249,6 +241,10 @@ public class Unit : Tile_Object
             doAction(AC);
             if (turn) { UnitManager.Instance.ShowPaths(this); }
         }
+        if (!isOwned)
+            UnitManager.Instance.checkSightsmove(this);
+
+
     }
 
     public void DeleteCover() { covers.Clear(); }

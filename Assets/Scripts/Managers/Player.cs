@@ -74,8 +74,10 @@ public class Player : NetworkBehaviour
 
         if (!isOwned) { return; }
 
-        if (Input.GetKeyUp(KeyCode.KeypadEnter))
-            CmdEndTurn(playerID);
+        if (Input.GetKeyUp(KeyCode.P))
+        {
+            endTurn();
+        }
     }
 
   
@@ -112,18 +114,19 @@ public class Player : NetworkBehaviour
     {
         if (!isOwned) { return; }
 
+        
+
         if (ID != playerID)
         {
             turn = true;
             _selector.canAction = true;
             _selector.nextUnit();
-           // MainView.Instance.gameObject.SetActive(false);
         }
         else
         {
             turn = false;
             _selector.canAction = false;
-           // MainView.Instance.gameObject.SetActive(true);
+            _selector.Deselectt();
         }
 
         UnitManager.Instance.newTurn();

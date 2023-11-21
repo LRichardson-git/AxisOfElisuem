@@ -149,7 +149,7 @@ public class UnitManager : MonoBehaviour
         if (smokeList.Count >0)
             for (int i = 0; i < smokeList.Count; i++)
                 smokeList[i].updateLife(i);
-
+        
        
 
         foreach (Unit unit in _units)
@@ -171,26 +171,40 @@ public class UnitManager : MonoBehaviour
         }
         
         foreach (Unit unit in _units)
-            if (!unit.isOwned)
+            if (!unit.isOwned && unit.alive)
                 unit.cantSee();
         
         foreach (Unit unit in inVision)
             unit.canSee();
         
-        ObjectSelector.Instance.Deselect();
+
+
+        
         ObjectSelector.Instance.nextUnit();
+
+
+        if (Player.LocalInstance.turn)
+        {
+            activity.SetActive(false);
+            ObjectSelector.Instance.nextUnit();
+        }
+        else { 
+            activity.SetActive(true);
+            ObjectSelector.Instance.Deselectt();
+            }
     }
 
 
     public void updateVision()
     {
         foreach (Unit unit in _units)
-            if (Player.LocalInstance.playerID != unit.ownedBy)
+            if (Player.LocalInstance.playerID != unit.ownedBy && unit.alive)
                 unit.cantSee();
 
         foreach (Unit unit in _units)
-            foreach (TargetData data in unit.getList())
-                data.getUnit().canSee();
+            if (unit.ownedBy == Player.LocalInstance.playerID)
+                foreach (TargetData data in unit.getList())
+                    data.getUnit().canSee();
                     
     }
 
