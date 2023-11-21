@@ -185,7 +185,7 @@ public class UnitManager : MonoBehaviour
     public void updateVision()
     {
         foreach (Unit unit in _units)
-            if (!unit.isOwned)
+            if (Player.LocalInstance.playerID != unit.ownedBy)
                 unit.cantSee();
 
         foreach (Unit unit in _units)

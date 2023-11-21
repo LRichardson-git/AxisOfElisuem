@@ -53,7 +53,7 @@ public class Unit : Tile_Object
     public health hpS;
 
     public bool alive = true;
-    BoxCollider collider;
+    BoxCollider colliderr;
     public int maxMovementPoints =13;
 
     void OnHpChanged(int _Old, int _New)
@@ -80,7 +80,7 @@ public class Unit : Tile_Object
     void unalive()
     {
         //UnitManager.Instance.RemoveUnit(ID);
-        Destroy(collider);
+        Destroy(colliderr);
         hpS.gameObject.SetActive(false);
         alive = false;
         UnitManager.Instance.CheckWin(ownedBy);
@@ -120,7 +120,7 @@ public class Unit : Tile_Object
         moveables = new List<moveable>();
         path = World_Pathfinding.Instance;
         manager = UnitManager.Instance;
-        collider = GetComponent<BoxCollider>();
+        colliderr = GetComponent<BoxCollider>();
         maxMovementPoints = movementPoints;
         hpS.setSize(HP);
         maxHP = HP;

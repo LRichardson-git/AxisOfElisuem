@@ -10,10 +10,8 @@ public class Solider : Unit
     public GameObject gunModel;
     float tickTimer = 0;
     float LastActionTime = 0;
-    int old = 0;
     public bool begun = false;
     public bool seen = false;
-    float tracker = 0;
 
     private void Update()
     {

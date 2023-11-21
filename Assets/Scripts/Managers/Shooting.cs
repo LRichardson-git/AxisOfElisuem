@@ -551,6 +551,7 @@ public class Shooting : NetworkBehaviour
 
         ObjectSelector.Instance.nextUnit();
         ObjectSelector.Instance.Deselectt();
+
     }
 
 

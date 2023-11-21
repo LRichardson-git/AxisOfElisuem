@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class testfinding : MonoBehaviour
+public class testfinding
 {
     // Start is called before the first frame update
     int CellSize = 10;

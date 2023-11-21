@@ -698,7 +698,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3895528510378818019, guid: e93b59966214bf34b93af2d57a8c06c4, type: 3}
       propertyPath: m_Name
-      value: Solider Shotgun [2]
+      value: Solider Shotgun t2
       objectReference: {fileID: 0}
     - target: {fileID: 3895528510378818041, guid: e93b59966214bf34b93af2d57a8c06c4, type: 3}
       propertyPath: m_RootOrder
@@ -977,7 +977,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: y
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: z
@@ -5861,7 +5861,7 @@ MonoBehaviour:
   - {fileID: 1243938577}
   - {fileID: 830580282}
   - {fileID: 184751602}
-  - {fileID: 1094059777}
+  - {fileID: 1575560422}
   HighlightTile: {fileID: 6358072569587384468, guid: cbc6eaa40976e424faba6d2006eb4bf3, type: 3}
   HighlightDash: {fileID: 6358072569587384468, guid: 9725f6a043470dc419c9c822510b8173, type: 3}
   Floor: {fileID: 0}
@@ -7615,7 +7615,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   playersText: {fileID: 1723243075}
-  Playerturn: 0
   players: 0
 --- !u!4 &1422703364
 Transform:
@@ -8270,6 +8269,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1575560422 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6057711163131317855, guid: e93b59966214bf34b93af2d57a8c06c4, type: 3}
+  m_PrefabInstance: {fileID: 1789237500}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0b1bbc48f3cf342903f68f3de68211, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1585537038 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6057711163131317855, guid: 2be2529d1be88e64699db50d5e0c0436, type: 3}
@@ -9310,7 +9320,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3895528510378818019, guid: e93b59966214bf34b93af2d57a8c06c4, type: 3}
       propertyPath: m_Name
-      value: Solider Shotgun t2 (1)
+      value: Solider Shotgun t2 [2]
       objectReference: {fileID: 0}
     - target: {fileID: 3895528510378818041, guid: e93b59966214bf34b93af2d57a8c06c4, type: 3}
       propertyPath: m_RootOrder

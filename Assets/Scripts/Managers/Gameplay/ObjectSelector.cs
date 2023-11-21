@@ -19,7 +19,6 @@ public class ObjectSelector : MonoBehaviour
     Camera _cam;
     Vector3Int CellLocation;
 
-    private bool buttonDown = false;
     public bool canmove = false;
 
     public bool canAction = false;
@@ -73,17 +72,9 @@ public class ObjectSelector : MonoBehaviour
             return;
 
 
-
-        if (_input.rightClick)
-        {
-            buttonDown = true;
-            //show path?
-
-        }
-
         else if (_input.rightLetGo && _abilityManager.active == false)
         {
-            buttonDown = false; moveUnit();
+             moveUnit();
             
         }
 
@@ -242,6 +233,7 @@ public class ObjectSelector : MonoBehaviour
         selectedUnit = null;
 
        UnitManager.Instance.removePaths();
+        AbilityManager.Instance.RemoveButtons();
     }
 
 
