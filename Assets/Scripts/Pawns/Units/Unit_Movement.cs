@@ -63,7 +63,9 @@ public class Unit_Movement : MonoBehaviour
 
             // Update the unit's movement path
             _unit.movementPoints -= limitedPathLength;
-            
+            CameraControler.LocalInstance.FollowUnit(_unit.GetComponent<Solider>());
+            _unit.GetComponent<Solider>().seen = true;
+
         }
         else {
             _audio.PlaySoundL("Error");
@@ -174,7 +176,7 @@ public class Unit_Movement : MonoBehaviour
         _unit.GetComponent<Solider>().seen = false;
         _unit.moving(_unit.movee);
 
-
+        _unit.GetComponent<Solider>().seen = false;
 
 
 
