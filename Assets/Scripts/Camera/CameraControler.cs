@@ -13,7 +13,7 @@ public class CameraControler : MonoBehaviour
     private bool isRotating;
     private float rotationX;
     private Vector3 rotationPoint;
-    private Quaternion defaultRotation;
+    public Quaternion defaultRotation;
     public float Speed = 10;
     public Camera cam2;
     Vector3 zero;
@@ -52,12 +52,12 @@ public class CameraControler : MonoBehaviour
 
         
         
-        
-        HandleRotation();
+        if (!moving && !switching)
+            HandleRotation();
     
         Vector3 motion = GetMotionInput();
 
-        if (switching)
+        if (switching || moving)
             motion = Vector3.zero;
 
         MoveCamera(motion);

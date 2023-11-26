@@ -201,6 +201,8 @@ public class UnitManager : MonoBehaviour
             if (Player.LocalInstance.playerID != unit.ownedBy && unit.alive)
                 unit.cantSee();
 
+
+
         foreach (Unit unit in _units)
             if (unit.ownedBy == Player.LocalInstance.playerID)
                 foreach (TargetData data in unit.getList())
@@ -342,6 +344,7 @@ public class UnitManager : MonoBehaviour
                 {
                     seen = true;
                     target.canSee();
+                    Debug.Log(target + "can see");
                     break;
                 }
 

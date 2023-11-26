@@ -218,7 +218,8 @@ public class Unit : Tile_Object
     [ClientRpc]
     void checksightE()
     {
-        UnitManager.Instance.checkSightsmove(this);
+        if (Player.LocalInstance.playerID != ownedBy)
+            UnitManager.Instance.checkSightsmove(this);
     }
 
 
@@ -228,8 +229,10 @@ public class Unit : Tile_Object
     [ClientRpc]
     void checkCover(Quaternion rot, int AC)
     {
-        
-        Model.transform.rotation = rot;
+
+
+        // Model.transform.rotation = rot;
+        DeleteCover();
         covers = Shooting.Instance.CalulateCover(this);
         //all toghther since checksight needs to know if its in cover
         if (isOwned)
@@ -237,11 +240,11 @@ public class Unit : Tile_Object
 
             Shooting.Instance.CheckSight(this);
             Shooting.Instance.SpawnButtons(getList());
-            
+            UnitManager.Instance.updateVision();
             doAction(AC);
             if (turn) { UnitManager.Instance.ShowPaths(this); }
         }
-        if (!isOwned)
+        if (Player.LocalInstance.playerID != ownedBy)
             UnitManager.Instance.checkSightsmove(this);
 
 
@@ -306,7 +309,7 @@ public class Unit : Tile_Object
         Abilities.Remove(ability);
     }
 
-    public void playAnim(string anim, Vector3 direction) { direction.y = Model.transform.position.y;   Model.gameObject.transform.LookAt(direction);  animator.speed = 2;  animator.Play(anim); audioManager.cmDPlaySound(anim); }
+    public void playAnim(string anim, Vector3 direction) { direction.y = transform.transform.position.y;   transform.gameObject.transform.LookAt(direction);  animator.speed = 2;  animator.Play(anim); audioManager.cmDPlaySound(anim); }
 
     public void playAnim(string anim) { animator.speed = 2; animator.Play(anim); }
 

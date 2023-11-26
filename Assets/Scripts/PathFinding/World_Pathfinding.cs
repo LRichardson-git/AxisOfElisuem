@@ -496,6 +496,9 @@ public class World_Pathfinding :MonoBehaviour
                     if (i == 0 && j == 0 && k == 0)
                         continue;
 
+                    if (Mathf.Abs(i) + Mathf.Abs(j) + Mathf.Abs(k) > 1)
+                        continue;
+
                     newX = x + i;
                     newY = y + j;
                     newZ = z + k;

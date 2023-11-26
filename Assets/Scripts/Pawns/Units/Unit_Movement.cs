@@ -8,7 +8,7 @@ public class Unit_Movement : MonoBehaviour
     public float speed = 20f;
     private bool _isMoving = false;
     public Animator animator;
-    private int rotaionSpeed = 1000;
+    private int rotaionSpeed = 800;
     private AudioManager _audio;
     bool dash = false;
     World_Pathfinding _path;
@@ -79,7 +79,7 @@ public class Unit_Movement : MonoBehaviour
         bool updown = false;
         Vector3 directionToTarget;
         Quaternion targetRotation;
-        _unit.Model.transform.rotation = Quaternion.identity;
+        //_unit.Model.transform.rotation = Quaternion.identity;
         _isMoving = true;
         _unit.movee = true;
         _unit.moving(_unit.movee);
@@ -122,7 +122,6 @@ public class Unit_Movement : MonoBehaviour
                     animator.SetFloat("Y", 0);
                     animator.SetFloat("Speed", 2);
                     updown = false;
-                    //animator.speed = 1.5f;
                 }
 
                 
@@ -149,6 +148,7 @@ public class Unit_Movement : MonoBehaviour
             }
             transform.position = targetPosition;
         }
+
         Vector3Int temportayChangethisplease = _path.worldToCoord(transform.position, _unit.width, _unit.depth);
         _unit.x = temportayChangethisplease.x;
         _unit.y = temportayChangethisplease.y;
@@ -161,23 +161,17 @@ public class Unit_Movement : MonoBehaviour
         _audio.stopSoundLocal();
 
         Quaternion oldRotation = transform.rotation;
-        transform.rotation = Quaternion.identity;
+       // transform.rotation = Quaternion.identity;
 
         int AC = 1;
 
         if (dash)
             AC = 2;
-        UnitManager.Instance.updateVision(); //why is this here? scared to move
-        _unit.DeleteCover();
         _unit.cmdCheckCover(oldRotation, AC);
-        _unit.cmdCheckSight();
         _isMoving = false;
         _unit.movee = false;
-        _unit.GetComponent<Solider>().seen = false;
         _unit.moving(_unit.movee);
-
-        _unit.GetComponent<Solider>().seen = false;
-
+        GetComponent<Solider>().seen = false;
 
 
 

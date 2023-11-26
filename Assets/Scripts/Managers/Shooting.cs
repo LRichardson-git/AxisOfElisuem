@@ -61,7 +61,10 @@ public class Shooting : NetworkBehaviour
 
             //if cant see unit it is invisible
             if (CanSeeUnit(unit, targetUnit))
+            {
                 targetUnit.canSee();
+               // Debug.Log("seeing " + targetUnit);
+            }
 
 
             
@@ -373,10 +376,10 @@ public class Shooting : NetworkBehaviour
                 Cover cover = new Cover(height, direction);
                 coverList.Add(cover);
                 Visited.Add(direction);
-                Vector3 lookpoint = hit.point;
-                lookpoint.y = unit.Model.transform.position.y;
-                unit.Model.transform.LookAt(lookpoint);
-                unit.Model.transform.Rotate(0,45,0);
+              //  Vector3 lookpoint = hit.point;
+              //  lookpoint.y = unit.Model.transform.position.y;
+                //unit.Model.transform.LookAt(lookpoint);
+               // unit.Model.transform.Rotate(0,45,0);
    
                 
             }

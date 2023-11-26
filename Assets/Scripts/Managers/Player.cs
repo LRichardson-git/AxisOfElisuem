@@ -78,6 +78,10 @@ public class Player : NetworkBehaviour
         {
             endTurn();
         }
+        if (Input.GetKeyUp(KeyCode.O))
+        {
+            CameraControler.LocalInstance.transform.rotation = CameraControler.LocalInstance.defaultRotation;
+        }
     }
 
   
