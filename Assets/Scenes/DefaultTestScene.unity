@@ -762,7 +762,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: e93b59966214bf34b93af2d57a8c06c4, type: 3}
       propertyPath: aim
-      value: 54
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: e93b59966214bf34b93af2d57a8c06c4, type: 3}
       propertyPath: ownedBy
@@ -989,7 +989,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: crit
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: ownedBy
@@ -1614,7 +1614,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: e93b59966214bf34b93af2d57a8c06c4, type: 3}
       propertyPath: aim
-      value: 54
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: e93b59966214bf34b93af2d57a8c06c4, type: 3}
       propertyPath: ownedBy
@@ -3274,7 +3274,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: crit
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: Vision
@@ -8497,7 +8497,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: crit
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: Vision
@@ -8509,7 +8509,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: ActionPoints
-      value: 300
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: seethrough.b
@@ -8537,7 +8537,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: movementPoints
-      value: 300
+      value: 24
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3895528510378818040, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
@@ -9249,6 +9249,10 @@ PrefabInstance:
       value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: e93b59966214bf34b93af2d57a8c06c4, type: 3}
+      propertyPath: aim
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 6057711163131317855, guid: e93b59966214bf34b93af2d57a8c06c4, type: 3}
       propertyPath: ownedBy
       value: 2
       objectReference: {fileID: 0}
@@ -9871,6 +9875,10 @@ PrefabInstance:
     - target: {fileID: 6057711163131317855, guid: e93b59966214bf34b93af2d57a8c06c4, type: 3}
       propertyPath: z
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6057711163131317855, guid: e93b59966214bf34b93af2d57a8c06c4, type: 3}
+      propertyPath: aim
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: e93b59966214bf34b93af2d57a8c06c4, type: 3}
       propertyPath: ownedBy
@@ -11189,7 +11197,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: crit
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6057711163131317855, guid: 7fe8469296e771940bdb50325c754ff9, type: 3}
       propertyPath: ownedBy
